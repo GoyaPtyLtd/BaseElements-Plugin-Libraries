@@ -1,5 +1,13 @@
 .DS_Store
 Output/Source/duktape/*
 Output/Headers/*
+Output/Libraries/iOS/*
+Output/Libraries/linux/*
+Output/Libraries/linuxARM/*
 Output/Libraries/macOS/*
+Output/Libraries/win64/*
+source/iOS/*
+source/linux/*
+source/linuxARM/*
 source/macOS/*
+source/win64/*

@@ -28,6 +28,8 @@ export SRCROOT=`pwd`
 
 #install boost version 1.84.0
 
+export SRCROOT='~/source'
+
 wget https://boostorg.jfrog.io/artifactory/main/release/1.84.0/source/boost_1_84_0.tar.gz
 tar -xvzf boost_1_84_0.tar.gz
 cd boost_1_84_0
@@ -61,9 +63,9 @@ cd ..
 
 cd ~/source
 wget https://www.openssl.org/source/openssl-3.0.13.tar.gz
-tar -xvzf openssl-3.0.13v.tar.gz
+tar -xvzf openssl-3.0.13.tar.gz
 
-cd openssl-3.0.13v
+cd openssl-3.0.13
 ./Configure linux-generic64 no-engine no-hw no-shared --prefix="$(pwd)/_build_linux"
 make install
 
@@ -74,10 +76,16 @@ cd ..
 
 #install libssh2
 
+
+
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
 cd ~/source
 wget https://libssh2.org/download/libssh2-1.11.0.tar.gz
 tar -xvzf libssh2-1.11.0.tar.gz
 cd libssh2-1.11.0
+
+sudo apt-get install libssl-dev
 
 CFLAGS="-fPIC -I${SRCROOT}/Headers -I${SRCROOT}/Headers/zlib" LDFLAGS="-L${SRCROOT}/Libraries/linuxARM/" LIBS="-ldl" ./configure --disable-shared --disable-examples-build --prefix="$(pwd)/_build_linux" --with-libwolfssl-prefix
 make install
@@ -90,12 +98,17 @@ cd ..
 
 #install libcurl
 
-
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
 cd ~/source
 wget https://curl.se/download/curl-8.6.0.tar.gz
 tar -xvzf curl-8.6.0.tar.gz
 cd curl-8.6.0
 
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
+cd ~/source
+cd curl-8.6.0
 CPPFLAGS="-I${SRCROOT}/Headers -I${SRCROOT}/Headers/zlib -I${SRCROOT}/Headers/libssh2  -I${SRCROOT}/Headers/openssl" LDFLAGS="-L${SRCROOT}/Libraries/linuxARM" LIBS="-ldl" ./configure --disable-dependency-tracking --enable-static --disable-shared --with-ssl --with-zlib --with-libssh2 --without-tests --prefix="$(pwd)/_build_linux"
 
 make install
@@ -108,6 +121,9 @@ cd ..
 
 #install libiconv
 
+
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
 cd ~/source
 wget https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz
 tar -xvzf libiconv-1.17.tar.gz
@@ -125,6 +141,8 @@ cd ..
 
 #install libxml2
 
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
 cd ~/source
 wget https://download.gnome.org/sources/libxml2/2.12/libxml2-2.12.5.tar.xz
 tar -xf libxml2-2.12.5.tar.xz
@@ -142,11 +160,12 @@ cd ..
 
 #install libxslt
 
-
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
 cd ~/source
-wget https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.39/libxslt-v1.1.39.tar.gz
-tar -xf libxslt-1.1.39.tar.xz
-cd libxslt-1.1.39
+wget https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.38.tar.xz
+tar -xf libxslt-1.1.38.tar.xz
+cd libxslt-1.1.38
 
 CFLAGS=-fPIC ./configure --disable-shared --without-python --without-crypto --prefix="$(pwd)/_build_linux"
 make install
@@ -160,10 +179,12 @@ cd ..
 
 #install duktape
 
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
 cd ~/source
 wget https://duktape.org/duktape-2.7.0.tar.xz
-tar -xf duktap-2.7.0
-cd duktap-2.7.0
+tar -xf duktape-2.7.0.tar.xz
+cd duktape-2.7.0
 
 cp -R src/* "${SRCROOT}/Source/duktape"
 
@@ -172,7 +193,8 @@ cd ..
 
 #install libjpeg-turbo
 
-
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
 cd ~/source
 wget https://ixpeering.dl.sourceforge.net/project/libjpeg-turbo/2.1.5.1/libjpeg-turbo-2.1.5.1.tar.gz
 tar -xvzf libjpeg-turbo-2.1.5.1.tar.gz
@@ -188,10 +210,12 @@ cd ..
 
 
 #install Poco
-
+sudo apt install g++
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
 cd ~/source
 wget https://github.com/pocoproject/poco/archive/refs/tags/poco-1.13.2-release.tar.gz
-tar -xvzf poco-poco-1.13.2-release.tar.gz
+tar -xvzf poco-1.13.2-release.tar.gz
 cd poco-poco-1.13.2-release
 
 ./configure --cflags=-fPIC --typical --static --no-tests --no-samples --include-path="$(pwd)/../BaseElements-Plugin/Headers" --prefix="$(pwd)/_build_linux" --poquito --omit=CppParser,Data,Encodings,MongoDB,PDF,PageCompiler,Redis,Util
@@ -204,6 +228,8 @@ cp _build_linux/lib/libPocoFoundation.a _build_linux/lib/libPocoCrypto.a _build_
 
 #install freetype
 
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
 cd ~/source
 wget https://sourceforge.net/projects/freetype/files/freetype2/2.13.1/freetype-2.13.1.tar.gz
 tar -xvzf freetype-2.13.1.tar.gz
@@ -217,13 +243,19 @@ cp _build_linux/lib/libfreetype.a "${SRCROOT}/Libraries/linuxARM"
 
 
 
-#install fontconfig
+#install fontconfig NOT WORKING
 
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
 cd ~/source
-wget https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.14.2.tar.gz
-tar -xvzf fontconfig-2.14.2.tar.gz
-cd fontconfig-2.14.2
+wget https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.14.1.tar.gz
+tar -xvzf fontconfig-2.14.1.tar.gz
+cd fontconfig-2.14.1
 
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
+cd ~/source
+cd fontconfig-2.14.1
 LIBS="-lz" CFLAGS="-fPIC" ./configure --disable-shared --prefix=$(pwd)/_build_linux FREETYPE_CFLAGS="-I${SRCROOT}/Headers/freetype2"
 make install
 
@@ -232,8 +264,10 @@ cp _build_linux/lib/libfontconfig.a "${SRCROOT}/Libraries/linuxARM"
 
 
 
-#install podofo
+#install podofo REQUIRES FONT CONFIG
 
+cd ~/source/BaseElements-Plugin
+export SRCROOT=`pwd`
 cd ~/source
 wget https://github.com/podofo/podofo/archive/refs/tags/0.10.1.tar.gz
 tar -xvzf 0.10.1.tar.gz

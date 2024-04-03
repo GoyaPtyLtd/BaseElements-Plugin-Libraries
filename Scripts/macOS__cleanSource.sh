@@ -100,18 +100,65 @@ mkdir libiconv
 wget -q -nv -O libiconv.tar.gz https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz
 tar -xf libiconv.tar.gz -C libiconv --strip-components=1
 
-
-#=====LIBJPEGTURBO======
+#=====LIBDE265======
 #
-#Download the source from  https://github.com/libjpeg-turbo/libjpeg-turbo/releases
+#Download the source from  https://github.com/strukturag/libde265/releases
+#
+
+rm libde265.tar.gz
+rm -rf libde265
+mkdir libde265
+
+wget -q -nv -O libde265.tar.gz https://github.com/strukturag/libde265/releases/download/v1.0.15/libde265-1.0.15.tar.gz
+tar -xf libde265.tar.gz  -C libde265 --strip-components=1
+
+#=====LIBJPEG======
+#
+#Download the source from  https://github.com/strukturag/libheif/releases
 #
 
 rm libjpeg.tar.gz
 rm -rf libjpeg
 mkdir libjpeg
 
-wget -q -nv -O libjpeg.tar.gz https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/3.0.2.tar.gz
+wget -q -nv -O libjpeg.tar.gz http://ijg.org/files/jpegsrc.v9f.tar.gz
 tar -xf libjpeg.tar.gz  -C libjpeg --strip-components=1
+
+#=====LIBJP2======
+#
+#Download the source from  https://github.com/uclouvain/openjpeg/releases
+#
+
+rm libopenjp2.tar.gz
+rm -rf libopenjp2
+mkdir libopenjp2
+
+wget -q -nv -O libopenjp2.tar.gz https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.5.2.tar.gz
+tar -xf libopenjp2.tar.gz  -C libopenjp2 --strip-components=1
+
+#=====LIBJPEG======
+#
+#Download the source from  https://github.com/strukturag/libheif/releases
+#
+
+rm libjpeg.tar.gz
+rm -rf libjpeg
+mkdir libjpeg
+
+wget -q -nv -O libjpeg.tar.gz http://ijg.org/files/jpegsrc.v9f.tar.gz
+tar -xf libjpeg.tar.gz  -C libjpeg --strip-components=1
+
+#=====LIBJPEGTURBO======
+#
+#Download the source from  https://github.com/libjpeg-turbo/libjpeg-turbo/releases
+#
+
+rm libturbojpeg.tar.gz
+rm -rf libturbojpeg
+mkdir libturbojpeg
+
+wget -q -nv -O libturbojpeg.tar.gz https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/3.0.2.tar.gz
+tar -xf libturbojpeg.tar.gz  -C libjpeg --strip-components=1
 
 
 #=====IMAGEMAGICK======

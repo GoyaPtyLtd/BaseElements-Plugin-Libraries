@@ -6,8 +6,6 @@
 #=======================================================================
 #
 #This just does a cleanout of the source directory.  So gets you setup to pull new archives down to start building.
-#
-#You may also need to run the macOS_CleanOutput.sh file to get rid of any outputs if you run the compile step after this one.
 
 
 cd ../source/macOS

@@ -7,10 +7,7 @@ export SRCROOT=`pwd`
 
 # Remove old libraries
 
-rm macOS/libjansson.a
-
-# Remove old headers
-
+rm Libraries/macOS/libjansson.a
 rm -rf Headers/jansson.h
 rm -rf Headers/jansson_config.h
 
@@ -20,8 +17,8 @@ cd ../source/macOS/jansson
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-rm -rf _build_macos/*
 
 # Build
 

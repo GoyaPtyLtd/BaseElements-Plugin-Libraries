@@ -7,12 +7,12 @@ export SRCROOT=`pwd`
 
 # Remove old libraries
 
-rm macOS/libPocoCrypto.a
-rm macOS/libPocoFoundation.a
-rm macOS/libPocoZip.a
-rm macOS/libPocoJSON.a
-rm macOS/libPocoXML.a
-rm macOS/libPocoNet.a
+rm Libraries/macOS/libPocoCrypto.a
+rm Libraries/macOS/libPocoFoundation.a
+rm Libraries/macOS/libPocoZip.a
+rm Libraries/macOS/libPocoJSON.a
+rm Libraries/macOS/libPocoXML.a
+rm Libraries/macOS/libPocoNet.a
 
 # Remove old headers
 
@@ -24,8 +24,8 @@ cd ../source/macOS/poco
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-rm -rf _build_macos/*
 
 # Build
 

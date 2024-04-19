@@ -7,8 +7,8 @@ export SRCROOT=`pwd`
 
 # Remove old libraries
 
-rm macOS/libfreetype.a
-rm macOS/libfontconfig.a
+rm Libraries/macOS/libfreetype.a
+rm Libraries/macOS/libfontconfig.a
 
 # Remove old headers
 
@@ -23,8 +23,8 @@ cd ../source/macOS/freetype
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-rm -rf _build_macos/*
 
 # Build
 
@@ -45,8 +45,8 @@ cd ../fontconfig
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-rm -rf _build_macos/*
 
 # Build
 
@@ -67,8 +67,8 @@ cd ../podofo
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-rm -rf _build_macos/*
 
 # Build
 

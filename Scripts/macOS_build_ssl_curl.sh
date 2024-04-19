@@ -7,12 +7,12 @@ export SRCROOT=`pwd`
 
 # Remove old libraries
 
-rm macOS/libcrypto.a
-rm macOS/libssl.a
+rm Libraries/macOS/libcrypto.a
+rm Libraries/macOS/libssl.a
 
-rm macOS/libssh2.a
+rm Libraries/macOS/libssh2.a
 
-rm macOS/libcurl.a
+rm Libraries/macOS/libcurl.a
 
 # Remove old headers
 
@@ -28,12 +28,12 @@ cd ../source/macOS/openssl
 
 # Remove old build directory contents
  
+rm -rf _build_macos
+rm -rf _build_macos_x86_64
+rm -rf _build_macos_arm64
 mkdir _build_macos
 mkdir _build_macos_x86_64
 mkdir _build_macos_arm64
-rm -rf _build_macos/*
-rm -rf _build_macos_x86_64/*
-rm -rf _build_macos_arm64/*
 
 # Build
 
@@ -62,9 +62,8 @@ cd ../libssh
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-mkdir "${SRCROOT}/Headers/libssh2"
-rm -rf _build_macos/*
 
 # Build
 
@@ -85,9 +84,8 @@ cd ../curl
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-mkdir "${SRCROOT}/Headers/curl"
-rm -rf _build_macos/*
 
 # Build
 

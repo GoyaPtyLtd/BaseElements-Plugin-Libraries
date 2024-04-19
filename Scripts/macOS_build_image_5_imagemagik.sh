@@ -7,13 +7,11 @@ export SRCROOT=`pwd`
 
 # Remove old libraries
 
-rm macOS/libMagick++-7.Q16HDRI.a
-rm macOS/libMagickCore-7.Q16HDRI.a
-rm macOS/libMagickWand-7.Q16HDRI.a
+rm Libraries/macOS/libMagick++-7.Q16HDRI.a
+rm Libraries/macOS/libMagickCore-7.Q16HDRI.a
+rm Libraries/macOS/libMagickWand-7.Q16HDRI.a
 
-# Remove old headers
-
-rm -rf Headers/ImageMagick-7/*
+rm -rf Headers/ImageMagick-7
 
 # Switch to our build directory
 
@@ -21,8 +19,8 @@ cd ../source/macOS/ImageMagick
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-rm -rf _build_macos/*
 
 # Build
 

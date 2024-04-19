@@ -7,11 +7,8 @@ export SRCROOT=`pwd`
 
 # Remove old libraries
 
-rm macOS/libjpeg.a
-
-# Remove old headers
-
-rm -rf Headers/libjpeg/*
+rm Libraries/macOS/libjpeg.a
+rm -rf Headers/libjpeg
 
 # Switch to our build directory
 
@@ -19,8 +16,8 @@ cd ../source/macOS/libjpeg
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-rm -rf _build_macos/*
 
 # Build
 

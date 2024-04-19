@@ -7,11 +7,8 @@ export SRCROOT=`pwd`
 
 # Remove old libraries
 
-rm macOS/libopenjp2.a
-
-# Remove old headers
-
-rm -rf Headers/libopenjp2/*
+rm Libraries/macOS/libopenjp2.a
+rm -rf Headers/libopenjp2
 
 # Switch to our build directory
 
@@ -19,8 +16,8 @@ cd ../source/macOS/libopenjp2
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-rm -rf _build_macos/*
 
 # Build
 

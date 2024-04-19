@@ -7,11 +7,8 @@ export SRCROOT=`pwd`
 
 # Remove old libraries
 
-rm macOS/libjq.a
-
-# Remove old headers
-
-rm -rf Headers/jq/*
+rm Libraries/macOS/libjq.a
+rm -rf Headers/jq
 
 # Switch to our build directory
 
@@ -19,8 +16,8 @@ cd ../source/macOS/jq
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-rm -rf _build_macos/*
 
 # Build
 

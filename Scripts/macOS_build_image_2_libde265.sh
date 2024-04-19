@@ -7,7 +7,7 @@ export SRCROOT=`pwd`
 
 # Remove old libraries and Headers
 
-rm macOS/libde265.a
+rm Libraries/macOS/libde265.a
 rm -rf Headers/libde265/*
 
 # Switch to our build directory and clean out anything old
@@ -16,6 +16,8 @@ cd ../source/macOS
 
 rm -rf libde265
 mkdir libde265
+
+#Added this temporarily to make sure we start with a clean folder - perhaps useful for all?
 
 tar -xf libde265.tar.gz  -C libde265 --strip-components=1
 

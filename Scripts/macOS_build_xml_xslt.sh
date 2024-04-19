@@ -7,17 +7,17 @@ export SRCROOT=`pwd`
 
 # Remove old libraries
 
-rm macOS/libiconv.a
-rm macOS/libcharset.a
+rm Libraries/macOS/libiconv.a
+rm Libraries/macOS/libcharset.a
 
-rm macOS/libxml2.a
+rm Libraries/macOS/libxml2.a
 
-rm macOS/libxslt.a
-rm macOS/libexslt.a
+rm Libraries/macOS/libxslt.a
+rm Libraries/macOS/libexslt.a
 
 # Remove old headers
 
-rm -rf Headers/libxml2/*
+rm -rf Headers/libxml/*
 rm -rf Headers/libxslt/*
 rm -rf Headers/iconv/*
 
@@ -27,12 +27,12 @@ rm -rf Headers/iconv/*
 
 cd ../source/macOS/libiconv
 
+export ICONV=`pwd`
+
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-rm -rf _build_macos/*
-
-export ICONV=`pwd`
 
 # Build
 
@@ -57,8 +57,8 @@ cd ../libxml
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-rm -rf _build_macos/*
 
 export LIBXML=`pwd`
 
@@ -66,13 +66,13 @@ export LIBXML=`pwd`
 
 # used to be : CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --with-threads --without-python --without-zlib --without-lzma --with-iconv=../libiconv/_build_macos --prefix="${$(pwd)}/_build_macos"
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --with-threads --without-python --without-zlib --without-lzma --with-iconv="${ICONV}/_build_macos" --prefix="${$(pwd)}/_build_macos"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --with-threads --without-python --without-zlib --without-lzma --with-iconv --prefix="${$(pwd)}/_build_macos"
 
 make -s -j install
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/libxml2 "${SRCROOT}/Headers"
+cp -R _build_macos/include/libxml2/libxml "${SRCROOT}/Headers"
 cp _build_macos/lib/libxml2.a "${SRCROOT}/Libraries/macOS"
 
 #====libxslt====
@@ -83,9 +83,8 @@ cd ../libxslt
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-mkdir "${SRCROOT}/Headers/libxslt"
-rm -rf _build_macos/*
 
 # Build
 

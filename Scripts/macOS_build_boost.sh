@@ -5,16 +5,14 @@ export START=`pwd`
 cd ../Output
 export SRCROOT=`pwd`
 
-# Remove old libraries
+# Remove old libraries and headers
 
-rm macOS/libboost_atomic.a
-rm macOS/libboost_date_time.a
-rm macOS/libboost_filesystem.a
-rm macOS/libboost_program_options.a
-rm macOS/libboost_regex.a
-rm macOS/libboost_thread.a
-
-# Remove old headers
+rm Libraries/macOS/libboost_atomic.a
+rm Libraries/macOS/libboost_date_time.a
+rm Libraries/macOS/libboost_filesystem.a
+rm Libraries/macOS/libboost_program_options.a
+rm Libraries/macOS/libboost_regex.a
+rm Libraries/macOS/libboost_thread.a
 
 rm -rf Headers/boost/*
 
@@ -24,8 +22,8 @@ cd ../source/macOS/boost
 
 # Remove old build directory contents
  
+rm -rf _build_macos
 mkdir _build_macos
-rm -rf _build_macos/*
 
 # Build
 

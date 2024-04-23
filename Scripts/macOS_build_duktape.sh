@@ -3,20 +3,24 @@
 export START=`pwd`
 
 cd ../Output
+export OUTPUT=`pwd`
+
+# Starting folder
+
+cd ../source/macOS
 export SRCROOT=`pwd`
 
 # Remove old source
 
-rm -rf Source/duktape/*
-
-# Switch to our build directory
-
-cd ../source/macOS/duktape
+rm -rf duktape
+mkdir duktape
+tar -xf ../duktape.tar.xz -C duktape --strip-components=1
+cd duktape
 
 # Copy the source files.
 
-cp -R src "${SRCROOT}/Source/duktape"
+cp -R src "${OUTPUT}/Source/duktape"
 
 # Return to source/macOS directory
 
-cd "START"
+cd "${START}"

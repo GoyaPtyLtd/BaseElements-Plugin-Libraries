@@ -11,3 +11,5 @@ source/linux/*
 source/linuxARM/*
 source/macOS/*
 source/win64/*
+source/*.tar.gz
+source/*.tar.xz

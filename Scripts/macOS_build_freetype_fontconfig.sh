@@ -3,7 +3,7 @@
 export START=`pwd`
 
 cd ../Output
-export SRCROOT=`pwd`
+export OUTPUT=`pwd`
 
 # Remove old libraries
 
@@ -15,15 +15,19 @@ rm Libraries/macOS/libfontconfig.a
 rm -rf Headers/freetype2/*
 rm -rf Headers/fontconfig/*
 
+# Starting folder
+
+cd ../source/macOS
+export SRCROOT=`pwd`
+
 #====freetype2====
 
 # Switch to our build directory
 
-cd ../source/macOS/freetype
-
-# Remove old build directory contents
- 
-rm -rf _build_macos
+rm -rf freetype
+mkdir freetype
+tar -xf ../freetype.tar.gz -C freetype --strip-components=1
+cd freetype
 mkdir _build_macos
 
 # Build
@@ -34,53 +38,55 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/freetype2 "${SRCROOT}/Headers"
-cp _build_macos/lib/libfreetype.a "${SRCROOT}/Libraries/macOS"
+cp -R _build_macos/include/freetype2 "${OUTPUT}/Headers"
+cp _build_macos/lib/libfreetype.a "${OUTPUT}/Libraries/macOS"
+
+cd ${SRCROOT}
 
 #====fontconfig====
 
 # Switch to our build directory
 
-cd ../fontconfig
-
-# Remove old build directory contents
- 
-rm -rf _build_macos
+rm -rf fontconfig
+mkdir fontconfig
+tar -xf ../fontconfig.tar.gz -C fontconfig --strip-components=1
+cd fontconfig
 mkdir _build_macos
 
 # Build
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ./configure --disable-shared --prefix="$(pwd)/_build_macos" FREETYPE_CFLAGS="-I${SRCROOT}/Headers/freetype2" FREETYPE_LIBS="-L${SRCROOT}/Libraries/macOS -lfreetype" LDFLAGS="-L${SRCROOT}/Libraries/macOS"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ./configure --disable-shared --prefix="$(pwd)/_build_macos" FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/macOS -lfreetype" LDFLAGS="-L${OUTPUT}/Libraries/macOS"
 
 make -s -j install
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/fontconfig "${SRCROOT}/Headers"
-cp _build_macos/lib/libfontconfig.a "${SRCROOT}/Libraries/macOS"
+cp -R _build_macos/include/fontconfig "${OUTPUT}/Headers"
+cp _build_macos/lib/libfontconfig.a "${OUTPUT}/Libraries/macOS"
+
+cd ${SRCROOT}
 
 #====podofo====
 
 # Switch to our build directory
 
-cd ../podofo
-
-# Remove old build directory contents
- 
-rm -rf _build_macos
+rm -rf podofo
+mkdir podofo
+tar -xf ../podofo.tar.gz -C podofo --strip-components=1
+cd podofo
 mkdir _build_macos
 
 # Build
 
-cmake -G "Unix Makefiles" -DWANT_FONTCONFIG:BOOL=TRUE -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="./_build_macos" -DPODOFO_BUILD_STATIC:BOOL=TRUE -DFREETYPE_INCLUDE_DIR="${SRCROOT}/Headers/freetype2" -DFREETYPE_LIBRARY_RELEASE="${SRCROOT}/Libraries/macOS/libfreetype.a" -DFONTCONFIG_LIBRARIES="${SRCROOT}/Libraries" -DFONTCONFIG_INCLUDE_DIR="${SRCROOT}/Headers" -DFONTCONFIG_LIBRARY_RELEASE="${SRCROOT}/Libraries/macOS/libfontconfig.a" -DPODOFO_BUILD_LIB_ONLY=TRUE -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_STANDARD=11 -DCXX_STANDARD_REQUIRED=ON ./
+cmake -G "Unix Makefiles" -DWANT_FONTCONFIG:BOOL=TRUE -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="./_build_macos" -DPODOFO_BUILD_STATIC:BOOL=TRUE -DFREETYPE_INCLUDE_DIR="${OUTPUT}/Headers/freetype2" -DFREETYPE_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfreetype.a" -DFONTCONFIG_LIBRARIES="${OUTPUT}/Libraries" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT}/Headers" -DFONTCONFIG_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfontconfig.a" -DPODOFO_BUILD_LIB_ONLY=TRUE -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_STANDARD=11 -DCXX_STANDARD_REQUIRED=ON ./
 
 make -s -j install
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/podofo "${SRCROOT}/Headers"
-cp _build_macos/lib/libpodofo.a "${SRCROOT}/Libraries/macOS"
+cp -R _build_macos/include/podofo "${OUTPUT}/Headers"
+cp _build_macos/lib/libpodofo.a "${OUTPUT}/Libraries/macOS"
 
 # Return to source/macOS directory
 
-cd "START"
+cd "${START}"

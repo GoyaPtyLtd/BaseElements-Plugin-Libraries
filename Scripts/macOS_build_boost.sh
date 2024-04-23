@@ -3,7 +3,7 @@
 export START=`pwd`
 
 cd ../Output
-export SRCROOT=`pwd`
+export OUTPUT=`pwd`
 
 # Remove old libraries and headers
 
@@ -16,13 +16,17 @@ rm Libraries/macOS/libboost_thread.a
 
 rm -rf Headers/boost/*
 
+# Starting folder
+
+cd ../source/macOS
+export SRCROOT=`pwd`
+
 # Switch to our build directory
 
-cd ../source/macOS/boost
-
-# Remove old build directory contents
- 
-rm -rf _build_macos
+rm -rf boost
+mkdir boost
+tar -xf ../boost.tar.gz -C boost --strip-components=1
+cd boost
 mkdir _build_macos
 
 # Build
@@ -32,15 +36,16 @@ mkdir _build_macos
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/boost "${SRCROOT}/Headers"
+cp -R _build_macos/include/boost "${OUTPUT}/Headers"
 
-cp _build_macos/lib/libboost_atomic.a "${SRCROOT}/Libraries/macOS"
-cp _build_macos/lib/libboost_date_time.a "${SRCROOT}/Libraries/macOS"
-cp _build_macos/lib/libboost_filesystem.a "${SRCROOT}/Libraries/macOS"
-cp _build_macos/lib/libboost_program_options.a "${SRCROOT}/Libraries/macOS"
-cp _build_macos/lib/libboost_regex.a "${SRCROOT}/Libraries/macOS"
-cp _build_macos/lib/libboost_thread.a "${SRCROOT}/Libraries/macOS"
+cp _build_macos/lib/libboost_atomic.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libboost_date_time.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libboost_filesystem.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libboost_program_options.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libboost_regex.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libboost_thread.a "${OUTPUT}/Libraries/macOS"
 
 # Return to source/macOS directory
 
-cd "START"
+cd "${START}"
+

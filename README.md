@@ -2,7 +2,7 @@
 
 This is set of scripts and tools that are used to build the external libraries used in the BE plugin : https://github.com/GoyaPtyLtd/BaseElements-Plugin
 
-At this stage, the only semi completed OS is the macOS one.  But that has two issues still outstanding, and then requires a new script to sync the folders between this output folder and the BE plugin output folder :
+At this stage, the only semi completed OS is the macOS one.  The linux examples are somewhat working, but do not follow the same structures as the mac one, so will need to be modified to work.  
 
 #TODO 
 

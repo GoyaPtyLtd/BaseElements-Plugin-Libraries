@@ -22,7 +22,7 @@ On the mac you compile for x86, arm and iOS all from the one place, but the comp
 
 You need to install XCode and the XCode command line tools.  There are a bunch of open source tools required as well, to make things easier we recommend you install these with brew : https://brew.sh  Open that link then follow the install instructions there.  Our set of installed tools are :
 
-`brew install automake gettext gnu-tar libtool protobuf autoconf git wget autoconf-archive cmake git-lfs m4 pkg-config xz`
+    brew install automake gettext gnu-tar libtool protobuf autoconf git wget autoconf-archive cmake git-lfs m4 pkg-config xz
 
 Not all of these may be needed, this was we had last time we checked.  You want to avoid using lots of brew libraries as the compile options may find those instead of the ones we've built into the scripts.
 
@@ -32,9 +32,9 @@ To start with, we recommend you fork the BaseElements-Plugin-Libraries repositor
 
 Once you've pulled down the code from gitHub then you :
 
-cd BaseElements-Plugin-Libraries/Scripts
-chmod +x _getSource.sh
-chmod +x macOS_build*
-./_getSource.sh
+    cd BaseElements-Plugin-Libraries/Scripts
+    chmod +x _getSource.sh
+    chmod +x macOS_build*
+    ./_getSource.sh
 
 That last step pulls down all the latest source code into the source folder ready for you to start compiling.  Each of the individual .sh docs can be run by themselves, or can have their code copied out of for testing steps.  They should be self contained, and when run should clear everything out and start fresh.

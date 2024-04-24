@@ -1,7 +1,5 @@
 #!/bin/bash -E
 
-export START=`pwd`
-
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -27,7 +25,7 @@ mkdir _build_macos
 
 ./configure --host=x86_64 --prefix="${$(pwd)}/_build_macos_arm64" CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" --disable-shared
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --prefix="$(pwd)/_build_macos" --disable-shared --enable-static
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --prefix="${$(pwd)}/_build_macos" --disable-shared --enable-static
 
 make -s -j install
 
@@ -38,4 +36,4 @@ cp ./_build_macos/lib/libjpeg.a "${OUTPUT}/Libraries/macOS"
 
 # Return to source/macOS directory
 
-cd "${START}"
+cd ${SRCROOT}

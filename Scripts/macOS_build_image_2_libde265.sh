@@ -1,7 +1,5 @@
 #!/bin/bash -E
 
-export START=`pwd`
-
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -45,4 +43,4 @@ autoreconf -fi
 
 # Return to source/macOS directory
 
-cd "${START}"
+cd ${SRCROOT}

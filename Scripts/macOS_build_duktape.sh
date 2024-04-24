@@ -1,7 +1,5 @@
 #!/bin/bash -E
 
-export START=`pwd`
-
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -23,4 +21,4 @@ cp -R src "${OUTPUT}/Source/duktape"
 
 # Return to source/macOS directory
 
-cd "${START}"
+cd ${SRCROOT}

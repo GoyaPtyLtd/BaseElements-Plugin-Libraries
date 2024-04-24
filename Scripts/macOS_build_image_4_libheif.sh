@@ -1,7 +1,5 @@
 #!/bin/bash -E
 
-export START=`pwd`
-
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -36,4 +34,4 @@ cp ./_build_macos/lib/libheif.a "${OUTPUT}/Libraries/macOS"
 
 # Return to source/macOS directory
 
-cd "${START}"
+cd ${SRCROOT}

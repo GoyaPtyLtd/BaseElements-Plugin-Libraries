@@ -1,7 +1,5 @@
 #!/bin/bash -E
 
-export START=`pwd`
-
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -48,5 +46,5 @@ cp -R ./_build_macos/include/Poco "${OUTPUT}/Headers"
 
 # Return to source/macOS directory
 
-cd "${START}"
+cd ${SRCROOT}
 

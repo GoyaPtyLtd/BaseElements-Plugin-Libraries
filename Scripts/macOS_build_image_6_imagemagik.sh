@@ -1,7 +1,5 @@
 #!/bin/bash -E
 
-export START=`pwd`
-
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -28,7 +26,7 @@ mkdir _build_macos
 
 # Build
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers/turbojpeg" CPPFLAGS="-I${OUTPUT}/Headers/turbojpeg" CXXFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15  -I${OUTPUT}/Headers/turbojpeg" LDFLAGS="-L${OUTPUT}/Libraries/macOS -ljpeg" ./configure --disable-shared --prefix="$(pwd)/_build_macos" --without-utilities --disable-docs --enable-zero-configuration --disable-dependency-tracking --with-quantum-depth=16 --enable-hdri --without-bzlib --disable-openmp --disable-assert --without-zlib PKG_CONFIG_PATH="$(pwd)" JPEG_LIBS="-L${OUTPUT}/Headers/Libraries/macOS -ljpeg"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers/turbojpeg" CPPFLAGS="-I${OUTPUT}/Headers/turbojpeg" CXXFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15  -I${OUTPUT}/Headers/turbojpeg" LDFLAGS="-L${OUTPUT}/Libraries/macOS -ljpeg" ./configure --disable-shared --prefix="${$(pwd)}/_build_macos" --without-utilities --disable-docs --enable-zero-configuration --disable-dependency-tracking --with-quantum-depth=16 --enable-hdri --without-bzlib --disable-openmp --disable-assert --without-zlib PKG_CONFIG_PATH="$(pwd)" JPEG_LIBS="-L${OUTPUT}/Headers/Libraries/macOS -ljpeg"
 
 make -s -j install
 
@@ -42,4 +40,4 @@ cp "_build_macos/lib/libMagickWand-7.Q16HDRI.a" "${OUTPUT}/Libraries/macOS/"
 
 # Return to source/macOS directory
 
-cd "${START}"
+cd ${SRCROOT}

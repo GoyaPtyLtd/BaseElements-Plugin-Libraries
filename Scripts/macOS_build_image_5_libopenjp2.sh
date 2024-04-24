@@ -1,7 +1,5 @@
 #!/bin/bash -E
 
-export START=`pwd`
-
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -37,4 +35,4 @@ cp ./_build_macos/usr/local/lib/libopenjp2.a "${OUTPUT}/Libraries/macOS"
 
 # Return to source/macOS directory
 
-cd "${START}"
+cd ${SRCROOT}

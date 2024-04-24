@@ -1,7 +1,5 @@
 #!/bin/bash -E
 
-export START=`pwd`
-
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -110,7 +108,5 @@ cd ${SRCROOT}
 
 # Return to source/macOS directory
 
-#================
-
-cd "${START}"
+cd ${SRCROOT}
 

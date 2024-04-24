@@ -1,7 +1,5 @@
 #!/bin/bash -E
 
-export START=`pwd`
-
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -32,7 +30,7 @@ mkdir _build_macos
 
 # Build
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no --prefix="$(pwd)/_build_macos"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no --prefix="${$(pwd)}/_build_macos"
 
 make -s -j install
 
@@ -55,7 +53,7 @@ mkdir _build_macos
 
 # Build
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ./configure --disable-shared --prefix="$(pwd)/_build_macos" FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/macOS -lfreetype" LDFLAGS="-L${OUTPUT}/Libraries/macOS"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ./configure --disable-shared --prefix="${$(pwd)}/_build_macos" FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/macOS -lfreetype" LDFLAGS="-L${OUTPUT}/Libraries/macOS"
 
 make -s -j install
 
@@ -89,4 +87,4 @@ cp _build_macos/lib/libpodofo.a "${OUTPUT}/Libraries/macOS"
 
 # Return to source/macOS directory
 
-cd "${START}"
+cd ${SRCROOT}

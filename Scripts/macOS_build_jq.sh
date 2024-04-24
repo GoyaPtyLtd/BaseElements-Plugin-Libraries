@@ -1,7 +1,5 @@
 #!/bin/bash -E
 
-export START=`pwd`
-
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -27,7 +25,7 @@ mkdir _build_macos
 
 autoreconf -i
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared --enable-all-static --enable-pthread-tls --without-oniguruma --prefix="$(pwd)/_build_macos"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared --enable-all-static --enable-pthread-tls --without-oniguruma --prefix="${$(pwd)}/_build_macos"
 
 make -s -j install
 
@@ -38,4 +36,4 @@ cp "_build_macos/lib/libjq.a" "${OUTPUT}/Libraries/macOS"
 
 # Return to source/macOS directory
 
-cd "${START}"
+cd ${SRCROOT}

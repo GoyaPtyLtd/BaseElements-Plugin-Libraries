@@ -2,7 +2,9 @@
 
 This is set of scripts and tools that are used to build the external libraries used in the BE plugin : https://github.com/GoyaPtyLtd/BaseElements-Plugin
 
-At this stage, the only semi completed OS is the macOS one.  The linux examples are somewhat working, but do not follow the same structures as the mac one, so will need to be modified to work.  
+At this stage, the only semi completed OS is the macOS one.  
+
+The iOS examples are structured the correct way to match how the mac ones are done, but at this stage are incomplete and untested - they probably contain a lot of typos.  
 
 #TODO 
 

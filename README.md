@@ -32,9 +32,9 @@ To start with, we recommend you fork the BaseElements-Plugin-Libraries repositor
 
 Once you've pulled down the code from gitHub then you :
 
-`cd BaseElements-Plugin-Libraries/Scripts``
-``chmod +x _getSource.sh`
-`chmod +x macOS_build*`
-`./_getSource.sh`
+cd BaseElements-Plugin-Libraries/Scripts
+chmod +x _getSource.sh
+chmod +x macOS_build*
+./_getSource.sh
 
 That last step pulls down all the latest source code into the source folder ready for you to start compiling.  Each of the individual .sh docs can be run by themselves, or can have their code copied out of for testing steps.  They should be self contained, and when run should clear everything out and start fresh.

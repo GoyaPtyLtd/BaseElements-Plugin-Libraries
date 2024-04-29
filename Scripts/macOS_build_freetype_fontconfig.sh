@@ -85,6 +85,6 @@ make -s -j install
 cp -R _build_macos/include/podofo "${OUTPUT}/Headers"
 cp _build_macos/lib/libpodofo.a "${OUTPUT}/Libraries/macOS"
 
-# Return to source/macOS directory
+# Return to source directory
 
 cd ${SRCROOT}

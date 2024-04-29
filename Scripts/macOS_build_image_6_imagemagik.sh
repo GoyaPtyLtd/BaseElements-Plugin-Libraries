@@ -38,6 +38,6 @@ cp "_build_macos/lib/libMagick++-7.Q16HDRI.a" "${OUTPUT}/Libraries/macOS/"
 cp "_build_macos/lib/libMagickCore-7.Q16HDRI.a" "${OUTPUT}/Libraries/macOS/"
 cp "_build_macos/lib/libMagickWand-7.Q16HDRI.a" "${OUTPUT}/Libraries/macOS/"
 
-# Return to source/macOS directory
+# Return to source directory
 
 cd ${SRCROOT}

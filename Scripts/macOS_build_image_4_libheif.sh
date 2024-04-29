@@ -32,6 +32,6 @@ make install DESTDIR="./_build_macos"
 cp -R ./_build_macos/include "${OUTPUT}/Headers/libheif"
 cp ./_build_macos/lib/libheif.a "${OUTPUT}/Libraries/macOS"
 
-# Return to source/macOS directory
+# Return to source directory
 
 cd ${SRCROOT}

@@ -41,6 +41,6 @@ autoreconf -fi
 #cp -R ./_build_macos/include/libde265 "${OUTPUT}/Headers/libde265"
 #cp ./_build_macos/lib/libde265.a "${OUTPUT}/Libraries/macOS"
 
-# Return to source/macOS directory
+# Return to source directory
 
 cd ${SRCROOT}

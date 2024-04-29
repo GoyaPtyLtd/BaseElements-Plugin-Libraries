@@ -43,7 +43,7 @@ cp _build_macos/lib/libboost_program_options.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/lib/libboost_regex.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/lib/libboost_thread.a "${OUTPUT}/Libraries/macOS"
 
-# Return to source/macOS directory
+# Return to source directory
 
 cd ${SRCROOT}
 

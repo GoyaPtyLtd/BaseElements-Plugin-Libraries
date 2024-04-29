@@ -106,7 +106,7 @@ cp _build_macos/lib/libexslt.a "${OUTPUT}/Libraries/macOS"
 
 cd ${SRCROOT}
 
-# Return to source/macOS directory
+# Return to source directory
 
 cd ${SRCROOT}
 

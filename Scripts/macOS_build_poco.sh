@@ -44,7 +44,7 @@ cp lib/Darwin/x86_64/libPocoNet.a "${OUTPUT}/Libraries/macOS"
 
 cp -R ./_build_macos/include/Poco "${OUTPUT}/Headers"
 
-# Return to source/macOS directory
+# Return to source directory
 
 cd ${SRCROOT}
 

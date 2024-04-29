@@ -33,6 +33,6 @@ make install DESTDIR="./_build_macos"
 cp -R _build_macos/usr/local/include/openjpeg-2.5/*.h "${OUTPUT}/Headers/libopenjp2/"
 cp ./_build_macos/usr/local/lib/libopenjp2.a "${OUTPUT}/Libraries/macOS"
 
-# Return to source/macOS directory
+# Return to source directory
 
 cd ${SRCROOT}

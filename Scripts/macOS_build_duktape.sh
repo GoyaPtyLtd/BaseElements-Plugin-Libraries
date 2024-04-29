@@ -19,6 +19,6 @@ cd duktape
 
 cp -R src "${OUTPUT}/Source/duktape"
 
-# Return to source/macOS directory
+# Return to source directory
 
 cd ${SRCROOT}

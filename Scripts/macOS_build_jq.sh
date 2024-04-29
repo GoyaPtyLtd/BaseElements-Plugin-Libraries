@@ -34,6 +34,6 @@ make -s -j install
 cp -R ./_build_macos/include "${OUTPUT}/Headers/jq"
 cp "_build_macos/lib/libjq.a" "${OUTPUT}/Libraries/macOS"
 
-# Return to source/macOS directory
+# Return to source directory
 
 cd ${SRCROOT}

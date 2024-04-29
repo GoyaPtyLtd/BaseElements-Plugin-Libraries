@@ -32,6 +32,6 @@ make install DESTDIR="./_build_macos"
 cp -R ./_build_macos/opt/libjpeg-turbo/include "${OUTPUT}/Headers/libturbojpeg"
 cp ./_build_macos/opt/libjpeg-turbo/lib/libturbojpeg.a "${OUTPUT}/Libraries/macOS"
 
-# Return to source/macOS directory
+# Return to source directory
 
 cd ${SRCROOT}

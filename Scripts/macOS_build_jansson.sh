@@ -38,6 +38,6 @@ cp _build_macos/include/jansson_config.h "${OUTPUT}/Headers/"
 
 cp _build_macos/lib/libjansson.a "${OUTPUT}/Libraries/macOS/"
 
-# Return to source/macOS directory
+# Return to source directory
 
 cd ${SRCROOT}

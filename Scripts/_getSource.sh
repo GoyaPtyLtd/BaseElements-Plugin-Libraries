@@ -5,17 +5,6 @@
 #This just does a cleanout of the source directory.  So gets you setup to pull new archives down to start building.
 #
 #=======================================================================
-#
-# macOS pre compile setup
-#
-# You need to do a one off install of some tools.  Install XCode and the Xcode command line tools
-#
-# Then we've used brew ( https://brew.sh - install first ) to install the following ( not all may be required, some may be dependencies of others )
-#
-# brew install automake gettext gnu-tar libtool protobuf autoconf git wget autoconf-archive cmake git-lfs m4 pkg-config xz
-#
-#=======================================================================
-#
 
 cd ../source
 
@@ -153,11 +142,18 @@ wget -q -nv -O openssl.tar.gz https://www.openssl.org/source/openssl-3.2.1.tar.g
 rm poco.tar.gz
 wget -q -nv -O poco.tar.gz https://github.com/pocoproject/poco/archive/refs/tags/poco-1.13.2-release.tar.gz
 
-#=====
+#=====PODOFO======
 #
 #Download podofo from  http://podofo.sourceforge.net/download.html
 
 rm podofo.tar.gz
 wget -q -nv -O podofo.tar.gz https://github.com/podofo/podofo/archive/refs/tags/0.10.3.tar.gz
+
+#=====ZLIB======
+#
+#Download zlib from  https://www.zlib.net
+
+rm zlib.tar.gz
+wget -q -nv -O zlib.tar.gz https://www.zlib.net/zlib-1.3.1.tar.gz
 
 

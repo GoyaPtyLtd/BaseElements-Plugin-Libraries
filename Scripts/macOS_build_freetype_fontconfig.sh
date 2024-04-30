@@ -33,11 +33,15 @@ mkdir _build_iosSimulator
 mkdir _build_iosSimulatorArm
 mkdir _build_iosSimulatorx86
 
-export PREFIX=`pwd`+'_build_macos'
+export PREFIX=`pwd`+'/_build_macos'
+export PREFIX_ios=`pwd`+'/_build_ios'
+export PREFIX_iosSimulator=`pwd`+'/_build_iosSimulator'
+export PREFIX_iosSimulatorArm=`pwd`+'/_build_iosSimulatorArm'
+export PREFIX_iosSimulatorx86=`pwd`+'/_build_iosSimulatorx86'
 
-# Build
+# Build macOS
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no --$PREFIX
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no --${PREFIX}
 
 make -s -j install
 
@@ -63,11 +67,15 @@ mkdir _build_iosSimulator
 mkdir _build_iosSimulatorArm
 mkdir _build_iosSimulatorx86
 
-export PREFIX=`pwd`+'_build_macos'
+export PREFIX=`pwd`+'/_build_macos'
+export PREFIX_ios=`pwd`+'/_build_ios'
+export PREFIX_iosSimulator=`pwd`+'/_build_iosSimulator'
+export PREFIX_iosSimulatorArm=`pwd`+'/_build_iosSimulatorArm'
+export PREFIX_iosSimulatorx86=`pwd`+'/_build_iosSimulatorx86'
 
-# Build
+# Build macOS
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ./configure --disable-shared --prefix="$PREFIX" FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/macOS -lfreetype" LDFLAGS="-L${OUTPUT}/Libraries/macOS"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ./configure --disable-shared --prefix="${PREFIX}" FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/macOS -lfreetype" LDFLAGS="-L${OUTPUT}/Libraries/macOS"
 make -s -j install
 
 # Copy the header and library files.
@@ -92,11 +100,15 @@ mkdir _build_iosSimulator
 mkdir _build_iosSimulatorArm
 mkdir _build_iosSimulatorx86
 
-export PREFIX=`pwd`+'_build_macos'
+export PREFIX=`pwd`+'/_build_macos'
+export PREFIX_ios=`pwd`+'/_build_ios'
+export PREFIX_iosSimulator=`pwd`+'/_build_iosSimulator'
+export PREFIX_iosSimulatorArm=`pwd`+'/_build_iosSimulatorArm'
+export PREFIX_iosSimulatorx86=`pwd`+'/_build_iosSimulatorx86'
 
-# Build
+# Build macOS
 
-cmake -G "Unix Makefiles" -DWANT_FONTCONFIG:BOOL=TRUE -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="$PREFIX" -DPODOFO_BUILD_STATIC:BOOL=TRUE -DFREETYPE_INCLUDE_DIR="${OUTPUT}/Headers/freetype2" -DFREETYPE_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfreetype.a" -DFONTCONFIG_LIBRARIES="${OUTPUT}/Libraries" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT}/Headers" -DFONTCONFIG_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfontconfig.a" -DPODOFO_BUILD_LIB_ONLY=TRUE -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_STANDARD=11 -DCXX_STANDARD_REQUIRED=ON ./
+cmake -G "Unix Makefiles" -DWANT_FONTCONFIG:BOOL=TRUE -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DPODOFO_BUILD_STATIC:BOOL=TRUE -DFREETYPE_INCLUDE_DIR="${OUTPUT}/Headers/freetype2" -DFREETYPE_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfreetype.a" -DFONTCONFIG_LIBRARIES="${OUTPUT}/Libraries" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT}/Headers" -DFONTCONFIG_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfontconfig.a" -DPODOFO_BUILD_LIB_ONLY=TRUE -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_STANDARD=11 -DCXX_STANDARD_REQUIRED=ON ./
 make -s -j install
 
 # Copy the header and library files.

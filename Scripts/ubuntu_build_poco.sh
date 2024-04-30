@@ -24,11 +24,11 @@ mkdir poco
 tar -xf ../poco.tar.gz -C poco --strip-components=1
 cd poco
 mkdir _build_linux
-export PREFIX=`pwd`+'_build_linux'
+export PREFIX=`pwd`+'/_build_linux'
 
 # Build
 
-./configure --cflags=-fPIC --typical --static --no-tests --no-samples --include-path="${OUTPUT}/Headers" --prefix="$PREFIX" --poquito --omit=CppParser,Data,Encodings,MongoDB,PDF,PageCompiler,Redis,Util
+./configure --cflags=-fPIC --typical --static --no-tests --no-samples --include-path="${OUTPUT}/Headers" --prefix="${PREFIX}" --poquito --omit=CppParser,Data,Encodings,MongoDB,PDF,PageCompiler,Redis,Util
 make -s -j install
 
 # Copy the library files.

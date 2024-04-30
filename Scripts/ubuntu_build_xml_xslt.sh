@@ -27,14 +27,14 @@ mkdir libiconv
 tar -xf ../libiconv.tar.gz -C libiconv --strip-components=1
 cd libiconv
 mkdir _build_linux
-export PREFIX=`pwd`+'_build_linux'
-export PREFIX=`pwd`+'_build_linux'
+export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`+'/_build_linux'
 
 export ICONV=`pwd`
 
 # Build
 
-CFLAGS=-fPIC ./configure --disable-shared --prefix="$PREFIX"
+CFLAGS=-fPIC ./configure --disable-shared --prefix="${PREFIX}"
 make install
 
 # Copy the library files.
@@ -53,14 +53,14 @@ mkdir libxml
 tar -xf ../libxml.tar.gz -C libxml --strip-components=1
 cd libxml
 mkdir _build_linux
-export PREFIX=`pwd`+'_build_linux'
-export PREFIX=`pwd`+'_build_linux'
+export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`+'/_build_linux'
 
 export LIBXML=`pwd`
 
 # Build
 
-CFLAGS=-fPIC ./configure --disable-shared --with-threads --without-python --without-zlib --without-lzma --prefix="$PREFIX"
+CFLAGS=-fPIC ./configure --disable-shared --with-threads --without-python --without-zlib --without-lzma --prefix="${PREFIX}"
 make -s -j install
 
 # Copy the library files.
@@ -78,12 +78,12 @@ mkdir libxslt
 tar -xf ../libxslt.tar.gz -C libxslt --strip-components=1
 cd libxslt
 mkdir _build_linux
-export PREFIX=`pwd`+'_build_linux'
-export PREFIX=`pwd`+'_build_linux'
+export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`+'/_build_linux'
 
 # Build
 
-CFLAGS=-fPIC ./configure --disable-shared --without-python --without-crypto --prefix="$PREFIX"
+CFLAGS=-fPIC ./configure --disable-shared --without-python --without-crypto --prefix="${PREFIX}"
 make -s -j install
 
 # Copy the library files.

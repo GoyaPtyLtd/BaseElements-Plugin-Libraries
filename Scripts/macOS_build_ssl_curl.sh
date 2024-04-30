@@ -38,16 +38,16 @@ mkdir _build_iosSimulator
 mkdir _build_iosSimulatorArm
 mkdir _build_iosSimulatorx86
 
-export PREFIX_x86_64=`pwd`+'_build_macos_x86_64'
-export PREFIX_arm64=`pwd`+'_build_macos_arm64'
+export PREFIX_x86_64=`pwd`+'/_build_macos_x86_64'
+export PREFIX_arm64=`pwd`+'/_build_macos_arm64'
 
-# Build
+# Build macOS
 
-CFLAGS="-mmacosx-version-min=10.15" ./configure darwin64-x86_64-cc no-engine no-shared --prefix="$PREFIX_x86_64"
+CFLAGS="-mmacosx-version-min=10.15" ./configure darwin64-x86_64-cc no-engine no-shared --prefix="${PREFIX}_x86_64"
 make install
 make distclean
 
-CFLAGS="-mmacosx-version-min=10.15" ./configure darwin64-arm64-cc no-engine no-shared --prefix="$PREFIX_arm64"
+CFLAGS="-mmacosx-version-min=10.15" ./configure darwin64-arm64-cc no-engine no-shared --prefix="${PREFIX}_arm64"
 make install
 
 lipo -create "_build_macos_x86_64/lib/libcrypto.a" "_build_macos_arm64/lib/libcrypto.a" -output "_build_macos/libcrypto.a"
@@ -77,11 +77,15 @@ mkdir _build_iosSimulator
 mkdir _build_iosSimulatorArm
 mkdir _build_iosSimulatorx86
 
-export PREFIX=`pwd`+'_build_macos'
+export PREFIX=`pwd`+'/_build_macos'
+export PREFIX_ios=`pwd`+'/_build_ios'
+export PREFIX_iosSimulator=`pwd`+'/_build_iosSimulator'
+export PREFIX_iosSimulatorArm=`pwd`+'/_build_iosSimulatorArm'
+export PREFIX_iosSimulatorx86=`pwd`+'/_build_iosSimulatorx86'
 
-# Build
+# Build macOS
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers -I${OUTPUT}/Headers/openssl" LDFLAGS="-L${OUTPUT}/Libraries/macOS/" LIBS="-ldl" ./configure --disable-shared --disable-examples-build --prefix="$PREFIX" -exec-prefix="$PREFIX" --with-libz --with-crypto=openssl
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers -I${OUTPUT}/Headers/openssl" LDFLAGS="-L${OUTPUT}/Libraries/macOS/" LIBS="-ldl" ./configure --disable-shared --disable-examples-build --prefix="${PREFIX}" -exec-prefix="${PREFIX}" --with-libz --with-crypto=openssl
 make -s -j install
 
 # Copy the header and library files.
@@ -106,11 +110,15 @@ mkdir _build_iosSimulator
 mkdir _build_iosSimulatorArm
 mkdir _build_iosSimulatorx86
 
-export PREFIX=`pwd`+'_build_macos'
+export PREFIX=`pwd`+'/_build_macos'
+export PREFIX_ios=`pwd`+'/_build_ios'
+export PREFIX_iosSimulator=`pwd`+'/_build_iosSimulator'
+export PREFIX_iosSimulatorArm=`pwd`+'/_build_iosSimulatorArm'
+export PREFIX_iosSimulatorx86=`pwd`+'/_build_iosSimulatorx86'
 
-# Build
+# Build macOS
 
-./configure --host=x86_64-apple-darwin CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -isysroot $(xcrun -sdk macosx --show-sdk-path)" CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/libssh2 -I${OUTPUT}/Headers/openssl" LDFLAGS="-L${OUTPUT}/Libraries/macOS" LIBS="-ldl" --disable-dependency-tracking --enable-static --disable-shared --with-ssl --with-zlib --with-libssh2 --without-tests --without-libpsl --without-brotli --without-zstd --prefix="$PREFIX"
+./configure --host=x86_64-apple-darwin CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -isysroot $(xcrun -sdk macosx --show-sdk-path)" CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/libssh2 -I${OUTPUT}/Headers/openssl" LDFLAGS="-L${OUTPUT}/Libraries/macOS" LIBS="-ldl" --disable-dependency-tracking --enable-static --disable-shared --with-ssl --with-zlib --with-libssh2 --without-tests --without-libpsl --without-brotli --without-zstd --prefix="${PREFIX}"
 
 # TODO this had  --without-libpsl --without-brotli --without-zstd added to it for compatibility with latest curl.  It would be good to at least add the libpsl but I don't know about the others
 

@@ -27,12 +27,16 @@ mkdir _build_iosSimulator
 mkdir _build_iosSimulatorArm
 mkdir _build_iosSimulatorx86
 
-export PREFIX=`pwd`+'_build_macos'
+export PREFIX=`pwd`+'/_build_macos'
+export PREFIX_ios=`pwd`+'/_build_ios'
+export PREFIX_iosSimulator=`pwd`+'/_build_iosSimulator'
+export PREFIX_iosSimulatorArm=`pwd`+'/_build_iosSimulatorArm'
+export PREFIX_iosSimulatorx86=`pwd`+'/_build_iosSimulatorx86'
 
-# Build
+# Build macOS
 
 CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_LIBRARY_PATH:path="${OUTPUT}/Libraries/macOS" DCMAKE_INCLUDE_PATH:path="${OUTPUT}/Headers" ./
-make install DESTDIR="$PREFIX"
+make install DESTDIR="${PREFIX}"
 
 # Copy the header and library files.
 

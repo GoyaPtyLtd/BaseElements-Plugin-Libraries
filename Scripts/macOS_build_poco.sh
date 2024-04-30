@@ -32,11 +32,15 @@ mkdir _build_iosSimulator
 mkdir _build_iosSimulatorArm
 mkdir _build_iosSimulatorx86
 
-export PREFIX=`pwd`+'_build_macos'
+export PREFIX=`pwd`+'/_build_macos'
+export PREFIX_ios=`pwd`+'/_build_ios'
+export PREFIX_iosSimulator=`pwd`+'/_build_iosSimulator'
+export PREFIX_iosSimulatorArm=`pwd`+'/_build_iosSimulatorArm'
+export PREFIX_iosSimulatorx86=`pwd`+'/_build_iosSimulatorx86'
 
-# Build
+# Build macOS
 
-./configure --config=Darwin64-clang-libc++ --prefix="$PREFIX" --no-sharedlibs --static --poquito --no-tests --no-samples --omit="CppParser,Data,Encodings,MongoDB,PDF,PageCompiler,Redis,Util" --include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/macOS"
+./configure --config=Darwin64-clang-libc++ --prefix="${PREFIX}" --no-sharedlibs --static --poquito --no-tests --no-samples --omit="CppParser,Data,Encodings,MongoDB,PDF,PageCompiler,Redis,Util" --include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/macOS"
 
 make -s -j install
 

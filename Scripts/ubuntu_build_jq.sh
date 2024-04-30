@@ -20,13 +20,13 @@ mkdir jq
 tar -xf ../jq.tar.gz  -C jq --strip-components=1
 cd jq
 mkdir _build_linux
-export PREFIX=`pwd`+'_build_linux'
+export PREFIX=`pwd`+'/_build_linux'
 
 # Build
 
 autoreconf -i
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared --enable-all-static --enable-pthread-tls --without-oniguruma --prefix="$PREFIX"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared --enable-all-static --enable-pthread-tls --without-oniguruma --prefix="${PREFIX}"
 
 make -s -j install
 

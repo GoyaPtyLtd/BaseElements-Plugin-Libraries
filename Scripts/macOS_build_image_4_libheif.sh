@@ -20,12 +20,12 @@ mkdir libheif
 tar -xf ../libheif.tar.gz  -C libheif --strip-components=1
 cd libheif
 mkdir _build_macos
+export PREFIX=`pwd`+'_build_macos'
 
 # Build
 
 CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" cmake -G"Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DENABLE_SHARED=NO -DX265_INCLUDE_DIR="${OUTPUT}/Headers/libde265" X265_LIBRARY="${OUTPUT}/Libraries/macOS" ./
-
-make install DESTDIR="./_build_macos"
+make install DESTDIR="$PREFIX"
 
 # Copy the header and library files.
 

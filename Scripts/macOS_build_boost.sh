@@ -26,11 +26,12 @@ mkdir boost
 tar -xf ../boost.tar.gz -C boost --strip-components=1
 cd boost
 mkdir _build_macos
+export PREFIX=`pwd`+'_build_macos'
 
 # Build
 
 ./bootstrap.sh
-./b2 toolset=clang cxxflags="-arch arm64 -arch x86_64" address-model=64 link=static runtime-link=static install --prefix=_build_macos --with-program_options --with-regex --with-date_time --with-filesystem --with-thread cxxflags="-mmacosx-version-min=10.15 -stdlib=libc++" linkflags="-stdlib=libc++"
+./b2 toolset=clang cxxflags="-arch arm64 -arch x86_64" address-model=64 link=static runtime-link=static install --prefix="$PREFIX" --with-program_options --with-regex --with-date_time --with-filesystem --with-thread cxxflags="-mmacosx-version-min=10.15 -stdlib=libc++" linkflags="-stdlib=libc++"
 
 # Copy the header and library files.
 

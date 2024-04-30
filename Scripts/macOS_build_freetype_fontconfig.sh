@@ -27,10 +27,11 @@ mkdir freetype
 tar -xf ../freetype.tar.gz -C freetype --strip-components=1
 cd freetype
 mkdir _build_macos
+export PREFIX=`pwd`+'_build_macos'
 
 # Build
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no --prefix="${$(pwd)}/_build_macos"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no --$PREFIX
 
 make -s -j install
 
@@ -50,11 +51,11 @@ mkdir fontconfig
 tar -xf ../fontconfig.tar.gz -C fontconfig --strip-components=1
 cd fontconfig
 mkdir _build_macos
+export PREFIX=`pwd`+'_build_macos'
 
 # Build
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ./configure --disable-shared --prefix="${$(pwd)}/_build_macos" FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/macOS -lfreetype" LDFLAGS="-L${OUTPUT}/Libraries/macOS"
-
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ./configure --disable-shared --prefix="$PREFIX" FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/macOS -lfreetype" LDFLAGS="-L${OUTPUT}/Libraries/macOS"
 make -s -j install
 
 # Copy the header and library files.
@@ -73,11 +74,11 @@ mkdir podofo
 tar -xf ../podofo.tar.gz -C podofo --strip-components=1
 cd podofo
 mkdir _build_macos
+export PREFIX=`pwd`+'_build_macos'
 
 # Build
 
-cmake -G "Unix Makefiles" -DWANT_FONTCONFIG:BOOL=TRUE -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="./_build_macos" -DPODOFO_BUILD_STATIC:BOOL=TRUE -DFREETYPE_INCLUDE_DIR="${OUTPUT}/Headers/freetype2" -DFREETYPE_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfreetype.a" -DFONTCONFIG_LIBRARIES="${OUTPUT}/Libraries" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT}/Headers" -DFONTCONFIG_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfontconfig.a" -DPODOFO_BUILD_LIB_ONLY=TRUE -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_STANDARD=11 -DCXX_STANDARD_REQUIRED=ON ./
-
+cmake -G "Unix Makefiles" -DWANT_FONTCONFIG:BOOL=TRUE -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="$PREFIX" -DPODOFO_BUILD_STATIC:BOOL=TRUE -DFREETYPE_INCLUDE_DIR="${OUTPUT}/Headers/freetype2" -DFREETYPE_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfreetype.a" -DFONTCONFIG_LIBRARIES="${OUTPUT}/Libraries" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT}/Headers" -DFONTCONFIG_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfontconfig.a" -DPODOFO_BUILD_LIB_ONLY=TRUE -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_STANDARD=11 -DCXX_STANDARD_REQUIRED=ON ./
 make -s -j install
 
 # Copy the header and library files.

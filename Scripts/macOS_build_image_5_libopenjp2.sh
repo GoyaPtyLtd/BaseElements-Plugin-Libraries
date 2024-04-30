@@ -21,12 +21,12 @@ mkdir libopenjp2
 tar -xf ../libopenjp2.tar.gz  -C libopenjp2 --strip-components=1
 cd libopenjp2
 mkdir _build_macos
+export PREFIX=`pwd`+'_build_macos'
 
 # Build
 
 CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_LIBRARY_PATH:path="${OUTPUT}/Libraries/macOS" DCMAKE_INCLUDE_PATH:path="${OUTPUT}/Headers" ./
-
-make install DESTDIR="./_build_macos"
+make install DESTDIR="$PREFIX"
 
 # Copy the header and library files.
 

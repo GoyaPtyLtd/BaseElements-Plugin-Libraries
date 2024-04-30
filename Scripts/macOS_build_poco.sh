@@ -26,10 +26,11 @@ mkdir poco
 tar -xf ../poco.tar.gz -C poco --strip-components=1
 cd poco
 mkdir _build_macos
+export PREFIX=`pwd`+'_build_macos'
 
 # Build
 
-./configure --config=Darwin64-clang-libc++ --prefix="${$(pwd)}/_build_macos" --no-sharedlibs --static --poquito --no-tests --no-samples --omit="CppParser,Data,Encodings,MongoDB,PDF,PageCompiler,Redis,Util" --include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/macOS"
+./configure --config=Darwin64-clang-libc++ --prefix="$PREFIX" --no-sharedlibs --static --poquito --no-tests --no-samples --omit="CppParser,Data,Encodings,MongoDB,PDF,PageCompiler,Redis,Util" --include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/macOS"
 
 make -s -j install
 

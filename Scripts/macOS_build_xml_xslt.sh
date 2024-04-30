@@ -56,10 +56,10 @@ make install
 
 mkdir "${OUTPUT}/Headers/iconv"
 
-cp -R _build_macos/include/*.h "${OUTPUT}/Headers/iconv"
+cp -R ${PREFIX}/include/*.h "${OUTPUT}/Headers/iconv"
 
-cp _build_macos/lib/libiconv.a "${OUTPUT}/Libraries/macOS"
-cp _build_macos/lib/libcharset.a "${OUTPUT}/Libraries/macOS"
+cp ${PREFIX}/lib/libiconv.a "${OUTPUT}/Libraries/macOS"
+cp ${PREFIX}/lib/libcharset.a "${OUTPUT}/Libraries/macOS"
 
 cd ${SRCROOT}
 
@@ -97,8 +97,8 @@ sed -i '' -e 's|#include <iconv\.h\>|#include <iconv/iconv.h>|g' _build_macos/in
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/libxml2/libxml "${OUTPUT}/Headers"
-cp _build_macos/lib/libxml2.a "${OUTPUT}/Libraries/macOS"
+cp -R ${PREFIX}/include/libxml2/libxml "${OUTPUT}/Headers"
+cp ${PREFIX}/lib/libxml2.a "${OUTPUT}/Libraries/macOS"
 
 cd ${SRCROOT}
 
@@ -131,9 +131,9 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/libxslt "${OUTPUT}/Headers"
-cp _build_macos/lib/libxslt.a "${OUTPUT}/Libraries/macOS"
-cp _build_macos/lib/libexslt.a "${OUTPUT}/Libraries/macOS"
+cp -R ${PREFIX}/include/libxslt "${OUTPUT}/Headers"
+cp ${PREFIX}/lib/libxslt.a "${OUTPUT}/Libraries/macOS"
+cp ${PREFIX}/lib/libexslt.a "${OUTPUT}/Libraries/macOS"
 
 cd ${SRCROOT}
 

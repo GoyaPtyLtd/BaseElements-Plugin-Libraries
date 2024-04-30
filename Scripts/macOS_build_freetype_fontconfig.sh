@@ -47,8 +47,8 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/freetype2 "${OUTPUT}/Headers"
-cp _build_macos/lib/libfreetype.a "${OUTPUT}/Libraries/macOS"
+cp -R ${PREFIX}/include/freetype2 "${OUTPUT}/Headers"
+cp ${PREFIX}/lib/libfreetype.a "${OUTPUT}/Libraries/macOS"
 
 cd ${SRCROOT}
 
@@ -80,8 +80,8 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/fontconfig "${OUTPUT}/Headers"
-cp _build_macos/lib/libfontconfig.a "${OUTPUT}/Libraries/macOS"
+cp -R ${PREFIX}/include/fontconfig "${OUTPUT}/Headers"
+cp ${PREFIX}/lib/libfontconfig.a "${OUTPUT}/Libraries/macOS"
 
 cd ${SRCROOT}
 
@@ -113,8 +113,8 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/podofo "${OUTPUT}/Headers"
-cp _build_macos/lib/libpodofo.a "${OUTPUT}/Libraries/macOS"
+cp -R ${PREFIX}/include/podofo "${OUTPUT}/Headers"
+cp ${PREFIX}/lib/libpodofo.a "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

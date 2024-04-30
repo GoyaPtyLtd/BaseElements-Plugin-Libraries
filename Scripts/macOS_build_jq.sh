@@ -42,8 +42,8 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R ./_build_macos/include "${OUTPUT}/Headers/jq"
-cp "_build_macos/lib/libjq.a" "${OUTPUT}/Libraries/macOS"
+cp -R "${PREFIX}/include" "${OUTPUT}/Headers/jq"
+cp "${PREFIX}/lib/libjq.a" "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

@@ -39,8 +39,8 @@ make install DESTDIR="${PREFIX}"
 
 # Copy the header and library files.
 
-cp -R ./_build_macos/include "${OUTPUT}/Headers/libheif"
-cp ./_build_macos/lib/libheif.a "${OUTPUT}/Libraries/macOS"
+cp -R "${PREFIX}/include" "${OUTPUT}/Headers/libheif"
+cp "${PREFIX}/lib/libheif.a" "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

@@ -75,11 +75,11 @@ lipo -create "${PREFIX_iosSimulatorArm}/lib/libjpeg.a" "${PREFIX_iosSimulatorx86
 
 # Copy the header and library files.
 
-cp -R ${PREFIX}/include "${OUTPUT}/Headers/libjpeg"
+cp -R "${PREFIX}/include" "${OUTPUT}/Headers/libjpeg"
 
-cp ${PREFIX}/lib/libjpeg.a "${OUTPUT}/Libraries/macOS"
-cp ${PREFIX_ios}/lib/libjpeg.a "${OUTPUT}/Libraries/iOS/iPhoneOS"
-cp ${PREFIX_iosSimulator}/lib/libjpeg.a "${OUTPUT}/Libraries/iOS/iPhoneOSSimulator"
+cp "${PREFIX}/lib/libjpeg.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX_ios}/lib/libjpeg.a" "${OUTPUT}/Libraries/iOS/iPhoneOS"
+cp "${PREFIX_iosSimulator}/lib/libjpeg.a" "${OUTPUT}/Libraries/iOS/iPhoneOSSimulator"
 
 # Return to source directory
 

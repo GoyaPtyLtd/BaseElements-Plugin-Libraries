@@ -44,10 +44,10 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp _build_macos/include/jansson.h "${OUTPUT}/Headers/"
-cp _build_macos/include/jansson_config.h "${OUTPUT}/Headers/"
+cp "${PREFIX}/include/jansson.h" "${OUTPUT}/Headers/"
+cp "${PREFIX}/include/jansson_config.h" "${OUTPUT}/Headers/"
 
-cp _build_macos/lib/libjansson.a "${OUTPUT}/Libraries/macOS/"
+cp "${PREFIX}/lib/libjansson.a" "${OUTPUT}/Libraries/macOS/"
 
 # Return to source directory
 

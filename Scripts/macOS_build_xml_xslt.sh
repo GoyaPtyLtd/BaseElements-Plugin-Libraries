@@ -44,6 +44,7 @@ export PREFIX_ios=`pwd`+'/_build_ios'
 export PREFIX_iosSimulator=`pwd`+'/_build_iosSimulator'
 export PREFIX_iosSimulatorArm=`pwd`+'/_build_iosSimulatorArm'
 export PREFIX_iosSimulatorx86=`pwd`+'/_build_iosSimulatorx86'
+
 export ICONV=`pwd`
 
 # Build macOS
@@ -56,10 +57,10 @@ make install
 
 mkdir "${OUTPUT}/Headers/iconv"
 
-cp -R ${PREFIX}/include/*.h "${OUTPUT}/Headers/iconv"
+cp -R "${PREFIX}/include/*.h" "${OUTPUT}/Headers/iconv"
 
-cp ${PREFIX}/lib/libiconv.a "${OUTPUT}/Libraries/macOS"
-cp ${PREFIX}/lib/libcharset.a "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libiconv.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libcharset.a" "${OUTPUT}/Libraries/macOS"
 
 cd ${SRCROOT}
 
@@ -93,12 +94,12 @@ make -s -j install
 
 #Need to change this so it finds my installed version and not the SDK supplied one.
 
-sed -i '' -e 's|#include <iconv\.h\>|#include <iconv/iconv.h>|g' _build_macos/include/libxml2/libxml/encoding.h
+sed -i '' -e 's|#include <iconv\.h\>|#include <iconv/iconv.h>|g' "${PREFIX}/include/libxml2/libxml/encoding.h"
 
 # Copy the header and library files.
 
-cp -R ${PREFIX}/include/libxml2/libxml "${OUTPUT}/Headers"
-cp ${PREFIX}/lib/libxml2.a "${OUTPUT}/Libraries/macOS"
+cp -R "${PREFIX}/include/libxml2/libxml" "${OUTPUT}/Headers"
+cp "${PREFIX}/lib/libxml2.a" "${OUTPUT}/Libraries/macOS"
 
 cd ${SRCROOT}
 
@@ -131,9 +132,9 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R ${PREFIX}/include/libxslt "${OUTPUT}/Headers"
-cp ${PREFIX}/lib/libxslt.a "${OUTPUT}/Libraries/macOS"
-cp ${PREFIX}/lib/libexslt.a "${OUTPUT}/Libraries/macOS"
+cp -R "${PREFIX}/include/libxslt" "${OUTPUT}/Headers"
+cp "${PREFIX}/lib/libxslt.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libexslt.a" "${OUTPUT}/Libraries/macOS"
 
 cd ${SRCROOT}
 

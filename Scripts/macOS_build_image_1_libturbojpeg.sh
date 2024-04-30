@@ -39,8 +39,8 @@ make install DESTDIR="${PREFIX}"
 
 # Copy the header and library files.
 
-cp -R ./_build_macos/opt/libjpeg-turbo/include "${OUTPUT}/Headers/libturbojpeg"
-cp ./_build_macos/opt/libjpeg-turbo/lib/libturbojpeg.a "${OUTPUT}/Libraries/macOS"
+cp -R "${PREFIX}/opt/libjpeg-turbo/include" "${OUTPUT}/Headers/libturbojpeg"
+cp "${PREFIX}/opt/libjpeg-turbo/lib/libturbojpeg.a" "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

@@ -40,8 +40,8 @@ make install DESTDIR="${PREFIX}"
 
 # Copy the header and library files.
 
-cp -R _build_macos/usr/local/include/openjpeg-2.5/*.h "${OUTPUT}/Headers/libopenjp2/"
-cp ./_build_macos/usr/local/lib/libopenjp2.a "${OUTPUT}/Libraries/macOS"
+cp -R "${PREFIX}/usr/local/include/openjpeg-2.5/*.h" "${OUTPUT}/Headers/libopenjp2/"
+cp "${PREFIX}/usr/local/lib/libopenjp2.a" "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

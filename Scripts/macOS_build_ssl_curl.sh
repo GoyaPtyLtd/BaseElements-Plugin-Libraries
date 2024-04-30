@@ -38,8 +38,7 @@ mkdir _build_iosSimulator
 mkdir _build_iosSimulatorArm
 mkdir _build_iosSimulatorx86
 
-export PREFIX_x86_64=`pwd`+'/_build_macos_x86_64'
-export PREFIX_arm64=`pwd`+'/_build_macos_arm64'
+export PREFIX=`pwd`+'/_build_macos'
 
 # Build macOS
 
@@ -50,15 +49,15 @@ make distclean
 CFLAGS="-mmacosx-version-min=10.15" ./configure darwin64-arm64-cc no-engine no-shared --prefix="${PREFIX}_arm64"
 make install
 
-lipo -create "_build_macos_x86_64/lib/libcrypto.a" "_build_macos_arm64/lib/libcrypto.a" -output "_build_macos/libcrypto.a"
-lipo -create "_build_macos_x86_64/lib/libssl.a" "_build_macos_arm64/lib/libssl.a" -output "_build_macos/libssl.a"
+lipo -create "${PREFIX}_x86_64/lib/libcrypto.a" "${PREFIX}_arm64/lib/libcrypto.a" -output "${PREFIX}/libcrypto.a"
+lipo -create "${PREFIX}_x86_64/lib/libssl.a" "${PREFIX}_arm64/lib/libssl.a" -output "${PREFIX}/libssl.a"
 
 # Copy the header and library files.
 
-cp -R _build_macos_x86_64/include/openssl "${OUTPUT}/Headers"
+cp -R "${PREFIX}/include/openssl" "${OUTPUT}/Headers"
 
-cp _build_macos/libcrypto.a "${OUTPUT}/Libraries/macOS"
-cp _build_macos/libssl.a "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/libcrypto.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/libssl.a" "${OUTPUT}/Libraries/macOS"
 
 cd ${SRCROOT}
 
@@ -90,8 +89,8 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/* "${OUTPUT}/Headers/libssh2"
-cp _build_macos/lib/libssh2.a "${OUTPUT}/Libraries/macOS"
+cp -R "${PREFIX}/include/*" "${OUTPUT}/Headers/libssh2"
+cp "${PREFIX}/lib/libssh2.a" "${OUTPUT}/Libraries/macOS"
 
 cd ${SRCROOT}
 
@@ -126,8 +125,8 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/curl "${OUTPUT}/Headers/"
-cp _build_macos/lib/libcurl.a "${OUTPUT}/Libraries/macOS"
+cp -R "${PREFIX}/include/curl" "${OUTPUT}/Headers/"
+cp "${PREFIX}/lib/libcurl.a" "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

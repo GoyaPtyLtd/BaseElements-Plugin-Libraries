@@ -46,14 +46,14 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp lib/Darwin/x86_64/libPocoCrypto.a "${OUTPUT}/Libraries/macOS"
-cp lib/Darwin/x86_64/libPocoFoundation.a "${OUTPUT}/Libraries/macOS"
-cp lib/Darwin/x86_64/libPocoZip.a "${OUTPUT}/Libraries/macOS"
-cp lib/Darwin/x86_64/libPocoJSON.a "${OUTPUT}/Libraries/macOS"
-cp lib/Darwin/x86_64/libPocoXML.a "${OUTPUT}/Libraries/macOS"
-cp lib/Darwin/x86_64/libPocoNet.a "${OUTPUT}/Libraries/macOS"
+cp -R "${PREFIX}/include/Poco" "${OUTPUT}/Headers"
 
-cp -R ./_build_macos/include/Poco "${OUTPUT}/Headers"
+cp "${PREFIX}lib/Darwin/x86_64/libPocoCrypto.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}lib/Darwin/x86_64/libPocoFoundation.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}lib/Darwin/x86_64/libPocoZip.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}lib/Darwin/x86_64/libPocoJSON.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}lib/Darwin/x86_64/libPocoXML.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}lib/Darwin/x86_64/libPocoNet.a" "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

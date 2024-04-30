@@ -45,14 +45,14 @@ export PREFIX_iosSimulatorx86=`pwd`+'/_build_iosSimulatorx86'
 
 # Copy the header and library files.
 
-cp -R ${PREFIX}/include/boost "${OUTPUT}/Headers"
+cp -R "${PREFIX}/include/boost" "${OUTPUT}/Headers"
 
-cp ${PREFIX}/lib/libboost_atomic.a "${OUTPUT}/Libraries/macOS"
-cp ${PREFIX}/lib/libboost_date_time.a "${OUTPUT}/Libraries/macOS"
-cp ${PREFIX}/lib/libboost_filesystem.a "${OUTPUT}/Libraries/macOS"
-cp ${PREFIX}/lib/libboost_program_options.a "${OUTPUT}/Libraries/macOS"
-cp ${PREFIX}/lib/libboost_regex.a "${OUTPUT}/Libraries/macOS"
-cp ${PREFIX}/lib/libboost_thread.a "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libboost_atomic.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libboost_date_time.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libboost_filesystem.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libboost_program_options.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libboost_regex.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libboost_thread.a" "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

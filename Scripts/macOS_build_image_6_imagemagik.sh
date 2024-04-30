@@ -43,11 +43,11 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R ./_build_macos/include/ImageMagick-7 "${OUTPUT}/Headers/"
+cp -R "${PREFIX}/include/ImageMagick-7" "${OUTPUT}/Headers/"
 
-cp "_build_macos/lib/libMagick++-7.Q16HDRI.a" "${OUTPUT}/Libraries/macOS/"
-cp "_build_macos/lib/libMagickCore-7.Q16HDRI.a" "${OUTPUT}/Libraries/macOS/"
-cp "_build_macos/lib/libMagickWand-7.Q16HDRI.a" "${OUTPUT}/Libraries/macOS/"
+cp "${PREFIX}/lib/libMagick++-7.Q16HDRI.a" "${OUTPUT}/Libraries/macOS/"
+cp "${PREFIX}/lib/libMagickCore-7.Q16HDRI.a" "${OUTPUT}/Libraries/macOS/"
+cp "${PREFIX}/lib/libMagickWand-7.Q16HDRI.a" "${OUTPUT}/Libraries/macOS/"
 
 # Return to source directory
 

@@ -22,10 +22,11 @@ mkdir freetype
 tar -xf ../freetype.tar.gz -C freetype --strip-components=1
 cd freetype
 mkdir _build_linux
+export PREFIX=`pwd`+'_build_linux'
 
 # Build
 
-CFLAGS="-fPIC" ./configure --disable-shared --prefix=$(pwd)/_build_linux
+CFLAGS="-fPIC" ./configure --disable-shared --prefix="$PREFIX"
 make -s -j install
 
 # Copy the library files.
@@ -43,10 +44,11 @@ mkdir fontconfig
 tar -xf ../fontconfig.tar.gz -C fontconfig --strip-components=1
 cd fontconfig
 mkdir _build_linux
+export PREFIX=`pwd`+'_build_linux'
 
 # Build
 
-LIBS="-lz" CFLAGS="-fPIC" ./configure --disable-shared --prefix=$(pwd)/_build_linux FREETYPE_CFLAGS="-I${SRCROOT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/linux -lfreetype" LDFLAGS="-L${OUTPUT}/Libraries/linux"
+LIBS="-lz" CFLAGS="-fPIC" ./configure --disable-shared --prefix="$PREFIX" FREETYPE_CFLAGS="-I${SRCROOT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/linux -lfreetype" LDFLAGS="-L${OUTPUT}/Libraries/linux"
 make -s -j install
 
 # Copy the library files.
@@ -64,10 +66,11 @@ mkdir podofo
 tar -xf ../podofo.tar.gz -C podofo --strip-components=1
 cd podofo
 mkdir _build_linux
+export PREFIX=`pwd`+'_build_linux'
 
 # Build
 
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="./_build_linux" -DPODOFO_BUILD_STATIC:BOOL=TRUE -DFREETYPE_LIBRARY_RELEASE="${SRCROOT}/Libraries/linuxARM/libfreetype.a" -DFontconfig_INCLUDE_DIR="${SRCROOT}/Headers/fontconfig" -DFontconfig_LIBRARIES="${SRCROOT}/Libraries/linuxARM" -DPODOFO_BUILD_LIB_ONLY=TRUE -DCMAKE_CXX_FLAGS="-fPIC" ./
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="$PREFIX" -DPODOFO_BUILD_STATIC:BOOL=TRUE -DFREETYPE_LIBRARY_RELEASE="${SRCROOT}/Libraries/linuxARM/libfreetype.a" -DFontconfig_INCLUDE_DIR="${SRCROOT}/Headers/fontconfig" -DFontconfig_LIBRARIES="${SRCROOT}/Libraries/linuxARM" -DPODOFO_BUILD_LIB_ONLY=TRUE -DCMAKE_CXX_FLAGS="-fPIC" ./
 make -s -j install
 
 # Copy the library files.

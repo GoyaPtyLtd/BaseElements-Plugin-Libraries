@@ -20,11 +20,12 @@ mkdir libjpeg
 tar -xf ../libjpeg.tar.gz  -C libjpeg --strip-components=1
 cd libjpeg
 mkdir _build_linux
+export PREFIX=`pwd`+'_build_linux'
 
 # Build
 
 
-CFLAGS="-fPIC" ./configure --prefix="${$(pwd)}/_build_linux" --disable-shared --enable-static
+CFLAGS="-fPIC" ./configure --prefix="$PREFIX" --disable-shared --enable-static
 make -s -j install
 
 # Copy the header and library files.

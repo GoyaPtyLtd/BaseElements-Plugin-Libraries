@@ -26,10 +26,11 @@ mkdir zlib
 tar -xf ../zlib.tar.gz -C openssl --strip-components=1
 cd zlib
 mkdir _build_linux
+export PREFIX=`pwd`+'_build_linux'
 
 # Build
 
-CFLAGS="-fPIC" ./configure --static --prefix="$(pwd)/_build_linux"
+CFLAGS="-fPIC" ./configure --static --prefix="$PREFIX"
 make -s -j install
 
 # Copy the library files.
@@ -47,10 +48,11 @@ mkdir openssl
 tar -xf ../openssl.tar.gz -C openssl --strip-components=1
 cd openssl
 mkdir _build_linux
+export PREFIX=`pwd`+'_build_linux'
 
 # Build
 
-./Configure linux-generic64 no-engine no-hw no-shared --prefix="$(pwd)/_build_linux"
+./Configure linux-generic64 no-engine no-hw no-shared --prefix="$PREFIX"
 make -s -j install
 
 # Copy the library files.
@@ -69,10 +71,11 @@ mkdir libssh
 tar -xf ../libssh.tar.gz -C libssh --strip-components=1
 cd libssh
 mkdir _build_linux
+export PREFIX=`pwd`+'_build_linux'
 
 # Build
 
-CFLAGS="-fPIC -I${SRCROOT}/Headers -I${SRCROOT}/Headers/zlib" LDFLAGS="-L${SRCROOT}/Libraries/linux/" LIBS="-ldl" ./configure --disable-shared --disable-examples-build --prefix="$(pwd)/_build_linux" --with-libwolfssl-prefix
+CFLAGS="-fPIC -I${SRCROOT}/Headers -I${SRCROOT}/Headers/zlib" LDFLAGS="-L${SRCROOT}/Libraries/linux/" LIBS="-ldl" ./configure --disable-shared --disable-examples-build --prefix="$PREFIX"
 make -s -j install
 
 # Copy the library files.
@@ -90,10 +93,11 @@ mkdir curl
 tar -xf ../curl.tar.gz -C curl --strip-components=1
 cd curl
 mkdir _build_linux
+export PREFIX=`pwd`+'_build_linux'
 
 # Build
 
-CPPFLAGS="-I${SRCROOT}/Headers -I${SRCROOT}/Headers/zlib -I${SRCROOT}/Headers/libssh2  -I${SRCROOT}/Headers/openssl" LDFLAGS="-L${SRCROOT}/Libraries/linux" LIBS="-ldl" ./configure --disable-dependency-tracking --enable-static --disable-shared --with-ssl --with-zlib --with-libssh2 --without-tests --prefix="$(pwd)/_build_linux"
+CPPFLAGS="-I${SRCROOT}/Headers -I${SRCROOT}/Headers/zlib -I${SRCROOT}/Headers/libssh2  -I${SRCROOT}/Headers/openssl" LDFLAGS="-L${SRCROOT}/Libraries/linux" LIBS="-ldl" ./configure --disable-dependency-tracking --enable-static --disable-shared --with-ssl --with-zlib --with-libssh2 --without-tests --prefix="$PREFIX"
 
 make -s -j install
 

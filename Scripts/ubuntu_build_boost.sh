@@ -24,11 +24,12 @@ mkdir boost
 tar -xf ../boost.tar.gz -C boost --strip-components=1
 cd boost
 mkdir _build_linux
+export PREFIX=`pwd`+'_build_linux'
 
 # Build
 
 ./bootstrap.sh
-./b2 link=static cflags=-fPIC cxxflags=-fPIC runtime-link=static install --prefix=_build_linux --with-program_options --with-regex --with-date_time --with-filesystem --with-thread
+./b2 link=static cflags=-fPIC cxxflags=-fPIC runtime-link=static install --prefix="$PREFIX" --with-program_options --with-regex --with-date_time --with-filesystem --with-thread
 
 # Copy the header and library files.
 

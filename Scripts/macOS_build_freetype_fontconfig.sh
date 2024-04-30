@@ -26,7 +26,13 @@ rm -rf freetype
 mkdir freetype
 tar -xf ../freetype.tar.gz -C freetype --strip-components=1
 cd freetype
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
 
 # Build
@@ -50,7 +56,13 @@ rm -rf fontconfig
 mkdir fontconfig
 tar -xf ../fontconfig.tar.gz -C fontconfig --strip-components=1
 cd fontconfig
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
 
 # Build
@@ -73,7 +85,13 @@ rm -rf podofo
 mkdir podofo
 tar -xf ../podofo.tar.gz -C podofo --strip-components=1
 cd podofo
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
 
 # Build

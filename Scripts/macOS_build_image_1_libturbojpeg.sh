@@ -19,7 +19,13 @@ rm -rf libturbojpeg
 mkdir libturbojpeg
 tar -xf ../libturbojpeg.tar.gz  -C libturbojpeg --strip-components=1
 cd libturbojpeg
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
 
 # Build

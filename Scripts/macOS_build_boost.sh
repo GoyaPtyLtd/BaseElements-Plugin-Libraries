@@ -25,7 +25,13 @@ rm -rf boost
 mkdir boost
 tar -xf ../boost.tar.gz -C boost --strip-components=1
 cd boost
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
 
 # Build

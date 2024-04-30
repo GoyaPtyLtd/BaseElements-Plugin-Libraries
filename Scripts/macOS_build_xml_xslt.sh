@@ -32,9 +32,14 @@ rm -rf libiconv
 mkdir libiconv
 tar -xf ../libiconv.tar.gz -C libiconv --strip-components=1
 cd libiconv
-mkdir _build_macos
-export PREFIX=`pwd`+'_build_macos'
 
+mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
+export PREFIX=`pwd`+'_build_macos'
 export ICONV=`pwd`
 
 # Build
@@ -62,9 +67,14 @@ rm -rf libxml
 mkdir libxml
 tar -xf ../libxml.tar.gz -C libxml --strip-components=1
 cd libxml
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
- 
 export LIBXML=`pwd`
 
 # Build
@@ -92,7 +102,13 @@ rm -rf libxslt
 mkdir libxslt
 tar -xf ../libxslt.tar.gz -C libxslt --strip-components=1
 cd libxslt
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
 
 # Build

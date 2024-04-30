@@ -33,8 +33,10 @@ tar -xf ../openssl.tar.gz -C openssl --strip-components=1
 cd openssl
 
 mkdir _build_macos
-mkdir _build_macos_x86_64
-mkdir _build_macos_arm64
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
 
 export PREFIX_x86_64=`pwd`+'_build_macos_x86_64'
 export PREFIX_arm64=`pwd`+'_build_macos_arm64'
@@ -68,7 +70,13 @@ rm -rf libssh
 mkdir libssh
 tar -xf ../libssh.tar.gz -C libssh --strip-components=1
 cd libssh
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
 
 # Build
@@ -91,7 +99,13 @@ rm -rf curl
 mkdir curl
 tar -xf ../curl.tar.gz -C curl --strip-components=1
 cd curl
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
 
 # Build

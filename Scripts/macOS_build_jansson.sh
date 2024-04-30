@@ -20,7 +20,13 @@ rm -rf jansson
 mkdir jansson
 tar -xf ../jansson.tar.gz -C jansson --strip-components=1
 cd jansson
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
 
 # Build

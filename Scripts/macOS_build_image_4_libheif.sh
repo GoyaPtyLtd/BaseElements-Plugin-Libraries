@@ -19,7 +19,13 @@ rm -rf libheif
 mkdir libheif
 tar -xf ../libheif.tar.gz  -C libheif --strip-components=1
 cd libheif
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
 
 # Build

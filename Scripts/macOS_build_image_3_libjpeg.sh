@@ -19,7 +19,13 @@ rm -rf libjpeg
 mkdir libjpeg
 tar -xf ../libjpeg.tar.gz  -C libjpeg --strip-components=1
 cd libjpeg
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
 
 # Build

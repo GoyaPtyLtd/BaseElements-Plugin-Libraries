@@ -25,7 +25,13 @@ rm -rf poco
 mkdir poco
 tar -xf ../poco.tar.gz -C poco --strip-components=1
 cd poco
+
 mkdir _build_macos
+mkdir _build_ios
+mkdir _build_iosSimulator
+mkdir _build_iosSimulatorArm
+mkdir _build_iosSimulatorx86
+
 export PREFIX=`pwd`+'_build_macos'
 
 # Build

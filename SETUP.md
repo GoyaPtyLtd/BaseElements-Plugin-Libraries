@@ -20,6 +20,7 @@ Not all of these may be needed, this was we had last time we checked.  You want 
     sudo apt install git-all git-lfs codeblocks
     bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
     sudo apt install clang-format clang-tidy clang-tools clang clangd libc++-dev libc++abi-dev libclang-dev libclang1 liblldb-dev libllvm-ocaml-dev libomp-dev libomp5 lld lldb llvm-dev llvm-runtime llvm python3-clang gcc-multilib g++-multilib
+    sudo apt install gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
     
 	sudo mkdir /opt/FileMaker
 	sudo chown "${USER:=$(/usr/bin/id -run)}:$USER" /opt/FileMaker

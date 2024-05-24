@@ -48,14 +48,14 @@ make -j install
 
 # Copy the header and library files.
 
-cp -R "${PREFIX}/include/Poco/*" "${OUTPUT}/Headers/Poco"
+cp -R _build_macos/include/Poco/* "${OUTPUT}/Headers/Poco"
 
-cp "${PREFIX}/lib/libPocoCrypto.a" "${OUTPUT}/Libraries/macOS"
-cp "${PREFIX}/lib/libPocoFoundation.a" "${OUTPUT}/Libraries/macOS"
-cp "${PREFIX}/lib/libPocoZip.a" "${OUTPUT}/Libraries/macOS"
-cp "${PREFIX}/lib/libPocoJSON.a" "${OUTPUT}/Libraries/macOS"
-cp "${PREFIX}/lib/libPocoXML.a" "${OUTPUT}/Libraries/macOS"
-cp "${PREFIX}/lib/libPocoNet.a" "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libPocoCrypto.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libPocoFoundation.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libPocoZip.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libPocoJSON.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libPocoXML.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libPocoNet.a "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

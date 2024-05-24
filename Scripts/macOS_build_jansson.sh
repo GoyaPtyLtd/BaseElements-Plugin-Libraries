@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libjansson.a
+rm -f Libraries/macOS/libjansson.a
 rm -rf Headers/jansson.h
 rm -rf Headers/jansson_config.h
 

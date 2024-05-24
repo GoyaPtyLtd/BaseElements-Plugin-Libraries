@@ -8,8 +8,8 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/linux/libfreetype.a
-rm Libraries/linux/libfontconfig.a
+rm -f Libraries/linux/libfreetype.a
+rm -f Libraries/linux/libfontconfig.a
 
 # Starting folder
 

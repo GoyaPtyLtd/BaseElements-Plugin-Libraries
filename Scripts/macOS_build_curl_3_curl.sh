@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libcurl.a
+rm -f Libraries/macOS/libcurl.a
 rm -rf Headers/curl
 mkdir Headers/curl
 

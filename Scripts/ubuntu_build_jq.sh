@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/linux/libjq.a
+rm -f Libraries/linux/libjq.a
 rm -rf Headers/jq
 
 # Starting folder

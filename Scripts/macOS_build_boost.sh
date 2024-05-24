@@ -8,12 +8,12 @@ export OUTPUT=`pwd`
 
 # Remove old libraries and headers
 
-rm Libraries/macOS/libboost_atomic.a
-rm Libraries/macOS/libboost_date_time.a
-rm Libraries/macOS/libboost_filesystem.a
-rm Libraries/macOS/libboost_program_options.a
-rm Libraries/macOS/libboost_regex.a
-rm Libraries/macOS/libboost_thread.a
+rm -f Libraries/macOS/libboost_atomic.a
+rm -f Libraries/macOS/libboost_date_time.a
+rm -f Libraries/macOS/libboost_filesystem.a
+rm -f Libraries/macOS/libboost_program_options.a
+rm -f Libraries/macOS/libboost_regex.a
+rm -f Libraries/macOS/libboost_thread.a
 
 rm -rf Headers/boost
 mkdir Headers/boost

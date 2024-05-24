@@ -8,9 +8,9 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libMagick++-7.Q16HDRI.a
-rm Libraries/macOS/libMagickCore-7.Q16HDRI.a
-rm Libraries/macOS/libMagickWand-7.Q16HDRI.a
+rm -f Libraries/macOS/libMagick++-7.Q16HDRI.a
+rm -f Libraries/macOS/libMagickCore-7.Q16HDRI.a
+rm -f Libraries/macOS/libMagickWand-7.Q16HDRI.a
 
 rm -rf Headers/ImageMagick-7
 mkdir Headers/ImageMagick-7

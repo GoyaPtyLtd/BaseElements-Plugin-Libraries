@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries and Headers
 
-rm Libraries/macOS/libde265.a
+rm -f Libraries/macOS/libde265.a
 rm -rf Headers/libde265
 mkdir Headers/libde265
 

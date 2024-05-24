@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libfontconfig.a
+rm -f Libraries/macOS/libfontconfig.a
 rm -rf Headers/fontconfig
 mkdir Headers/fontconfig
 

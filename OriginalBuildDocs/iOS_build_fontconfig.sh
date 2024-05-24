@@ -5,13 +5,13 @@ export OUTPUT=`pwd`
 
 # Remove old libraries and headers
 
-rm Libraries/iOS/iPhoneOS/libfontconfig.a
-rm Libraries/iOS/iPhoneOS/libfreetype.a
-rm Libraries/iOS/iPhoneOS/libpodofo.a
+rm -f Libraries/iOS/iPhoneOS/libfontconfig.a
+rm -f Libraries/iOS/iPhoneOS/libfreetype.a
+rm -f Libraries/iOS/iPhoneOS/libpodofo.a
 
-rm Libraries/iOS/iPhoneOSSimulator/libfontconfig.a
-rm Libraries/iOS/iPhoneOSSimulator/libfreetype.a
-rm Libraries/iOS/iPhoneOSSimulator/libpodofo.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libfontconfig.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libfreetype.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libpodofo.a
 
 # Starting folder
 

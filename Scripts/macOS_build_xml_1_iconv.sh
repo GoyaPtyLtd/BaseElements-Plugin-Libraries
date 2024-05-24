@@ -8,8 +8,8 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libiconv.a
-rm Libraries/macOS/libcharset.a
+rm -f Libraries/macOS/libiconv.a
+rm -f Libraries/macOS/libcharset.a
 
 rm -rf Headers/iconv
 mkdir Headers/iconv

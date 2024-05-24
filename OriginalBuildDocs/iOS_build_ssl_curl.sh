@@ -5,15 +5,15 @@ export OUTPUT=`pwd`
 
 # Remove old libraries and headers
 
-rm Libraries/iOS/iPhoneOS/libssl.a
-rm Libraries/iOS/iPhoneOS/libcrypto.a
-rm Libraries/iOS/iPhoneOS/libssh2.a
-rm Libraries/iOS/iPhoneOS/libcurl.a
+rm -f Libraries/iOS/iPhoneOS/libssl.a
+rm -f Libraries/iOS/iPhoneOS/libcrypto.a
+rm -f Libraries/iOS/iPhoneOS/libssh2.a
+rm -f Libraries/iOS/iPhoneOS/libcurl.a
 
-rm Libraries/iOS/iPhoneOSSimulator/libssl.a
-rm Libraries/iOS/iPhoneOSSimulator/libcrypto.a
-rm Libraries/iOS/iPhoneOSSimulator/libssh2.a
-rm Libraries/iOS/iPhoneOSSimulator/libcurl.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libssl.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libcrypto.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libssh2.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libcurl.a
 
 # Starting folder
 

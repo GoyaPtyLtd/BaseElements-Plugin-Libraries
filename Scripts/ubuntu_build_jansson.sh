@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/linux/libjansson.a
+rm -f Libraries/linux/libjansson.a
 rm -rf Headers/jansson.h
 rm -rf Headers/jansson_config.h
 

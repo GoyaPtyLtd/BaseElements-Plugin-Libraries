@@ -5,11 +5,11 @@ export OUTPUT=`pwd`
 
 # Remove old libraries and headers
 
-rm Libraries/iOS/iPhoneOS/libturbojpeg.a
-rm Libraries/iOS/iPhoneOS/libjpeg.a
+rm -f Libraries/iOS/iPhoneOS/libturbojpeg.a
+rm -f Libraries/iOS/iPhoneOS/libjpeg.a
 
-rm Libraries/iOS/iPhoneOSSimulator/libturbojpeg.a
-rm Libraries/iOS/iPhoneOSSimulator/libjpeg.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libturbojpeg.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libjpeg.a
 
 # Starting folder
 

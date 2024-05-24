@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libturbojpeg.a
+rm -f Libraries/macOS/libturbojpeg.a
 rm -rf Headers/libturbojpeg
 mkdir Headers/libturbojpeg
 

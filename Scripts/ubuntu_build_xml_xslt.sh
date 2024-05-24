@@ -8,13 +8,13 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/linux/libiconv.a
-rm Libraries/linux/libcharset.a
+rm -f Libraries/linux/libiconv.a
+rm -f Libraries/linux/libcharset.a
 
-rm Libraries/linux/libxml2.a
+rm -f Libraries/linux/libxml2.a
 
-rm Libraries/linux/libxslt.a
-rm Libraries/linux/libexslt.a
+rm -f Libraries/linux/libxslt.a
+rm -f Libraries/linux/libexslt.a
 
 # Starting folder
 

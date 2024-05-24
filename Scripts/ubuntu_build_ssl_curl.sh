@@ -8,12 +8,12 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/linux/libcrypto.a
-rm Libraries/linux/libssl.a
+rm -f Libraries/linux/libcrypto.a
+rm -f Libraries/linux/libssl.a
 
-rm Libraries/linux/libssh2.a
+rm -f Libraries/linux/libssh2.a
 
-rm Libraries/linux/libcurl.a
+rm -f Libraries/linux/libcurl.a
 
 # Starting folder
 

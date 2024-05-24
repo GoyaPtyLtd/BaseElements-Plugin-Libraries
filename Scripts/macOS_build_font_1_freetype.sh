@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libfreetype.a
+rm -f Libraries/macOS/libfreetype.a
 rm -rf Headers/freetype2
 mkdir Headers/freetype2
 

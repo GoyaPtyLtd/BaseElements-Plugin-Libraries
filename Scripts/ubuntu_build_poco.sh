@@ -8,12 +8,12 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/linux/libPocoCrypto.a
-rm Libraries/linux/libPocoFoundation.a
-rm Libraries/linux/libPocoZip.a
-rm Libraries/linux/libPocoJSON.a
-rm Libraries/linux/libPocoXML.a
-rm Libraries/linux/libPocoNet.a
+rm -f Libraries/linux/libPocoCrypto.a
+rm -f Libraries/linux/libPocoFoundation.a
+rm -f Libraries/linux/libPocoZip.a
+rm -f Libraries/linux/libPocoJSON.a
+rm -f Libraries/linux/libPocoXML.a
+rm -f Libraries/linux/libPocoNet.a
 
 # Starting folder
 

@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/linux/libheif.a
+rm -f Libraries/linux/libheif.a
 
 # Starting folder
 

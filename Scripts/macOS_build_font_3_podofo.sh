@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libpodofo.a
+rm -f Libraries/macOS/libpodofo.a
 rm -rf Headers/podofo
 mkdir Headers/podofo
 

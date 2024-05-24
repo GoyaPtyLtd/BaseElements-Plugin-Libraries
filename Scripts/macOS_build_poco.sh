@@ -8,12 +8,12 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libPocoCrypto.a
-rm Libraries/macOS/libPocoFoundation.a
-rm Libraries/macOS/libPocoZip.a
-rm Libraries/macOS/libPocoJSON.a
-rm Libraries/macOS/libPocoXML.a
-rm Libraries/macOS/libPocoNet.a
+rm -f Libraries/macOS/libPocoCrypto.a
+rm -f Libraries/macOS/libPocoFoundation.a
+rm -f Libraries/macOS/libPocoZip.a
+rm -f Libraries/macOS/libPocoJSON.a
+rm -f Libraries/macOS/libPocoXML.a
+rm -f Libraries/macOS/libPocoNet.a
 
 rm -rf Headers/Poco
 mkdir Headers/Poco

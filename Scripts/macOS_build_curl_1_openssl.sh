@@ -8,8 +8,8 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libcrypto.a
-rm Libraries/macOS/libssl.a
+rm -f Libraries/macOS/libcrypto.a
+rm -f Libraries/macOS/libssl.a
 rm -rf Headers/openssl
 mkdir Headers/openssl
 
@@ -48,12 +48,12 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 # this build seems to fail with "make -j" so we've left that out
 
 #first build is install so we get headers
-CFLAGS="-mmacosx-version-min=10.15" ./configure --quiet darwin64-x86_64-cc no-engine no-shared --prefix="${PREFIX_x86_64}"
+CFLAGS="-mmacosx-version-min=10.15" ./configure darwin64-x86_64-cc no-engine no-shared --prefix="${PREFIX_x86_64}"
 make -s install
 make -s -j distclean
 
 #install_sw leaves out headers
-CFLAGS="-mmacosx-version-min=10.15" ./configure --quiet darwin64-arm64-cc no-engine no-shared --prefix="${PREFIX_arm64}"
+CFLAGS="-mmacosx-version-min=10.15" ./configure darwin64-arm64-cc no-engine no-shared --prefix="${PREFIX_arm64}"
 make -s install_sw
 make -s -j distclean
 

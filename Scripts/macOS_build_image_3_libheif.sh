@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libheif.a
+rm -f Libraries/macOS/libheif.a
 rm -rf Headers/libheif
 mkdir Headers/libheif
 

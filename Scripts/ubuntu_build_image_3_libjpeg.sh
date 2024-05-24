@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/linux/libjpeg.a
+rm -f Libraries/linux/libjpeg.a
 rm -rf Headers/libjpeg
 
 # Starting folder

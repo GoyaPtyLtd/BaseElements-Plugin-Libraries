@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libxml2.a
+rm -f Libraries/macOS/libxml2.a
 
 rm -rf Headers/libxml
 mkdir Headers/libxml

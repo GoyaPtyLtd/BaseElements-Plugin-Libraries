@@ -8,8 +8,8 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libxslt.a
-rm Libraries/macOS/libexslt.a
+rm -f Libraries/macOS/libxslt.a
+rm -f Libraries/macOS/libexslt.a
 
 rm -rf Headers/libxslt
 mkdir Headers/libxslt

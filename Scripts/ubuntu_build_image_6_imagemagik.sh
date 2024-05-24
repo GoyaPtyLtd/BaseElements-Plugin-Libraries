@@ -8,9 +8,9 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/linux/libMagick++-7.Q16HDRI.a
-rm Libraries/linux/libMagickCore-7.Q16HDRI.a
-rm Libraries/linux/libMagickWand-7.Q16HDRI.a
+rm -f Libraries/linux/libMagick++-7.Q16HDRI.a
+rm -f Libraries/linux/libMagickCore-7.Q16HDRI.a
+rm -f Libraries/linux/libMagickWand-7.Q16HDRI.a
 
 rm -rf Headers/ImageMagick-7
 

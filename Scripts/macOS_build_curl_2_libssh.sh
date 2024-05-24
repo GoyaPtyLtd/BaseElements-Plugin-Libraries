@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libssh2.a
+rm -f Libraries/macOS/libssh2.a
 rm -rf Headers/libssh2
 mkdir Headers/libssh2
 

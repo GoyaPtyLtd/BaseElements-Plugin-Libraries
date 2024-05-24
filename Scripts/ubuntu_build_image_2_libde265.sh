@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries and Headers
 
-rm Libraries/linux/libde265.a
+rm -f Libraries/linux/libde265.a
 rm -rf Headers/libde265/*
 
 # Switch to our build directory and clean out anything old

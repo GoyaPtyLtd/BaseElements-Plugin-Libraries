@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libopenjp2.a
+rm -f Libraries/macOS/libopenjp2.a
 rm -rf Headers/libopenjp2
 mkdir Headers/libopenjp2
 

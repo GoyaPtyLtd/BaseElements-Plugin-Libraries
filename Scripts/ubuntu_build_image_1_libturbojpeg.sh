@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/linux/libturbojpeg.a
+rm -f Libraries/linux/libturbojpeg.a
 
 # Starting folder
 

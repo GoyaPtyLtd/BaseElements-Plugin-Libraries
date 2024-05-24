@@ -5,17 +5,17 @@ export OUTPUT=`pwd`
 
 # Remove old libraries and headers
 
-rm Libraries/iOS/iPhoneOS/libiconv.a
-rm Libraries/iOS/iPhoneOS/libcharset.a
-rm Libraries/iOS/iPhoneOS/libxml2.a
-rm Libraries/iOS/iPhoneOS/libxslt.a
-rm Libraries/iOS/iPhoneOS/libexslt.a
+rm -f Libraries/iOS/iPhoneOS/libiconv.a
+rm -f Libraries/iOS/iPhoneOS/libcharset.a
+rm -f Libraries/iOS/iPhoneOS/libxml2.a
+rm -f Libraries/iOS/iPhoneOS/libxslt.a
+rm -f Libraries/iOS/iPhoneOS/libexslt.a
 
-rm Libraries/iOS/iPhoneOSSimulator/libiconv.a
-rm Libraries/iOS/iPhoneOSSimulator/libcharset.a
-rm Libraries/iOS/iPhoneOSSimulator/libxml2.a
-rm Libraries/iOS/iPhoneOSSimulator/libxslt.a
-rm Libraries/iOS/iPhoneOSSimulator/libexslt.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libiconv.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libcharset.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libxml2.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libxslt.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libexslt.a
 
 # Starting folder
 

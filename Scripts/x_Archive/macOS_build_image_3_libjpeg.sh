@@ -8,9 +8,9 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libjpeg.a
-rm Libraries/iOS/iPhoneOS/libjpeg.a
-rm Libraries/iOS/iPhoneOSSimulator/libjpeg.a
+rm -f Libraries/macOS/libjpeg.a
+rm -f Libraries/iOS/iPhoneOS/libjpeg.a
+rm -f Libraries/iOS/iPhoneOSSimulator/libjpeg.a
 
 rm -rf Headers/libjpeg
 

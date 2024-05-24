@@ -8,7 +8,7 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm Libraries/macOS/libjq.a
+rm -f Libraries/macOS/libjq.a
 rm -rf Headers/jq
 mkdir Headers/jq
 

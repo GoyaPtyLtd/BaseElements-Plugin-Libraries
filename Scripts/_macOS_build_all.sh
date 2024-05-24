@@ -1,4 +1,5 @@
-#!/bin/bash -E
+#!/bin/bash
+set -e
 
 ./macOS_build_boost.sh
 ./macOS_build_curl_0_all.sh

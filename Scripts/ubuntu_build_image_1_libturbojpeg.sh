@@ -1,4 +1,5 @@
-#!/bin/bash -E
+#!/bin/bash
+set -e
 
 cd ../Output
 export OUTPUT=`pwd`

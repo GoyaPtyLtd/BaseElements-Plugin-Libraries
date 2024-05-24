@@ -1,4 +1,5 @@
-#!/bin/bash -E
+#!/bin/bash
+set -e
 
 ./ubuntu_build_image_1_libturbojpeg.sh
 

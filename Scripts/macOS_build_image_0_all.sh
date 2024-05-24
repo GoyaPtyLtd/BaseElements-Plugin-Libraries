@@ -1,4 +1,5 @@
-#!/bin/bash -E
+#!/bin/bash
+set -e
 
 ./macOS_build_image_1_libturbojpeg.sh
 ./macOS_build_image_2_libde265.sh

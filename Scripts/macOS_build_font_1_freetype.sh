@@ -3,6 +3,7 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -12,12 +13,9 @@ rm -f Libraries/macOS/libfreetype.a
 rm -rf Headers/freetype2
 mkdir Headers/freetype2
 
-# Starting folder
+# Switch to our build directory
 
 cd ../source/macOS
-export SRCROOT=`pwd`
-
-# Switch to our build directory
 
 rm -rf freetype
 mkdir freetype

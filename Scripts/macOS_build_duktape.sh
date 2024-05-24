@@ -3,15 +3,13 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
-# Starting folder
+# Switch to our build directory
 
 cd ../source/macOS
-export SRCROOT=`pwd`
-
-# Remove old source
 
 rm -rf duktape
 mkdir duktape

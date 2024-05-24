@@ -15,6 +15,7 @@ mkdir Headers/libde265
 # Switch to our build directory and clean out anything old
 
 cd ../source/macOS
+
 rm -rf libde265
 mkdir libde265
 tar -xf ../libde265.tar.gz  -C libde265 --strip-components=1

@@ -3,6 +3,7 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -15,13 +16,6 @@ rm -f Libraries/linux/libxml2.a
 
 rm -f Libraries/linux/libxslt.a
 rm -f Libraries/linux/libexslt.a
-
-# Starting folder
-
-cd ../source/linux
-export SRCROOT=`pwd`
-
-#====libiconv====
 
 # Switch to our build directory
 

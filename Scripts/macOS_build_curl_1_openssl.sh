@@ -3,6 +3,7 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -13,12 +14,9 @@ rm -f Libraries/macOS/libssl.a
 rm -rf Headers/openssl
 mkdir Headers/openssl
 
-# Starting folder
+# Switch to our build directory
 
 cd ../source/macOS
-export SRCROOT=`pwd`
-
-# Switch to our build directory
 
 rm -rf openssl
 mkdir openssl
@@ -52,6 +50,8 @@ make -s -j distclean
 CFLAGS="-mmacosx-version-min=10.15" ./configure darwin64-arm64-cc no-engine no-shared --prefix="${PREFIX_arm64}"
 make install_sw
 make -s -j distclean
+
+CFLAGS=""
 
 lipo -create "${PREFIX_x86_64}/lib/libcrypto.a" "${PREFIX_arm64}/lib/libcrypto.a" -output "${PREFIX}/libcrypto.a"
 lipo -create "${PREFIX_x86_64}/lib/libssl.a" "${PREFIX_arm64}/lib/libssl.a" -output "${PREFIX}/libssl.a"

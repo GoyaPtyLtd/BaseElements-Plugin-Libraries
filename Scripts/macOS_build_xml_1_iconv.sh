@@ -3,6 +3,7 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -14,12 +15,9 @@ rm -f Libraries/macOS/libcharset.a
 rm -rf Headers/iconv
 mkdir Headers/iconv
 
-# Starting folder
+# Switch to our build directory
 
 cd ../source/macOS
-export SRCROOT=`pwd`
-
-# Switch to our build directory
 
 rm -rf libiconv
 mkdir libiconv

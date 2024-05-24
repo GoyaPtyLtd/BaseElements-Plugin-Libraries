@@ -3,6 +3,7 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -18,12 +19,9 @@ rm -f Libraries/macOS/libboost_thread.a
 rm -rf Headers/boost
 mkdir Headers/boost
 
-# Starting folder
+# Switch to our build directory
 
 cd ../source/macOS
-export SRCROOT=`pwd`
-
-# Switch to our build directory
 
 rm -rf boost
 mkdir boost

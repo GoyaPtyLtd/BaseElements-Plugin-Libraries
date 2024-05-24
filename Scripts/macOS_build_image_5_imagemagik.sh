@@ -3,6 +3,7 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -15,12 +16,9 @@ rm -f Libraries/macOS/libMagickWand-7.Q16HDRI.a
 rm -rf Headers/ImageMagick-7
 mkdir Headers/ImageMagick-7
 
-# Starting folder
+# Switch to our build directory
 
 cd ../source/macOS
-export SRCROOT=`pwd`
-
-# Switch to our build directory
 
 rm -rf ImageMagick
 mkdir ImageMagick
@@ -41,13 +39,12 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 # Build macOS
 
-export CXX=clang++
-export CC=clang
-export CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers/turbojpeg"
-export CPPFLAGS="-I${OUTPUT}/Headers/turbojpeg"
-export CXXFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15  -I${OUTPUT}/Headers/turbojpeg"
-export LDFLAGS="-L${OUTPUT}/Libraries/macOS -ljpeg"
-
+CXX=clang++ \
+CC=clang \
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers/turbojpeg" \
+CPPFLAGS="-I${OUTPUT}/Headers/turbojpeg" \
+CXXFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15  -I${OUTPUT}/Headers/turbojpeg" \
+LDFLAGS="-L${OUTPUT}/Libraries/macOS -ljpeg" \
 ./configure --disable-shared --prefix="${PREFIX}" --without-utilities --disable-docs \
             --enable-zero-configuration --disable-dependency-tracking --with-quantum-depth=16 \
 			--enable-hdri --without-bzlib --disable-openmp --disable-assert --without-zlib --without-xml \

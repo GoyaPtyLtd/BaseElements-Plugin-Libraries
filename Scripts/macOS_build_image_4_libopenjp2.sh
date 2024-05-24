@@ -3,6 +3,7 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -12,12 +13,9 @@ rm -f Libraries/macOS/libopenjp2.a
 rm -rf Headers/libopenjp2
 mkdir Headers/libopenjp2
 
-# Starting folder
+# Switch to our build directory
 
 cd ../source/macOS
-export SRCROOT=`pwd`
-
-# Switch to our build directory
 
 rm -rf libopenjp2
 mkdir libopenjp2

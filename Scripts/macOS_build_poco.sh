@@ -3,6 +3,7 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -18,12 +19,9 @@ rm -f Libraries/macOS/libPocoNet.a
 rm -rf Headers/Poco
 mkdir Headers/Poco
 
-# Starting folder
+# Switch to our build directory
 
 cd ../source/macOS
-export SRCROOT=`pwd`
-
-# Switch to our build directory
 
 rm -rf poco
 mkdir poco

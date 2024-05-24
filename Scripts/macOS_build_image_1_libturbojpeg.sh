@@ -3,6 +3,7 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -12,12 +13,9 @@ rm -f Libraries/macOS/libturbojpeg.a
 rm -rf Headers/libturbojpeg
 mkdir Headers/libturbojpeg
 
-# Starting folder
+# Switch to our build directory
 
 cd ../source/macOS
-export SRCROOT=`pwd`
-
-# Switch to our build directory
 
 rm -rf libturbojpeg
 mkdir libturbojpeg

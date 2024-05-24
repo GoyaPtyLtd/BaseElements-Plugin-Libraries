@@ -3,6 +3,7 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -13,12 +14,9 @@ rm -f Libraries/macOS/libxml2.a
 rm -rf Headers/libxml
 mkdir Headers/libxml
 
-# Starting folder
+# Switch to our build directory
 
 cd ../source/macOS
-export SRCROOT=`pwd`
-
-# Switch to our build directory
 
 rm -rf libxml
 mkdir libxml

@@ -3,6 +3,7 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -12,12 +13,9 @@ rm -f Libraries/macOS/libcurl.a
 rm -rf Headers/curl
 mkdir Headers/curl
 
-# Starting folder
+# Switch to our build directory
 
 cd ../source/macOS
-export SRCROOT=`pwd`
-
-# Switch to our build directory
 
 rm -rf curl
 mkdir curl
@@ -38,7 +36,7 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 # Build macOS
 
-export MAC_SDK=$(xcrun -sdk macosx --show-sdk-path)
+MAC_SDK=$(xcrun -sdk macosx --show-sdk-path)
 
 ./configure --host=x86_64-apple-darwin CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -isysroot ${MAC_SDK}" CPPFLAGS=" -I${OUTPUT}/Headers -I${OUTPUT}/Headers/libssh2 -I${OUTPUT}/Headers/openssl" LDFLAGS=" -L${OUTPUT}/Libraries/macOS" LIBS="-ldl" --disable-dependency-tracking --enable-static --disable-shared --with-ssl --with-zlib --with-libssh2 --without-tests --without-libpsl --without-brotli --without-zstd --prefix="${PREFIX}"
 

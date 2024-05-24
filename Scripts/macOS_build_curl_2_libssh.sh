@@ -3,6 +3,7 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -12,12 +13,9 @@ rm -f Libraries/macOS/libssh2.a
 rm -rf Headers/libssh2
 mkdir Headers/libssh2
 
-# Starting folder
+# Switch to our build directory
 
 cd ../source/macOS
-export SRCROOT=`pwd`
-
-# Switch to our build directory
 
 rm -rf libssh
 mkdir libssh

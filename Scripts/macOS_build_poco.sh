@@ -48,12 +48,12 @@ make -s -j install
 
 cp -R "${PREFIX}/include/Poco" "${OUTPUT}/Headers"
 
-cp "${PREFIX}lib/Darwin/x86_64/libPocoCrypto.a" "${OUTPUT}/Libraries/macOS"
-cp "${PREFIX}lib/Darwin/x86_64/libPocoFoundation.a" "${OUTPUT}/Libraries/macOS"
-cp "${PREFIX}lib/Darwin/x86_64/libPocoZip.a" "${OUTPUT}/Libraries/macOS"
-cp "${PREFIX}lib/Darwin/x86_64/libPocoJSON.a" "${OUTPUT}/Libraries/macOS"
-cp "${PREFIX}lib/Darwin/x86_64/libPocoXML.a" "${OUTPUT}/Libraries/macOS"
-cp "${PREFIX}lib/Darwin/x86_64/libPocoNet.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libPocoCrypto.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libPocoFoundation.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libPocoZip.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libPocoJSON.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libPocoXML.a" "${OUTPUT}/Libraries/macOS"
+cp "${PREFIX}/lib/libPocoNet.a" "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

@@ -35,12 +35,12 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 # Build macOS
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_LIBRARY_PATH:path="${OUTPUT}/Libraries/macOS" DCMAKE_INCLUDE_PATH:path="${OUTPUT}/Headers" ./
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DCMAKE_LIBRARY_PATH:path="${OUTPUT}/Libraries/macOS" -DCMAKE_INCLUDE_PATH:path="${OUTPUT}/Headers" ./
 make install DESTDIR="${PREFIX}"
 
 # Copy the header and library files.
 
-cp -R "${PREFIX}/usr/local/include/openjpeg-2.5/*.h" "${OUTPUT}/Headers/libopenjp2/"
+cp -R "${PREFIX}/usr/local/include/openjpeg-2.5" "${OUTPUT}/Headers/libopenjp2"
 cp "${PREFIX}/usr/local/lib/libopenjp2.a" "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory

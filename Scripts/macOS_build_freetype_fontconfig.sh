@@ -33,11 +33,11 @@ mkdir _build_iosSimulator
 mkdir _build_iosSimulatorArm
 mkdir _build_iosSimulatorx86
 
-export PREFIX=`pwd`+'/_build_macos'
-export PREFIX_ios=`pwd`+'/_build_ios'
-export PREFIX_iosSimulator=`pwd`+'/_build_iosSimulator'
-export PREFIX_iosSimulatorArm=`pwd`+'/_build_iosSimulatorArm'
-export PREFIX_iosSimulatorx86=`pwd`+'/_build_iosSimulatorx86'
+export PREFIX=`pwd`'/_build_macos'
+export PREFIX_ios=`pwd`'/_build_ios'
+export PREFIX_iosSimulator=`pwd`'/_build_iosSimulator'
+export PREFIX_iosSimulatorArm=`pwd`'/_build_iosSimulatorArm'
+export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 # Build macOS
 
@@ -67,11 +67,11 @@ mkdir _build_iosSimulator
 mkdir _build_iosSimulatorArm
 mkdir _build_iosSimulatorx86
 
-export PREFIX=`pwd`+'/_build_macos'
-export PREFIX_ios=`pwd`+'/_build_ios'
-export PREFIX_iosSimulator=`pwd`+'/_build_iosSimulator'
-export PREFIX_iosSimulatorArm=`pwd`+'/_build_iosSimulatorArm'
-export PREFIX_iosSimulatorx86=`pwd`+'/_build_iosSimulatorx86'
+export PREFIX=`pwd`'/_build_macos'
+export PREFIX_ios=`pwd`'/_build_ios'
+export PREFIX_iosSimulator=`pwd`'/_build_iosSimulator'
+export PREFIX_iosSimulatorArm=`pwd`'/_build_iosSimulatorArm'
+export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 # Build macOS
 
@@ -100,11 +100,11 @@ mkdir _build_iosSimulator
 mkdir _build_iosSimulatorArm
 mkdir _build_iosSimulatorx86
 
-export PREFIX=`pwd`+'/_build_macos'
-export PREFIX_ios=`pwd`+'/_build_ios'
-export PREFIX_iosSimulator=`pwd`+'/_build_iosSimulator'
-export PREFIX_iosSimulatorArm=`pwd`+'/_build_iosSimulatorArm'
-export PREFIX_iosSimulatorx86=`pwd`+'/_build_iosSimulatorx86'
+export PREFIX=`pwd`'/_build_macos'
+export PREFIX_ios=`pwd`'/_build_ios'
+export PREFIX_iosSimulator=`pwd`'/_build_iosSimulator'
+export PREFIX_iosSimulatorArm=`pwd`'/_build_iosSimulatorArm'
+export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 # Build macOS
 

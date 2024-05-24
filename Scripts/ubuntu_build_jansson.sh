@@ -21,7 +21,7 @@ mkdir jansson
 tar -xf ../jansson.tar.gz -C jansson --strip-components=1
 cd jansson
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 

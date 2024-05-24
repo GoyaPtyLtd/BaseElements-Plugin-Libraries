@@ -19,7 +19,7 @@ mkdir libturbojpeg
 tar -xf ../libturbojpeg.tar.gz  -C libturbojpeg --strip-components=1
 cd libturbojpeg
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 

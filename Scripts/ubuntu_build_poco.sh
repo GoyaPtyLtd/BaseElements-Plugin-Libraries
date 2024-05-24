@@ -24,7 +24,7 @@ mkdir poco
 tar -xf ../poco.tar.gz -C poco --strip-components=1
 cd poco
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 

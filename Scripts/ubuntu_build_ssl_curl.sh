@@ -26,7 +26,7 @@ mkdir zlib
 tar -xf ../zlib.tar.gz -C openssl --strip-components=1
 cd zlib
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 
@@ -48,7 +48,7 @@ mkdir openssl
 tar -xf ../openssl.tar.gz -C openssl --strip-components=1
 cd openssl
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 
@@ -71,7 +71,7 @@ mkdir libssh
 tar -xf ../libssh.tar.gz -C libssh --strip-components=1
 cd libssh
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 
@@ -93,7 +93,7 @@ mkdir curl
 tar -xf ../curl.tar.gz -C curl --strip-components=1
 cd curl
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 

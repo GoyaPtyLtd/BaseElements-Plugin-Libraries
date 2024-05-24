@@ -21,7 +21,7 @@ mkdir libopenjp2
 tar -xf ../libopenjp2.tar.gz  -C libopenjp2 --strip-components=1
 cd libopenjp2
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 

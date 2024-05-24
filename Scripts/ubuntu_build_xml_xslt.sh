@@ -27,8 +27,8 @@ mkdir libiconv
 tar -xf ../libiconv.tar.gz -C libiconv --strip-components=1
 cd libiconv
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 export ICONV=`pwd`
 
@@ -53,8 +53,8 @@ mkdir libxml
 tar -xf ../libxml.tar.gz -C libxml --strip-components=1
 cd libxml
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 export LIBXML=`pwd`
 
@@ -78,8 +78,8 @@ mkdir libxslt
 tar -xf ../libxslt.tar.gz -C libxslt --strip-components=1
 cd libxslt
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 

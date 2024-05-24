@@ -20,7 +20,7 @@ mkdir jq
 tar -xf ../jq.tar.gz  -C jq --strip-components=1
 cd jq
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 

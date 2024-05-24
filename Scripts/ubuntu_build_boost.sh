@@ -24,7 +24,7 @@ mkdir boost
 tar -xf ../boost.tar.gz -C boost --strip-components=1
 cd boost
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 

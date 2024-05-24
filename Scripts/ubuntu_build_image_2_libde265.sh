@@ -16,7 +16,7 @@ mkdir libde265
 tar -xf ../libde265.tar.gz  -C libde265 --strip-components=1
 cd libde265
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 

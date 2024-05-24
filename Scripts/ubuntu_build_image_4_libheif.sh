@@ -19,7 +19,7 @@ mkdir libheif
 tar -xf ../libheif.tar.gz  -C libheif --strip-components=1
 cd libheif
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 

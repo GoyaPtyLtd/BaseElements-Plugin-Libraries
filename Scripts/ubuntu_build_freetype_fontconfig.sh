@@ -22,7 +22,7 @@ mkdir freetype
 tar -xf ../freetype.tar.gz -C freetype --strip-components=1
 cd freetype
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 
@@ -44,7 +44,7 @@ mkdir fontconfig
 tar -xf ../fontconfig.tar.gz -C fontconfig --strip-components=1
 cd fontconfig
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 
@@ -66,7 +66,7 @@ mkdir podofo
 tar -xf ../podofo.tar.gz -C podofo --strip-components=1
 cd podofo
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 

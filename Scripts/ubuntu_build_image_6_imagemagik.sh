@@ -23,7 +23,7 @@ mkdir ImageMagick
 tar -xf ../ImageMagick.tar.gz  -C ImageMagick --strip-components=1
 cd ImageMagick
 mkdir _build_linux
-export PREFIX=`pwd`+'/_build_linux'
+export PREFIX=`pwd`'/_build_linux'
 
 # Build
 

@@ -40,6 +40,7 @@ export MAC_SDK=$(xcrun -sdk macosx --show-sdk-path)
 ./configure --host=x86_64-apple-darwin CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -isysroot ${MAC_SDK}" CPPFLAGS=" -I${OUTPUT}/Headers -I${OUTPUT}/Headers/libssh2 -I${OUTPUT}/Headers/openssl" LDFLAGS=" -L${OUTPUT}/Libraries/macOS" LIBS="-ldl" --disable-dependency-tracking --enable-static --disable-shared --with-ssl --with-zlib --with-libssh2 --without-tests --without-libpsl --without-brotli --without-zstd --prefix="${PREFIX}"
 
 # TODO this had  --without-libpsl --without-brotli --without-zstd added to it for compatibility with latest curl.  It would be good to at least add the libpsl but I don't know about the others
+# TODO also investigate libidn which is also in podofo
 
 make -s -j install
 

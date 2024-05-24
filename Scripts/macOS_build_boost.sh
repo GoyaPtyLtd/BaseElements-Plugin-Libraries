@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+echo "Starting $(basename "$0") Build"
+
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -59,4 +61,3 @@ cp _build_macos/lib/libboost_thread.a "${OUTPUT}/Libraries/macOS"
 # Return to source directory
 
 cd ${SRCROOT}
-

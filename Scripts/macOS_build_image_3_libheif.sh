@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+echo "Starting $(basename "$0") Build"
+
 cd ../Output
 export OUTPUT=`pwd`
 

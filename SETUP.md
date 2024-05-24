@@ -12,7 +12,7 @@ You need to install **XCode** and the XCode command line tools.
 
 There are a bunch of open source tools required as well, to make things easier we recommend you install these with [brew](https://brew.sh). Open that link then follow the install instructions there. Our set of installed tools are :
 
-    brew install autoconf automake cmake gettext git git-lfs gnu-tar libtool m4 pkg-config protobuf wget
+    brew install autoconf automake cmake gettext git git-lfs gnu-tar libtool m4 pkg-config protobuf wget xz
 
 Not all of these may be needed, this was we had last time we checked. You want to avoid using lots of brew libraries as the compile options may find those instead of the ones we've built into the scripts.
 

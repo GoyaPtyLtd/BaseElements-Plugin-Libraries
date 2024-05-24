@@ -40,7 +40,7 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R "${PREFIX}/include/*" "${OUTPUT}/Headers/libssh2"
-cp "${PREFIX}/lib/libssh2.a" "${OUTPUT}/Libraries/macOS"
+cp -R _build_macos/include/* "${OUTPUT}/Headers/libssh2"
+cp _build_macos/lib/libssh2.a "${OUTPUT}/Libraries/macOS"
 
 cd ${SRCROOT}

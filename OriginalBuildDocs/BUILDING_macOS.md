@@ -94,7 +94,7 @@ Download the source from
 `cd libssh2-1.11.0`  
 
 `CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${SRCROOT}/Headers -I${SRCROOT}/Headers/openssl" LDFLAGS="-L${SRCROOT}/Libraries/macOS/" LIBS="-ldl" ./configure --disable-shared --disable-examples-build --prefix="${$(pwd)}/_build_macos" -exec-prefix="${$(pwd)}/_build_macos" --with-libz --with-crypto=openssl`  
-`make -s -j install`  
+`make -j install`  
 
 Copy the header and library files.
 
@@ -123,7 +123,7 @@ Download the source from
 
  # TODO this has had  --without-libpsl --without-brotli --without-zstd added to it for compatibility with latest curl.  It would be good to at least add the libpsl but I don't know about the others
 
-`make -s -j install`
+`make -j install`
 
 Copy the header and library files.
 
@@ -197,7 +197,7 @@ Download the source from
 
  # TODO this used to be separate x86/arm compiles, but it seems to now just build the x86 ones, which I think is wrong...
 
-`make -s -j install`  
+`make -j install`  
 
 Copy the Headers and libraries to the project directory
 
@@ -221,7 +221,7 @@ Download the source for libiconv from
 `cd libiconv-1.17`  
 
 `CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --prefix="${$(pwd)}/_build_macos"`  
-`make -s -j install`  
+`make -j install`  
 
 Copy the Headers and libraries to the project directory
 
@@ -253,7 +253,7 @@ Download the source for libxml2 from
  
 `CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --with-threads --without-python --without-zlib --without-lzma --prefix="${$(pwd)}/_build_macos"`  
 
-`make -s -j install`  
+`make -j install`  
 
 Copy the Headers and libraries to the project directory
 
@@ -278,7 +278,7 @@ Download the source from
 
 `./configure CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" --disable-shared --without-python --without-crypto --with-libxml-prefix=../libxml2-2.11.7/_build_macos --prefix="${$(pwd)}/_build_macos"`   
 
-`make -s -j install`  
+`make -j install`  
 
 Copy the Headers and libraries to the project directory
 
@@ -303,7 +303,7 @@ Download freetype from
 
 `CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no --prefix="$(pwd)/_build_macos"`  
 
-`make -s -j install`  
+`make -j install`  
 
 Copy the header and library files.
 
@@ -327,7 +327,7 @@ Download fontconfig from
 `cd fontconfig-2.14.2`  
 
 `CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ./configure --disable-shared --prefix="$(pwd)/_build_macos" FREETYPE_CFLAGS="-I${SRCROOT}/Headers/freetype2" FREETYPE_LIBS="-L${SRCROOT}/Libraries/macOS -lfreetype" LDFLAGS="-L${SRCROOT}/Libraries/macOS"`  
-`make -s -j install`  
+`make -j install`  
 
 Copy the header and library files.
 
@@ -352,7 +352,7 @@ cd podofo-0.10.3
 
 `cmake -G "Unix Makefiles" ./ -DPODOFO_BUILD_STATIC:BOOL=TRUE -DPODOFO_BUILD_SHARED:BOOL=FALSE -DWANT_FONTCONFIG:BOOL=TRUE -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="./_build_macos" -DFREETYPE_INCLUDE_DIR="${SRCROOT}/Headers/freetype2" -DFREETYPE_LIBRARY_RELEASE="${SRCROOT}/Libraries/macOS/libfreetype.a" -DFONTCONFIG_LIBRARIES="${SRCROOT}/Libraries" -DFONTCONFIG_INCLUDE_DIR="${SRCROOT}/Headers" -DFONTCONFIG_LIBRARY_RELEASE="${SRCROOT}/Libraries/macOS/libfontconfig.a" -DPODOFO_BUILD_LIB_ONLY=TRUE -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" -DCMAKE_CXX_STANDARD=11 -DCXX_STANDARD_REQUIRED=ON`
 
-`make -s -j install`
+`make -j install`
 
 Copy the header and library files.
 

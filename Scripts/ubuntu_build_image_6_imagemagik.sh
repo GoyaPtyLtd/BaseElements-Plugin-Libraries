@@ -34,7 +34,7 @@ export PREFIX=`pwd`'/_build_linux'
 
 CFLAGS="-I${OUTPUT}/Headers/turbojpeg" CPPFLAGS="-I${OUTPUT}/Headers/turbojpeg" CXXFLAGS="-I${OUTPUT}/Headers/turbojpeg" LDFLAGS="-L${OUTPUT}/Libraries/linux -ljpeg" ./configure --disable-shared --prefix="${PREFIX}" --without-utilities --disable-docs --enable-zero-configuration --disable-dependency-tracking --with-quantum-depth=16 --enable-hdri --without-bzlib --disable-openmp --disable-assert --without-zlib PKG_CONFIG_PATH="$(pwd)" JPEG_LIBS="-L${OUTPUT}/Headers/Libraries/linux -ljpeg"
 
-make -s -j install
+make -j install
 
 # Copy the library files.
 

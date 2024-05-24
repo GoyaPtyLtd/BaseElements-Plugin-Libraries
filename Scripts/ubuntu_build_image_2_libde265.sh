@@ -28,7 +28,7 @@ autoreconf -fi
 ./autogen.sh
 
 ./configure --prefix="${PREFIX}" --disable-shared --enable-static --disable-dec265 --disable-sherlock265 --disable-sse --disable-dependency-tracking
-make -s -j install
+make -j install
 
 # Copy the header and library files.
 

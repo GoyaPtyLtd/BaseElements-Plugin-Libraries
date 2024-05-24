@@ -42,7 +42,7 @@ export LIBXML=`pwd`
 
 CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./autogen.sh --disable-shared --with-threads --without-python --without-zlib --without-lzma --with-iconv=../iconv/_build_macos --prefix="${PREFIX}"
 
-make -s -j install
+make -j install
 
 #Need to change this so it finds my installed version and not the SDK supplied one.
 

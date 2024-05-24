@@ -170,10 +170,10 @@ Then
 
 	cd poco-poco-1.10.1-all
 	./configure --config=iPhone-clang-libc++ --cflags="-miphoneos-version-min=13.2" --prefix="${$(pwd)}/_build_iphone" --no-sharedlibs --static --poquito --omit=CppParser,Crypto,Data,Encodings,MongoDB,PDF,PageCompiler,Redis,Util --no-tests --no-samples
-	make -s -j install
+	make -j install
 	make distclean
 	./configure --config=iPhoneSimulator-clang-libc++ --prefix="${$(pwd)}/_build_iphone_simulator" --no-sharedlibs --static --poquito --omit=CppParser,Crypto,Data,Encodings,MongoDB,PDF,PageCompiler,Redis --no-tests --no-samples
-	make -s -j install
+	make -j install
 
 Copy the libraries (and, if necessary, the headers) to the project directory
 

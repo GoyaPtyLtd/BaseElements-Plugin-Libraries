@@ -64,7 +64,7 @@ export LIBXML=`pwd`
 # Build
 
 CFLAGS=-fPIC ./configure --disable-shared --with-threads --without-python --without-zlib --without-lzma --prefix="${PREFIX}"
-make -s -j install
+make -j install
 
 # Copy the library files.
 
@@ -87,7 +87,7 @@ export PREFIX=`pwd`'/_build_linux'
 # Build
 
 CFLAGS=-fPIC ./configure --disable-shared --without-python --without-crypto --prefix="${PREFIX}"
-make -s -j install
+make -j install
 
 # Copy the library files.
 

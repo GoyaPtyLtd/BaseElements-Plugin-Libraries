@@ -43,7 +43,7 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 export macOS="10.15"
 
 CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=${macOS}" ./configure --host=x86_64 --prefix="${PREFIX}"  --disable-shared --enable-static
-make -s -j install
+make -j install
 make distclean
 
 # Build iOS - not working as no longer supports cmake
@@ -53,7 +53,7 @@ make distclean
 # export ARCH="arm64"
 # export IOS_SDK=$(xcrun --sdk iphoneos --show-sdk-path)
 # cmake -G "Unix Makefiles" -DCMAKE_OSX_SYSROOT=${IOS_SDK} -DCMAKE_INSTALL_PREFIX="${PREFIX_ios}" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_C_FLAGS="-arch ${ARCH} -miphoneos-version-min=${iphoneos} -stdlib=libc++" -DCMAKE_CXX_FLAGS="-arch ${ARCH} -miphoneos-version-min=${iphoneos} -stdlib=libc++" -DCMAKE_CXX_STANDARD=11 ./
-# make -s -j install
+# make -j install
 # make distclean
 # 
 # # Build Simulator arm64
@@ -61,7 +61,7 @@ make distclean
 # export ARCH="arm64"
 # export IOS_SDK=$(xcrun --sdk iphonesimulator --show-sdk-path)
 # cmake -G "Unix Makefiles" -DCMAKE_OSX_SYSROOT=${IOS_SDK} -DCMAKE_INSTALL_PREFIX="${PREFIX_iosSimulatorArm}" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_C_FLAGS="-arch ${ARCH} -miphonesimulator-version-min=${iphoneos} -stdlib=libc++" -DCMAKE_CXX_FLAGS="-arch ${ARCH} -miphonesimulator-version-min=${iphoneos} -stdlib=libc++" -DCMAKE_CXX_STANDARD=11 ./
-# make -s -j install
+# make -j install
 # make distclean
 # 
 # # Build Simulator x86
@@ -69,7 +69,7 @@ make distclean
 # export ARCH="x86_64"
 # export IOS_SDK=$(xcrun --sdk iphonesimulator --show-sdk-path)
 # cmake -G "Unix Makefiles" -DCMAKE_OSX_SYSROOT=${IOS_SDK} -DCMAKE_INSTALL_PREFIX="${PREFIX_iosSimulatorx86}" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_C_FLAGS="-arch ${ARCH} -miphonesimulator-version-min=${iphoneos} -stdlib=libc++" -DCMAKE_CXX_FLAGS="-arch ${ARCH} -miphonesimulator-version-min=${iphoneos} -stdlib=libc++" -DCMAKE_CXX_STANDARD=11 ./
-# make -s -j install
+# make -j install
 # make distclean
 # 
 # # Build Simulator fat Binary

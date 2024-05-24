@@ -35,7 +35,7 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 # Build macOS
 
 cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSE -DENABLE_SHERLOCK265=FALSE -DENABLE_DECODER=OFF -DCMAKE_OSX_DEPLOYMENT_TARGET="10.15" ./
-make -s -j install
+make -j install
 
 # Copy the header and library files.
 

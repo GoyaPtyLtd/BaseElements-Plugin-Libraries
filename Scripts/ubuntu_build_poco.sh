@@ -32,7 +32,7 @@ export PREFIX=`pwd`'/_build_linux'
 # Build
 
 ./configure --cflags=-fPIC --typical --static --no-tests --no-samples --include-path="${OUTPUT}/Headers" --prefix="${PREFIX}" --poquito --omit=CppParser,Data,Encodings,MongoDB,PDF,PageCompiler,Redis,Util
-make -s -j install
+make -j install
 
 # Copy the library files.
 

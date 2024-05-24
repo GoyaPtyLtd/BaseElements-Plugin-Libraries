@@ -33,7 +33,7 @@ autoreconf -fi
 
 ./configure --host=x86_64 --prefix="${PREFIX}" CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" --disable-shared
 
-make -s -j install
+make -j install
 
 # Copy the library files.
 

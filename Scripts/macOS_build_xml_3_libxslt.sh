@@ -42,7 +42,7 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./autogen.sh --disable-shared --without-python --without-crypto --with-libxml-prefix="../libxml/_build_macos" --prefix="${PREFIX}"
 
-make -s -j install
+make -j install
 
 # Copy the header and library files.
 

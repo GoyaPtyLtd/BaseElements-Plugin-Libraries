@@ -41,9 +41,9 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 autoupdate
 autoreconf -fi
 
-./configure --quiet --host=x86_64 --prefix="${PREFIX}" CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" --disable-shared
+./configure --host=x86_64 --prefix="${PREFIX}" CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" --disable-shared
 
-make -s -j install
+make -j install
 
 # Copy the header and library files.
 

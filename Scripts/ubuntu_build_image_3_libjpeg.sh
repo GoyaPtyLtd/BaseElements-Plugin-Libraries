@@ -29,7 +29,7 @@ export PREFIX=`pwd`'/_build_linux'
 
 
 CFLAGS="-fPIC" ./configure --prefix="${PREFIX}" --disable-shared --enable-static
-make -s -j install
+make -j install
 
 # Copy the header and library files.
 

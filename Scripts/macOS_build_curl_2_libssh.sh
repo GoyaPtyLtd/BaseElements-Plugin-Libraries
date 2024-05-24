@@ -38,8 +38,8 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 # Build macOS
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers -I${OUTPUT}/Headers/openssl" LDFLAGS="-L${OUTPUT}/Libraries/macOS/" LIBS="-ldl" ./configure --quiet --disable-shared --disable-examples-build --prefix="${PREFIX}" -exec-prefix="${PREFIX}" --with-libz --with-crypto=openssl
-make -s -j install
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers -I${OUTPUT}/Headers/openssl" LDFLAGS="-L${OUTPUT}/Libraries/macOS/" LIBS="-ldl" ./configure --disable-shared --disable-examples-build --prefix="${PREFIX}" -exec-prefix="${PREFIX}" --with-libz --with-crypto=openssl
+make -j install
 
 # Copy the header and library files.
 

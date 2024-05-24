@@ -34,7 +34,7 @@ export PREFIX=`pwd`'/_build_linux'
 # Build
 
 CFLAGS="-fPIC" ./configure --static --prefix="${PREFIX}"
-make -s -j install
+make -j install
 
 # Copy the library files.
 
@@ -56,7 +56,7 @@ export PREFIX=`pwd`'/_build_linux'
 # Build
 
 ./Configure linux-generic64 no-engine no-hw no-shared --prefix="${PREFIX}"
-make -s -j install
+make -j install
 
 # Copy the library files.
 
@@ -79,7 +79,7 @@ export PREFIX=`pwd`'/_build_linux'
 # Build
 
 CFLAGS="-fPIC -I${SRCROOT}/Headers -I${SRCROOT}/Headers/zlib" LDFLAGS="-L${SRCROOT}/Libraries/linux/" LIBS="-ldl" ./configure --disable-shared --disable-examples-build --prefix="${PREFIX}"
-make -s -j install
+make -j install
 
 # Copy the library files.
 
@@ -102,7 +102,7 @@ export PREFIX=`pwd`'/_build_linux'
 
 CPPFLAGS="-I${SRCROOT}/Headers -I${SRCROOT}/Headers/zlib -I${SRCROOT}/Headers/libssh2  -I${SRCROOT}/Headers/openssl" LDFLAGS="-L${SRCROOT}/Libraries/linux" LIBS="-ldl" ./configure --disable-dependency-tracking --enable-static --disable-shared --with-ssl --with-zlib --with-libssh2 --without-tests --prefix="${PREFIX}"
 
-make -s -j install
+make -j install
 
 # Copy the library files.
 

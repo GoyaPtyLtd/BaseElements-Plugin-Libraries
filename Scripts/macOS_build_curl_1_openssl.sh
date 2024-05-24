@@ -18,8 +18,6 @@ mkdir Headers/openssl
 cd ../source/macOS
 export SRCROOT=`pwd`
 
-#====openssl====
-
 # Switch to our build directory
 
 rm -rf openssl
@@ -43,18 +41,16 @@ export PREFIX_iosSimulator=`pwd`'/_build_iosSimulator'
 export PREFIX_iosSimulatorArm=`pwd`'/_build_iosSimulatorArm'
 export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
-# Build macOS
-
 # this build seems to fail with "make -j" so we've left that out
 
 #first build is install so we get headers
 CFLAGS="-mmacosx-version-min=10.15" ./configure darwin64-x86_64-cc no-engine no-shared --prefix="${PREFIX_x86_64}"
-make -s install
+make install
 make -s -j distclean
 
 #install_sw leaves out headers
 CFLAGS="-mmacosx-version-min=10.15" ./configure darwin64-arm64-cc no-engine no-shared --prefix="${PREFIX_arm64}"
-make -s install_sw
+make install_sw
 make -s -j distclean
 
 lipo -create "${PREFIX_x86_64}/lib/libcrypto.a" "${PREFIX_arm64}/lib/libcrypto.a" -output "${PREFIX}/libcrypto.a"

@@ -53,7 +53,7 @@ export LDFLAGS="-L${OUTPUT}/Libraries/macOS -ljpeg"
 			--enable-hdri --without-bzlib --disable-openmp --disable-assert --without-zlib --without-xml \
 			JPEG_LIBS="-L${OUTPUT}/Libraries/macOS -ljpeg"
 
-make -s -j install
+make -j install
 
 # Copy the header and library files.
 

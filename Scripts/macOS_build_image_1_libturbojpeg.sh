@@ -6,7 +6,8 @@ export OUTPUT=`pwd`
 # Remove old libraries
 
 rm Libraries/macOS/libturbojpeg.a
-rm -rf Headers/libturbojpeg/*
+rm -rf Headers/libturbojpeg
+mkdir Headers/libturbojpeg
 
 # Starting folder
 
@@ -39,10 +40,10 @@ make install DESTDIR="${PREFIX}"
 
 # Copy the header and library files.
 
-cp -R "${PREFIX}/opt/libjpeg-turbo/include" "${OUTPUT}/Headers/libturbojpeg"
+cp -R _build_macos/opt/libjpeg-turbo/include/* "${OUTPUT}/Headers/libturbojpeg"
 
-cp "${PREFIX}/opt/libjpeg-turbo/lib/libturbojpeg.a" "${OUTPUT}/Libraries/macOS"
-cp "${PREFIX}/opt/libjpeg-turbo/lib/libjpeg.a" "${OUTPUT}/Libraries/macOS"
+cp _build_macos/opt/libjpeg-turbo/lib/libturbojpeg.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/opt/libjpeg-turbo/lib/libjpeg.a "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

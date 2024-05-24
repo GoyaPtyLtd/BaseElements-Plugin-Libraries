@@ -7,6 +7,7 @@ export OUTPUT=`pwd`
 
 rm Libraries/macOS/libheif.a
 rm -rf Headers/libheif
+mkdir Headers/libheif
 
 # Starting folder
 
@@ -39,8 +40,8 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R "${PREFIX}/include" "${OUTPUT}/Headers/libheif"
-cp "${PREFIX}/lib/libheif.a" "${OUTPUT}/Libraries/macOS"
+cp -R _build_macos/include/* "${OUTPUT}/Headers/libheif"
+cp _build_macos/lib/libheif.a "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

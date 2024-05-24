@@ -12,7 +12,8 @@ rm Libraries/macOS/libPocoJSON.a
 rm Libraries/macOS/libPocoXML.a
 rm Libraries/macOS/libPocoNet.a
 
-rm -rf Headers/Poco/*
+rm -rf Headers/Poco
+mkdir Headers/Poco
 
 # Starting folder
 
@@ -46,7 +47,7 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R "${PREFIX}/include/Poco" "${OUTPUT}/Headers"
+cp -R "${PREFIX}/include/Poco/*" "${OUTPUT}/Headers/Poco"
 
 cp "${PREFIX}/lib/libPocoCrypto.a" "${OUTPUT}/Libraries/macOS"
 cp "${PREFIX}/lib/libPocoFoundation.a" "${OUTPUT}/Libraries/macOS"

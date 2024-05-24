@@ -6,7 +6,8 @@ export OUTPUT=`pwd`
 # Remove old libraries and Headers
 
 rm Libraries/macOS/libde265.a
-rm -rf Headers/libde265/*
+rm -rf Headers/libde265
+mkdir Headers/libde265
 
 # Switch to our build directory and clean out anything old
 
@@ -35,8 +36,8 @@ make -s -j install
 
 # Copy the header and library files.
 
-cp -R "${PREFIX}/include/libde265" "${OUTPUT}/Headers/libde265"
-cp "${PREFIX}/lib/libde265.a" "${OUTPUT}/Libraries/macOS"
+cp -R _build_macos/include/libde265/* "${OUTPUT}/Headers/libde265"
+cp _build_macos/lib/libde265.a "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

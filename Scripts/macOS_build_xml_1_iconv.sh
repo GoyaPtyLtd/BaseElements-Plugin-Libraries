@@ -43,8 +43,6 @@ make install
 
 # Copy the header and library files.
 
-mkdir "${OUTPUT}/Headers/iconv"
-
 cp -R _build_macos/include/* "${OUTPUT}/Headers/iconv"
 
 cp _build_macos/lib/libiconv.a "${OUTPUT}/Libraries/macOS"

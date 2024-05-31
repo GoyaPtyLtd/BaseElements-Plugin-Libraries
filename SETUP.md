@@ -16,6 +16,23 @@ There are a bunch of open source tools required as well, to make things easier w
 
 Not all of these may be needed, this was we had last time we checked. You want to avoid using lots of brew libraries as the compile options may find those instead of the ones we've built into the scripts.
 
+You also need to configure git with git-lfs :
+
+    git lfs install
+
+It shouldn't matter where you put the local version of the repository, but we put it at ~/Documents/GitHub :
+
+    cd ~
+    mkdir Documents/GitHub
+    cd Documents/GitHub
+
+    git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
+
+    cd BaseElements-Plugin-Libraries/Scripts
+
+    ./_getSource.sh
+    ./_macOS_build_all.sh
+
 ### Ubuntu Setup
 
     sudo apt update

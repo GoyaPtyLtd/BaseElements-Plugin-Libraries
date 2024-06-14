@@ -18,6 +18,8 @@ mkdir Headers/libxml
 
 cd ../source/macOS
 
+export ICONV=`pwd`'/iconv/_build_macos'
+
 rm -rf libxml
 mkdir libxml
 tar -xf ../libxml.tar.gz -C libxml --strip-components=1
@@ -38,7 +40,7 @@ export LIBXML=`pwd`
 
 # Build macOS
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./autogen.sh --disable-shared --with-threads --without-python --without-zlib --without-lzma --with-iconv=../iconv/_build_macos --prefix="${PREFIX}"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./autogen.sh --disable-shared --with-threads --without-python --without-zlib --without-lzma --with-iconv=${ICONV} --prefix="${PREFIX}"
 
 make -j install
 

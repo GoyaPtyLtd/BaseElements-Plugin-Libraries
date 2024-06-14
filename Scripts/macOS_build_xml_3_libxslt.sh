@@ -19,7 +19,7 @@ mkdir Headers/libxslt
 
 cd ../source/macOS
 
-export ICONV=`pwd`'/iconv/_build_macos'
+export ICONV=`pwd`'/libiconv/_build_macos'
 
 rm -rf libxslt
 mkdir libxslt

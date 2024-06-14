@@ -18,7 +18,7 @@ mkdir Headers/libxml
 
 cd ../source/macOS
 
-export ICONV=`pwd`'/iconv/_build_macos'
+export ICONV=`pwd`'/libiconv/_build_macos'
 
 rm -rf libxml
 mkdir libxml

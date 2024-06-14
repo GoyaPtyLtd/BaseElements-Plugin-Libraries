@@ -19,6 +19,8 @@ mkdir Headers/libxslt
 
 cd ../source/macOS
 
+export ICONV=`pwd`'/iconv/_build_macos'
+
 rm -rf libxslt
 mkdir libxslt
 tar -xf ../libxslt.tar.gz -C libxslt --strip-components=1
@@ -38,7 +40,7 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 # Build macOS
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./autogen.sh --disable-shared --without-python --without-crypto --with-libxml-prefix="../libxml/_build_macos" --prefix="${PREFIX}"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./autogen.sh --disable-shared --without-python --without-crypto --with-iconv=${ICONV} --with-libxml-prefix="../libxml/_build_macos" --prefix="${PREFIX}"
 
 make -j install
 

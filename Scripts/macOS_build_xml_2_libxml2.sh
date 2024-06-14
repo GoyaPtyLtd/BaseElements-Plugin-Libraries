@@ -18,7 +18,7 @@ mkdir Headers/libxml
 
 cd ../source/macOS
 
-export ICONV=`pwd`'/libiconv/_build_macos'
+export ICONV="${OUTPUT}/Headers/iconv"
 
 rm -rf libxml
 mkdir libxml
@@ -40,13 +40,13 @@ export LIBXML=`pwd`
 
 # Build macOS
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./autogen.sh --disable-shared --with-threads --without-python --without-zlib --without-lzma --with-iconv=${ICONV} --prefix="${PREFIX}"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./autogen.sh --disable-shared --with-threads --without-python --without-zlib --without-lzma --with-iconv="${ICONV}" --prefix="${PREFIX}"
 
 make -j install
 
 #Need to change this so it finds my installed version and not the SDK supplied one.
 
-sed -i '' -e 's|#include <iconv\.h\>|#include <iconv/iconv.h>|g' "${PREFIX}/include/libxml2/libxml/encoding.h"
+#sed -i '' -e 's|#include <iconv\.h\>|#include <iconv/iconv.h>|g' "${PREFIX}/include/libxml2/libxml/encoding.h"
 
 # Copy the header and library files.
 

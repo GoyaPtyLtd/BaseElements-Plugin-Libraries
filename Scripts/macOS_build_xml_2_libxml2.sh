@@ -20,7 +20,7 @@ cd ../source/macOS
 
 rm -rf libxml
 mkdir libxml
-tar -xf ../libxml.tar.xf -C libxml --strip-components=1
+tar -xf ../libxml.tar.xz -C libxml --strip-components=1
 cd libxml
 
 mkdir _build_macos

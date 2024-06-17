@@ -40,7 +40,7 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 # Build macOS
 
 export CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" 
-./autogen.sh --disable-shared --with-threads --without-python --with-iconv="${ICONV}" --prefix="${PREFIX}"
+./configure --disable-shared --with-threads --without-python --with-iconv="${ICONV}" --prefix="${PREFIX}"
 
 make -j install
 

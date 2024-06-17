@@ -19,7 +19,7 @@ mkdir Headers/libxslt
 
 cd ../source/macOS
 
-export LIBXML=`pwd`'/libxml'
+export LIBXML=`pwd`'/libxml/_build_macos'
 
 rm -rf libxslt
 mkdir libxslt

@@ -20,8 +20,6 @@ mkdir Headers/libxslt
 cd ../source/macOS
 
 export LIBXML=`pwd`'/libxml'
-export LIBXMLINC="${OUTPUT}/Headers/libxml"
-export LIBXMLLIBS="${OUTPUT}/Libraries/macOS"
 
 rm -rf libxslt
 mkdir libxslt
@@ -43,7 +41,7 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 # Build macOS
 
 export CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" 
-./configure --disable-shared --without-python --without-crypto --with-libxml-prefix="${LIBXML}" --with-libxml-include-prefix="${LIBXMLINC}" --with-libxml-libs-prefix="${LIBXMLLIBS}" --prefix="${PREFIX}"
+./configure --disable-shared --without-python --without-crypto --with-libxml-prefix="${LIBXML}" --prefix="${PREFIX}"
 
 make -j install
 

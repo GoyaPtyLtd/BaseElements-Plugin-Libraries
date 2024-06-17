@@ -18,11 +18,9 @@ mkdir Headers/libxml
 
 cd ../source/macOS
 
-export ICONV="${OUTPUT}/Headers/iconv"
-
 rm -rf libxml
 mkdir libxml
-tar -xf ../libxml.tar.gz -C libxml --strip-components=1
+tar -xf ../libxml.tar.xf -C libxml --strip-components=1
 cd libxml
 
 mkdir _build_macos
@@ -36,11 +34,11 @@ export PREFIX_ios=`pwd`'/_build_ios'
 export PREFIX_iosSimulator=`pwd`'/_build_iosSimulator'
 export PREFIX_iosSimulatorArm=`pwd`'/_build_iosSimulatorArm'
 export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
-export LIBXML=`pwd`
 
 # Build macOS
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./autogen.sh --disable-shared --with-threads --without-python --without-zlib --without-lzma --with-iconv="${ICONV}" --prefix="${PREFIX}"
+export CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" 
+./configure --disable-shared --without-python --prefix="${PREFIX}"
 
 make -j install
 

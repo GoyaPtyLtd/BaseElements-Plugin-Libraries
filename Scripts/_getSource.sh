@@ -118,15 +118,15 @@ wget -q -nv -O libssh.tar.gz https://libssh2.org/download/libssh2-1.11.0.tar.gz
 #
 #Download the source for libxml2 from  http://xmlsoft.org/downloads.html
 
-rm -f libxml.tar.gz
-wget -q -nv -O libxml.tar.gz https://gitlab.gnome.org/GNOME/libxml2/-/archive/v2.12.6/libxml2-v2.12.6.tar.gz
+rm -f libxml.tar.xz
+wget -q -nv -O libxml.tar.xz https://download.gnome.org/sources/libxml2/2.13/libxml2-2.13.0.tar.xz
 
 #=====LIBXSLT======
 #
 #Download the source from  https://github.com/GNOME/libxslt/tags
 
-rm -f libxslt.tar.gz
-wget -q -nv -O libxslt.tar.gz https://gitlab.gnome.org/GNOME/libxslt/-/archive/v1.1.39/libxslt-v1.1.39.tar.gz
+rm -f libxslt.tar.xz
+wget -q -nv -O libxslt.tar.xz https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.40.tar.xz
 
 #=====OPENSSL======
 #

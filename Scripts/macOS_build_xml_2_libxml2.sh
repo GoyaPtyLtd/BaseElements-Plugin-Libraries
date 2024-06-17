@@ -44,10 +44,6 @@ export CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15"
 
 make -j install
 
-#Need to change this so it finds my installed version and not the SDK supplied one.
-
-#sed -i '' -e 's|#include <iconv\.h\>|#include <iconv/iconv.h>|g' "${PREFIX}/include/libxml2/libxml/encoding.h"
-
 # Copy the header and library files.
 
 cp -R _build_macos/include/libxml2/libxml/* "${OUTPUT}/Headers/libxml"

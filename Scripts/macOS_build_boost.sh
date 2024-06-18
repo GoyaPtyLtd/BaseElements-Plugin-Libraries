@@ -36,9 +36,6 @@ mkdir _build_iosSimulatorx86
 
 export PREFIX=`pwd`'/_build_macos'
 export PREFIX_ios=`pwd`'/_build_ios'
-export PREFIX_iosSimulator=`pwd`'/_build_iosSimulator'
-export PREFIX_iosSimulatorArm=`pwd`'/_build_iosSimulatorArm'
-export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 # Build macOS
 
@@ -55,6 +52,12 @@ cp _build_macos/lib/libboost_filesystem.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/lib/libboost_program_options.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/lib/libboost_regex.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/lib/libboost_thread.a "${OUTPUT}/Libraries/macOS"
+
+#Build iOS
+
+./iOS_build_boost.sh  -ios --boost-version 1.75.0 --boost-libs "program_options regex date_time filesystem thread"
+
+cp -R dist/boost.xcframework "${OUTPUT}/Libraries/iOS"
 
 # Return to source directory
 

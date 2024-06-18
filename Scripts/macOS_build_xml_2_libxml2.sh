@@ -44,6 +44,9 @@ export CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15"
 
 make -j install
 
+#This affects when you're compiling in XCode later - it will look for the system iconv, this makes it use our one.
+sed -i '' -e 's|#include <iconv\.h\>|#include <iconv/iconv.h>|g' "${PREFIX}/include/libxml2/libxml/encoding.h"
+
 # Copy the header and library files.
 
 cp -R _build_macos/include/libxml2/libxml/* "${OUTPUT}/Headers/libxml"

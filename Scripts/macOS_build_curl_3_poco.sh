@@ -11,10 +11,10 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/macOS/libPocoCrypto.a
 rm -f Libraries/macOS/libPocoFoundation.a
-rm -f Libraries/macOS/libPocoZip.a
 rm -f Libraries/macOS/libPocoJSON.a
-rm -f Libraries/macOS/libPocoXML.a
 rm -f Libraries/macOS/libPocoNet.a
+rm -f Libraries/macOS/libPocoXML.a
+rm -f Libraries/macOS/libPocoZip.a
 
 rm -rf Headers/Poco
 mkdir Headers/Poco
@@ -52,10 +52,10 @@ cp -R _build_macos/include/Poco/* "${OUTPUT}/Headers/Poco"
 
 cp _build_macos/lib/libPocoCrypto.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/lib/libPocoFoundation.a "${OUTPUT}/Libraries/macOS"
-cp _build_macos/lib/libPocoZip.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/lib/libPocoJSON.a "${OUTPUT}/Libraries/macOS"
-cp _build_macos/lib/libPocoXML.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/lib/libPocoNet.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libPocoXML.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/lib/libPocoZip.a "${OUTPUT}/Libraries/macOS"
 
 # Return to source directory
 

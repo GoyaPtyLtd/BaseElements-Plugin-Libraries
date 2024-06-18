@@ -43,13 +43,6 @@ wget -q -nv -O fontconfig.tar.gz https://www.freedesktop.org/software/fontconfig
 rm -f freetype.tar.gz
 wget -q -nv -O freetype.tar.gz https://sourceforge.net/projects/freetype/files/freetype2/2.13.2/freetype-2.13.2.tar.gz
 
-#=====JANSSON======
-#
-#Download the source as a ZIP archive from  https://github.com/akheron/jansson/releases
-
-rm -f jansson.tar.gz
-wget -q -nv -O jansson.tar.gz https://github.com/akheron/jansson/releases/download/v2.14/jansson-2.14.tar.gz
-
 #=====LIBICONV======
 #
 #Download the source for libiconv from  https://www.gnu.org/software/libiconv/#downloading

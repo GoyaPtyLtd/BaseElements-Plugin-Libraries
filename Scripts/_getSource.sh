@@ -140,7 +140,7 @@ wget -q -nv -O openssl.tar.gz https://www.openssl.org/source/openssl-3.2.1.tar.g
 #Download the source from  http://pocoproject.org/download/
 
 rm -f poco.tar.gz
-wget -q -nv -O poco.tar.gz https://github.com/pocoproject/poco/archive/refs/tags/poco-1.13.2-release.tar.gz
+wget -q -nv -O poco.tar.gz https://github.com/pocoproject/poco/archive/refs/tags/poco-1.13.3-release.tar.gz
 
 #=====PODOFO======
 #

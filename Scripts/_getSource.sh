@@ -84,7 +84,7 @@ wget -q -nv -O libjpeg.tar.gz http://ijg.org/files/jpegsrc.v9f.tar.gz
 #Download the source from  https://github.com/libjpeg-turbo/libjpeg-turbo/releases
 
 rm -f libturbojpeg.tar.gz
-wget -q -nv -O libturbojpeg.tar.gz https://github.com/libjpeg-turbo/libjpeg-turbo/archive/refs/tags/3.0.2.tar.gz
+wget -q -nv -O libturbojpeg.tar.gz https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.0.3/libjpeg-turbo-3.0.3.tar.gz
 
 #=====IMAGEMAGICK======
 #

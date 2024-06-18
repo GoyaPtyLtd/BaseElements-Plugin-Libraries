@@ -36,9 +36,9 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 # Build macOS
 
-autoreconf -i
+export CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" 
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared --enable-all-static --enable-pthread-tls --without-oniguruma --prefix="${PREFIX}"
+./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared --enable-all-static --enable-pthread-tls --without-oniguruma --prefix="${PREFIX}"
 
 make -j install
 
@@ -46,6 +46,10 @@ make -j install
 
 cp -R _build_macos/include/* "${OUTPUT}/Headers/jq"
 cp _build_macos/lib/libjq.a "${OUTPUT}/Libraries/macOS"
+
+# jq seems to require the version.h file, but doesn't put it into the prefix.
+
+cp src/version.h "${OUTPUT}/Headers/jq"
 
 # Return to source directory
 

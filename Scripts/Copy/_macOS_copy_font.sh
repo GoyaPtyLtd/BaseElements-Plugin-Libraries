@@ -17,3 +17,5 @@ rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --sta
 rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/fontconfig/" "${START}/BaseElements-Plugin/Headers/fontconfig"
 
 rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/podofo/" "${START}/BaseElements-Plugin/Headers/podofo"
+
+#PODOFO also uses : libxml, libssl, libcrypto, libjpeg, libpng16

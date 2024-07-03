@@ -178,7 +178,7 @@ wget -q -nv -O poco.tar.gz https://github.com/pocoproject/poco/archive/refs/tags
 echo "Downloading podofo ( 19 of 20 ) ..."
 
 rm -f podofo.tar.gz
-wget -q -nv -O podofo.tar.gz https://github.com/podofo/podofo/archive/refs/tags/0.10.1.tar.gz
+wget -q -nv -O podofo.tar.gz https://github.com/podofo/podofo/archive/refs/tags/0.10.3.tar.gz
 
 #=====ZLIB======
 #

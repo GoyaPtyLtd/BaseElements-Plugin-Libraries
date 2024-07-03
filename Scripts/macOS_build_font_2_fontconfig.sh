@@ -36,7 +36,12 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 # Build macOS
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ./configure --disable-shared --prefix="${PREFIX}" FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/macOS -lfreetype" LDFLAGS="-L${OUTPUT}/Libraries/macOS"
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure \
+--disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
+--prefix="${PREFIX}" \
+FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/macOS -lfreetype" \
+LDFLAGS="-L${OUTPUT}/Libraries/macOS"
+
 make -j install
 
 # Copy the header and library files.

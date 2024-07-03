@@ -39,7 +39,8 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 #		 -DLIBXML2_LIBRARY="${OUTPUT}/Libraries/macOS/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT}/Headers/libxml" \
 
 
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DPODOFO_BUILD_STATIC:BOOL=TRUE \
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
+		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
          -DFREETYPE_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfreetype.a" -DFREETYPE_INCLUDE_DIRS="${OUTPUT}/Headers/freetype2" \
 		 -DFontconfig_LIBRARY="${OUTPUT}/Libraries/macOS/fontconfig.a" -DFontconfig_INCLUDE_DIR="${OUTPUT}/Headers" \
 		 -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT}/Libraries/macOS/libcrypto.a" \
@@ -48,10 +49,10 @@ cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${P
 		 -DLIBXML2_XMLLINT_EXECUTABLE="${SRCROOT}/macOS/libxml/_build_macos/bin/xmllint" \
 		 -DJPEG_LIBRARY="${OUTPUT}/Libraries/macOS/libjpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT}/Headers/libturbojpeg" \
 		 -DPNG_LIBRARY="${OUTPUT}/Libraries/macOS/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT}/Headers/libpng" \
-		 -DPODOFO_BUILD_LIB_ONLY=TRUE -DCMAKE_CXX_STANDARD=11 \
+		 -DCMAKE_CXX_STANDARD=11 \
 		 -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
 		 -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" .
-		 
+
 make -j install
 
 # Copy the header and library files.

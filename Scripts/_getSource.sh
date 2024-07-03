@@ -189,4 +189,14 @@ echo "Downloading zlib ( 20 of 20 ) ..."
 rm -f zlib.tar.gz
 wget -q -nv -O zlib.tar.gz https://www.zlib.net/zlib-1.3.1.tar.gz
 
+#=====Libpng======
+#
+#Download the source from  https://github.com/pnggroup/libpng/tags
+
+echo "Downloading libjpeg-turbo ( 11 of 21 ) ..."
+
+rm -f libpng.tar.gz
+wget -q -nv -O libpng.tar.gz https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.43.tar.gz
+
+
 echo "Downloading Complete."

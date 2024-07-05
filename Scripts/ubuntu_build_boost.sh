@@ -34,7 +34,7 @@ export PREFIX=`pwd`'/_build_linux'
 ./bootstrap.sh
 ./b2 link=static cflags=-fPIC cxxflags=-fPIC runtime-link=static install --prefix="${PREFIX}" --with-program_options --with-regex --with-date_time --with-filesystem --with-thread
 
-# Copy the header and library files.
+# Copy the library files.
 
 cp _build_linux/lib/libboost_atomic.a "${OUTPUT}/Libraries/linux"
 cp _build_linux/lib/libboost_date_time.a "${OUTPUT}/Libraries/linux"

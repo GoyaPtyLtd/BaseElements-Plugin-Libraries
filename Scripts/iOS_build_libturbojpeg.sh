@@ -2,6 +2,8 @@
 
 # iPhone version
 
+# https://github.com/libjpeg-turbo/libjpeg-turbo/blob/main/BUILDING.md
+
 IOS_PLATFORMDIR=$(xcrun --sdk iphoneos --show-sdk-platform-path)
 IOS_SYSROOT=$(xcrun --sdk iphoneos --show-sdk-path)
 

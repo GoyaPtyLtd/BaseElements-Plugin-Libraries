@@ -151,7 +151,7 @@ wget -q -nv -O libxml.tar.xz https://download.gnome.org/sources/libxml2/2.13/lib
 echo "Downloading libxslt ( 16 of 20 ) ..."
 
 rm -f libxslt.tar.xz
-wget -q -nv -O libxslt.tar.xz https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.40.tar.xz
+wget -q -nv -O libxslt.tar.xz https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.42.tar.xz
 
 #=====OPENSSL======
 #

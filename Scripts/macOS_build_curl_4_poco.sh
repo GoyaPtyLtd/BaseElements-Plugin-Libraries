@@ -13,6 +13,7 @@ rm -f Libraries/macOS/libPocoCrypto.a
 rm -f Libraries/macOS/libPocoFoundation.a
 rm -f Libraries/macOS/libPocoJSON.a
 rm -f Libraries/macOS/libPocoNet.a
+rm -f Libraries/macOS/libPocoPDF.a
 rm -f Libraries/macOS/libPocoXML.a
 rm -f Libraries/macOS/libPocoZip.a
 

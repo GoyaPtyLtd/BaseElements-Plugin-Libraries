@@ -17,15 +17,15 @@ export OUTPUT=`pwd`
 
 # Remove old libraries and headers
 
-rm -f Libraries/${PLATFORM}/libz.a
+rm -f Libraries/${PLATFORM}/zlib.a
 
 # Switch to our build directory
 
 cd ../source/${PLATFORM}
 
-rm -rf libz
-mkdir libz
-tar -xf ../libz.tar.xz -C libz --strip-components=1
+rm -rf zlib
+mkdir zlib
+tar -xf ../zlib.tar.xz -C libz --strip-components=1
 cd libz
 
 mkdir _build
@@ -49,6 +49,6 @@ make -j install
 
 # Copy the header and library files.
 
-cp _build/lib/libz.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/zlib.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

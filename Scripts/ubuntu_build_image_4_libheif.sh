@@ -3,6 +3,13 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+if [ $(uname -m) = 'aarch64' ]; then
+	export PLATFORM='linuxARM'
+else
+	export PLATFORM='linux'
+fi
+
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
@@ -10,17 +17,14 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/linux/libheif.a
 
-# Starting folder
-
-cd ../source/linux
-export SRCROOT=`pwd`
-
 # Switch to our build directory
 
+cd ../source/linux
 rm -rf libheif
 mkdir libheif
 tar -xf ../libheif.tar.gz  -C libheif --strip-components=1
 cd libheif
+
 mkdir _build_linux
 export PREFIX=`pwd`'/_build_linux'
 
@@ -32,7 +36,7 @@ make install DESTDIR="${PREFIX}"
 
 # Copy the header and library files.
 
-cp ./_build_linux/lib/libheif.a "${OUTPUT}/Libraries/linux"
+cp _build_linux/lib/libheif.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 # Return to source directory
 

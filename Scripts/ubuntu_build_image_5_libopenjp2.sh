@@ -3,26 +3,28 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+if [ $(uname -m) = 'aarch64' ]; then
+	export PLATFORM='linuxARM'
+else
+	export PLATFORM='linux'
+fi
+
+export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
 # Remove old libraries
 
 rm -f Libraries/linux/libopenjp2.a
-rm -rf Headers/libopenjp2
-mkdir Headers/libopenjp2
-
-# Starting folder
-
-cd ../source/linux
-export SRCROOT=`pwd`
 
 # Switch to our build directory
 
+cd ../source/linux
 rm -rf libopenjp2
 mkdir libopenjp2
 tar -xf ../libopenjp2.tar.gz  -C libopenjp2 --strip-components=1
 cd libopenjp2
+
 mkdir _build_linux
 export PREFIX=`pwd`'/_build_linux'
 
@@ -33,7 +35,7 @@ make install DESTDIR="${PREFIX}"
 
 # Copy the header and library files.
 
-cp ./_build_linux/usr/local/lib/libopenjp2.a "${OUTPUT}/Libraries/linux"
+cp _build_linux/usr/local/lib/libopenjp2.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 # Return to source directory
 

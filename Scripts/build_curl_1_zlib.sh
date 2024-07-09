@@ -49,6 +49,10 @@ make -j install
 
 # Copy the header and library files.
 
-cp _build/lib/zlib.a "${OUTPUT}/Libraries/${PLATFORM}"
+if [ ${PLATFORM} = 'macOS' ]; then
+	cp -R _build_x86_64/include/* "${OUTPUT}/Headers/zlib"
+fi
+
+cp _build/lib/libz.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

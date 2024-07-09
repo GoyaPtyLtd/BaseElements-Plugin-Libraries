@@ -66,6 +66,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
+	CFLAGS=-fPIC \
 	./Configure linux-generic64 no-engine no-hw no-shared \
 	--prefix="${PREFIX}"
 	make -j install

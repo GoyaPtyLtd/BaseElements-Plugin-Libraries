@@ -40,10 +40,10 @@ export PREFIX=`pwd`'/_build'
 
 if [ ${PLATFORM} = 'macOS' ]; then
 
-	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers -I${OUTPUT}/Headers/openssl" \
+	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers -I${OUTPUT}/Headers/zlib -I${OUTPUT}/Headers/openssl" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" LIBS="-ldl" \
 	./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
-	--with-libz --without-tests --with-crypto=openssl \
+	--with-zlib --without-tests --with-crypto=openssl \
 	--prefix="${PREFIX}"
 	
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then

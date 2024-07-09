@@ -25,8 +25,8 @@ cd ../source/${PLATFORM}
 
 rm -rf zlib
 mkdir zlib
-tar -xf ../zlib.tar.xz -C libz --strip-components=1
-cd libz
+tar -xf ../zlib.tar.xz -C zlib --strip-components=1
+cd zlib
 
 mkdir _build
 export PREFIX=`pwd`'/_build'

@@ -15,7 +15,7 @@ export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
-# Remove old libraries
+# Remove old libraries and headers
 
 rm -f Libraries/${PLATFORM}/libcrypto.a
 rm -f Libraries/${PLATFORM}/libssl.a

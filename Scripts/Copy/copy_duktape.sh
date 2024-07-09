@@ -1,7 +1,6 @@
 #!/bin/bash
 
 cd ../../..
-
 export START=`pwd`
 
 cd BaseElements-Plugin-Libraries/Output

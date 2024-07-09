@@ -1,7 +1,6 @@
 #!/bin/bash
 
 cd ../../..
-
 export START=`pwd`
 
 if [ $(uname) = 'Darwin' ]; then
@@ -12,9 +11,7 @@ else
 	export PLATFORM='linux'
 fi
 
-
 cd BaseElements-Plugin-Libraries/Output
-
 export OUTPUT=`pwd`
 
 cp Libraries/${PLATFORM}/libboost_atomic.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"

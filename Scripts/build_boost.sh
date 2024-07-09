@@ -24,12 +24,14 @@ rm -f Libraries/${PLATFORM}/libboost_program_options.a
 rm -f Libraries/${PLATFORM}/libboost_regex.a
 rm -f Libraries/${PLATFORM}/libboost_thread.a
 
-rm -rf Headers/boost
-mkdir Headers/boost
+if [ ${PLATFORM} = 'macOS' ]; then
+	rm -rf Headers/boost
+	mkdir Headers/boost
+fi
 
 # Switch to our build directory
 
-cd ../source/macOS
+cd ../source/${PLATFORM}
 
 rm -rf boost
 mkdir boost

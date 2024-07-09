@@ -17,7 +17,13 @@ export OUTPUT=`pwd`
 
 # Remove old libraries and headers
 
-rm -f Libraries/${PLATFORM}/zlib.a
+rm -f Libraries/${PLATFORM}/libz.a
+
+if [ ${PLATFORM} = 'macOS' ]; then
+	rm -rf Headers/zlib
+	mkdir Headers/zlib
+fi
+
 
 # Switch to our build directory
 

@@ -19,6 +19,7 @@ cp Libraries/macOS/libPocoCrypto.a "${START}/BaseElements-Plugin/Libraries/macOS
 cp Libraries/macOS/libPocoFoundation.a "${START}/BaseElements-Plugin/Libraries/macOS"
 cp Libraries/macOS/libPocoJSON.a "${START}/BaseElements-Plugin/Libraries/macOS"
 cp Libraries/macOS/libPocoNet.a "${START}/BaseElements-Plugin/Libraries/macOS"
+cp Libraries/macOS/libPocoPDF.a "${START}/BaseElements-Plugin/Libraries/macOS"
 cp Libraries/macOS/libPocoXML.a "${START}/BaseElements-Plugin/Libraries/macOS"
 cp Libraries/macOS/libPocoZip.a "${START}/BaseElements-Plugin/Libraries/macOS"
 

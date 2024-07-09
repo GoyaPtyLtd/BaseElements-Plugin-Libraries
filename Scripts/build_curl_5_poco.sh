@@ -51,7 +51,11 @@ export PREFIX_arm64=`pwd`'/_build_arm64'
 
 if [ ${PLATFORM} = 'macOS' ]; then
 
-	./configure --cflags="-mmacosx-version-min=10.15" --prefix="${PREFIX_x86_64}" --no-sharedlibs --static --poquito --no-tests --no-samples --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis,Util" --include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/macOS"
+	./configure --cflags="-mmacosx-version-min=10.15" \
+	--prefix="${PREFIX_x86_64}" \
+	--no-sharedlibs --static --poquito --no-tests --no-samples \
+	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis,Util" \
+	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
 	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
 	# Needs a change to just the POCO_TARGET_OSARCH once the bug in their config is fixed - now needs both so it builds into the right folders
@@ -59,7 +63,11 @@ if [ ${PLATFORM} = 'macOS' ]; then
 
 	make -s -j distclean
 
-	./configure --cflags="-mmacosx-version-min=10.15" --prefix="${PREFIX_arm64}" --no-sharedlibs --static --poquito --no-tests --no-samples --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis,Util" --include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/macOS"
+	./configure --cflags="-mmacosx-version-min=10.15" \
+	--prefix="${PREFIX_arm64}" \
+	--no-sharedlibs --static --poquito --no-tests --no-samples \
+	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis,Util" \
+	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
 	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=x86_64
 	# Needs a change to just the POCO_TARGET_OSARCH once the bug in their config is fixed - now needs both so it builds into the right folders
@@ -77,7 +85,11 @@ if [ ${PLATFORM} = 'macOS' ]; then
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
-	./configure --cflags=-fPIC --typical --static --no-tests --no-samples --include-path="${OUTPUT}/Headers" --prefix="${PREFIX}" --poquito --omit=CppParser,Data,Encodings,MongoDB,PageCompiler,Redis,Util
+	./configure --cflags=-fPIC \
+	--prefix="${PREFIX}" \
+	--no-sharedlibs --static --poquito --no-tests --no-samples \
+	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis,Util" \
+	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
 	make -j install
 	

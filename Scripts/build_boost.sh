@@ -47,14 +47,18 @@ export PREFIX=`pwd`'/_build'
 
 if [ ${PLATFORM} = 'macOS' ]; then
 
-	./b2 toolset=clang cxxflags="-arch arm64 -arch x86_64" address-model=64 link=static runtime-link=static install \
-	--prefix="${PREFIX}" --with-program_options --with-regex --with-date_time --with-filesystem --with-thread \
+	./b2 toolset=clang cxxflags="-arch arm64 -arch x86_64" \
+	address-model=64 link=static runtime-link=static install \
+	--prefix="${PREFIX}" \
+	--with-program_options --with-regex --with-date_time --with-filesystem --with-thread \
 	cxxflags="-mmacosx-version-min=10.15 -stdlib=libc++" linkflags="-stdlib=libc++"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
-	./b2 link=static cflags=-fPIC cxxflags=-fPIC runtime-link=static install \
-	--prefix="${PREFIX}" --with-program_options --with-regex --with-date_time --with-filesystem --with-thread
+	./b2 cflags=-fPIC cxxflags=-fPIC \
+	address-model=64 link=static runtime-link=static install \
+	--prefix="${PREFIX}" \
+	--with-program_options --with-regex --with-date_time --with-filesystem --with-thread
 
 fi
 

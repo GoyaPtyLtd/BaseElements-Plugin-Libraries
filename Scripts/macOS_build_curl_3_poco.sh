@@ -66,17 +66,19 @@ lipo -create "${PREFIX_x86_64}/lib/libPocoCrypto.a" "${PREFIX_arm64}/lib/libPoco
 lipo -create "${PREFIX_x86_64}/lib/libPocoFoundation.a" "${PREFIX_arm64}/lib/libPocoFoundation.a" -output "${PREFIX}/libPocoFoundation.a"
 lipo -create "${PREFIX_x86_64}/lib/libPocoJSON.a" "${PREFIX_arm64}/lib/libPocoJSON.a" -output "${PREFIX}/libPocoJSON.a"
 lipo -create "${PREFIX_x86_64}/lib/libPocoNet.a" "${PREFIX_arm64}/lib/libPocoNet.a" -output "${PREFIX}/libPocoNet.a"
+lipo -create "${PREFIX_x86_64}/lib/libPocoPDF.a" "${PREFIX_arm64}/lib/libPocoPDF.a" -output "${PREFIX}/libPocoPDF.a"
 lipo -create "${PREFIX_x86_64}/lib/libPocoXML.a" "${PREFIX_arm64}/lib/libPocoXML.a" -output "${PREFIX}/libPocoXML.a"
 lipo -create "${PREFIX_x86_64}/lib/libPocoZip.a" "${PREFIX_arm64}/lib/libPocoZip.a" -output "${PREFIX}/libPocoZip.a"
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/Poco/* "${OUTPUT}/Headers/Poco"
+cp -R _build_macos_x86_64/include/Poco/* "${OUTPUT}/Headers/Poco"
 
 cp _build_macos/libPocoCrypto.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/libPocoFoundation.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/libPocoJSON.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/libPocoNet.a "${OUTPUT}/Libraries/macOS"
+cp _build_macos/libPocoPDF.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/libPocoXML.a "${OUTPUT}/Libraries/macOS"
 cp _build_macos/libPocoZip.a "${OUTPUT}/Libraries/macOS"
 

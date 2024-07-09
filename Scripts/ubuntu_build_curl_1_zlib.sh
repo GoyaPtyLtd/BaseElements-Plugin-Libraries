@@ -31,7 +31,7 @@ export PREFIX=`pwd`'/_build_linux'
 CFLAGS="-fPIC" ./configure --static --prefix="${PREFIX}"
 make -j install
 
-# Copy the header and library files.
+# Copy the library files.
 
 cp _build_linux/lib/libz.a "${OUTPUT}/Libraries/${PLATFORM}"
 

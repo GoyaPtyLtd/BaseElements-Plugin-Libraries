@@ -25,7 +25,7 @@ cd ../source/${PLATFORM}
 
 rm -rf libz
 mkdir libz
-tar -xf ../libz.tar.gz -C libz --strip-components=1
+tar -xf ../libz.tar.xz -C libz --strip-components=1
 cd libz
 
 mkdir _build

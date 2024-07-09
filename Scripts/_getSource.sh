@@ -186,8 +186,8 @@ wget -q -nv -O podofo.tar.gz https://github.com/podofo/podofo/archive/refs/tags/
 
 echo "Downloading zlib ( 20 of 20 ) ..."
 
-rm -f zlib.tar.gz
-wget -q -nv -O zlib.tar.gz https://www.zlib.net/zlib-1.3.1.tar.gz
+rm -f zlib.tar.xz
+wget -q -nv -O zlib.tar.xz https://www.zlib.net/zlib-1.3.1.tar.xz
 
 #=====Libpng======
 #

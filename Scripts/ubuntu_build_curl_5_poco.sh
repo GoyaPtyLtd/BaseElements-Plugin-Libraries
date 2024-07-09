@@ -41,13 +41,13 @@ make -j install
 
 # Copy the library files.
 
-cp _build_macos/lib/libPocoCrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build_macos/lib/libPocoFoundation.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build_macos/lib/libPocoJSON.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build_macos/lib/libPocoNet.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build_macos/lib/libPocoPDF.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build_macos/lib/libPocoXML.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build_macos/lib/libPocoZip.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build_linux/lib/libPocoCrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build_linux/lib/libPocoFoundation.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build_linux/lib/libPocoJSON.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build_linux/lib/libPocoNet.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build_linux/lib/libPocoPDF.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build_linux/lib/libPocoXML.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build_linux/lib/libPocoZip.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 # Return to source directory
 

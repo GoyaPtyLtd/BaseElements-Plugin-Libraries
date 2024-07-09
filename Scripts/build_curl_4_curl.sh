@@ -40,14 +40,14 @@ export PREFIX=`pwd`'/_build'
 
 if [ ${PLATFORM} = 'macOS' ]; then
 
-	MAC_SDK=$(xcrun -sdk macosx --show-sdk-path)
-
+	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
 	CPPFLAGS=" -I${SRCROOT}/Headers -I${SRCROOT}/Headers/libssh2 -I${SRCROOT}/Headers/openssl" \
 	LDFLAGS=" -L${SRCROOT}/Libraries/${PLATFORM}" LIBS="-ldl" \
 	./configure --disable-dependency-tracking --enable-static --disable-shared \
-	--with-ssl --with-zlib --with-libssh2 --without-tests --without-libpsl --without-brotli --without-zstd \
+	--with-ssl --with-zlib --with-libssh2 --without-tests \
+	--without-libpsl --without-brotli --without-zstd \
 	--prefix="${PREFIX}" \
-	--host=x86_64-apple-darwin CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -isysroot ${MAC_SDK}"
+	--host=x86_64-apple-darwin 
 
 	# TODO this had  --without-libpsl --without-brotli --without-zstd added to it for compatibility with latest curl.  It would be good to at least add the libpsl but I don't know about the others
 	# TODO also investigate libidn which is also in podofo

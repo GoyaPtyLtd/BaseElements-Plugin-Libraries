@@ -17,8 +17,8 @@ export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm -f Libraries/macOS/libcrypto.a
-rm -f Libraries/macOS/libssl.a
+rm -f Libraries/${PLATFORM}/libcrypto.a
+rm -f Libraries/${PLATFORM}/libssl.a
 
 if [ ${PLATFORM} = 'macOS' ]; then
 	rm -rf Headers/openssl
@@ -35,25 +35,28 @@ tar -xf ../openssl.tar.gz -C openssl --strip-components=1
 cd openssl
 
 mkdir _build
-mkdir _build_x86_64
-mkdir _build_arm64
-
 export PREFIX=`pwd`'/_build'
-export PREFIX_x86_64=`pwd`'/_build_x86_64'
-export PREFIX_arm64=`pwd`'/_build_arm64'
 
 if [ ${PLATFORM} = 'macOS' ]; then
+
+	mkdir _build_x86_64
+	export PREFIX_x86_64=`pwd`'/_build_x86_64'
 
 	CFLAGS="-mmacosx-version-min=10.15" \
 	./configure darwin64-x86_64-cc no-engine no-hw no-shared \
 	--prefix="${PREFIX_x86_64}"
+	
 	#first build is install so we get headers
 	make install
 	make -s -j distclean
 
+	mkdir _build_arm64
+	export PREFIX_arm64=`pwd`'/_build_arm64'
+
 	CFLAGS="-mmacosx-version-min=10.15" \
 	./configure darwin64-arm64-cc no-engine no-hw no-shared \
 	--prefix="${PREFIX_arm64}"
+	
 	#install_sw leaves out headers
 	make install_sw
 	make -s -j distclean

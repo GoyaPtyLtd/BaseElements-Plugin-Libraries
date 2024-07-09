@@ -41,16 +41,18 @@ export PREFIX=`pwd`'/_build'
 if [ ${PLATFORM} = 'macOS' ]; then
 
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers -I${OUTPUT}/Headers/openssl" \
-	LDFLAGS="-L${OUTPUT}/Libraries/macOS/" LIBS="-ldl" \
+	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" LIBS="-ldl" \
 	./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
 	--with-libz --without-tests --with-crypto=openssl \
-	--prefix="${PREFIX}" -exec-prefix="${PREFIX}"
+	--prefix="${PREFIX}"
 	
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
-	CPPFLAGS="-I${SRCROOT}/Headers -I${SRCROOT}/Headers/zlib -I${SRCROOT}/Headers/libssh2  -I${SRCROOT}/Headers/openssl" LDFLAGS="-L${SRCROOT}/Libraries/linux" LIBS="-ldl" \
+	CFLAGS=-fPIC \
+	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/zlib -I${OUTPUT}/Headers/openssl" \
+	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}" LIBS="-ldl" \
 	./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
-	--with-zlib --without-tests --with-ssl --with-libssh2 \
+	--with-zlib --without-tests --with-ssl \
 	--prefix="${PREFIX}"
 
 fi

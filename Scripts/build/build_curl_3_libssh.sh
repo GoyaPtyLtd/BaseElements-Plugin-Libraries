@@ -47,7 +47,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/zlib" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" LIBS="-ldl" \
 	./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
-	--with-zlib \
+	--with-libz \
 	--with-crypto=openssl --with-libssl-prefix=${OPENSSL} \
 	--prefix="${PREFIX}"
 	
@@ -57,7 +57,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/zlib" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}" LIBS="-ldl" \
 	./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
-	--with-zlib \
+	--with-libz \
 	--with-crypto=openssl --with-libssl-prefix=${OPENSSL} \
 	--prefix="${PREFIX}"
 

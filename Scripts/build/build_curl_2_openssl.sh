@@ -80,7 +80,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	cp -R _build_x86_64/include/openssl/* "${OUTPUT}/Headers/openssl"
 fi
 
-cp _build/lib/libcrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/lib/libssl.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/libcrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/libssl.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

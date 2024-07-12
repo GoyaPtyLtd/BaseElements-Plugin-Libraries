@@ -43,7 +43,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	export PREFIX_x86_64=`pwd`'/_build_x86_64'
 
 	CFLAGS="-mmacosx-version-min=10.15" \
-	./configure darwin64-x86_64-cc no-engine no-hw no-shared \
+	./configure darwin64-x86_64-cc no-engine no-shared \
 	--prefix="${PREFIX_x86_64}"
 	
 	#first build is install so we get headers
@@ -54,7 +54,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	export PREFIX_arm64=`pwd`'/_build_arm64'
 
 	CFLAGS="-mmacosx-version-min=10.15" \
-	./configure darwin64-arm64-cc no-engine no-hw no-shared \
+	./configure darwin64-arm64-cc no-engine no-shared \
 	--prefix="${PREFIX_arm64}"
 	
 	#install_sw leaves out headers
@@ -66,10 +66,10 @@ if [ ${PLATFORM} = 'macOS' ]; then
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
-	CFLAGS=-fPIC \
-	./Configure linux-generic64 no-engine no-hw no-shared \
+	./Configure linux-generic64 no-engine no-shared \
 	--prefix="${PREFIX}"
-	make -j install
+	make
+	make -j install_sw
 
 fi
 
@@ -79,7 +79,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	cp -R _build_x86_64/include/openssl/* "${OUTPUT}/Headers/openssl"
 fi
 
-cp _build/libcrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/libssl.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libcrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libssl.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

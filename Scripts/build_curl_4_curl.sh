@@ -28,6 +28,10 @@ fi
 
 cd ../source/${PLATFORM}
 
+export ZLIB=`pwd`'/zlib/_build'
+export OPENSSL=`pwd`'/openssl/_build'
+export LIBSSH=`pwd`'/libssh/_build'
+
 rm -rf curl
 mkdir curl
 tar -xf ../curl.tar.gz -C curl --strip-components=1
@@ -41,11 +45,11 @@ export PREFIX=`pwd`'/_build'
 if [ ${PLATFORM} = 'macOS' ]; then
 
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-	CPPFLAGS=" -I${SRCROOT}/Headers -I${SRCROOT}/Headers/libssh2 -I${SRCROOT}/Headers/openssl -I${SRCROOT}/Headers/zlib" \
-	LDFLAGS=" -L${SRCROOT}/Libraries/${PLATFORM}" LIBS="-ldl" \
 	./configure --disable-dependency-tracking --enable-static --disable-shared \
-	--with-ssl --with-zlib --with-libssh2 --without-tests \
 	--without-libpsl --without-brotli --without-zstd \
+	--with-zlib=${ZLIB} \
+	--with-openssl=${OPENSSL} \
+	--with-libssh2=${LIBSSH} \
 	--prefix="${PREFIX}" \
 	--host=x86_64-apple-darwin 
 
@@ -54,10 +58,11 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	
-	CFLAGS=-fPIC \
-	CPPFLAGS=" -I${SRCROOT}/Headers  -I${SRCROOT}/Headers/libssh2 -I${SRCROOT}/Headers/openssl -I${SRCROOT}/Headers/zlib"  LDFLAGS="-L${SRCROOT}/Libraries/${PLATFORM}" LIBS="-ldl" \
 	./configure --disable-dependency-tracking --enable-static --disable-shared \
-	--with-ssl --with-zlib --with-libssh2 --without-tests \
+	--without-libpsl --without-brotli --without-zstd \
+	--with-zlib=${ZLIB} \
+	--with-openssl=${OPENSSL} \
+	--with-libssh2=${LIBSSH} \
 	--prefix="${PREFIX}"
 
 fi

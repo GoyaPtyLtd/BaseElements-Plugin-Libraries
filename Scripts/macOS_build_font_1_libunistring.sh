@@ -15,39 +15,38 @@ export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
-# Remove old libraries
+# Remove old libraries and headers
 
-rm -f Libraries/macOS/libfontconfig.a
+rm -f Libraries/${PLATFORM}/libunistring.a
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/fontconfig
-	mkdir Headers/fontconfig
+	rm -rf Headers/libunistring
+	mkdir Headers/libunistring
 fi
 
 # Switch to our build directory
 
 cd ../source/${PLATFORM}
 
-rm -rf fontconfig
-mkdir fontconfig
-tar -xf ../fontconfig.tar.gz -C fontconfig --strip-components=1
-cd fontconfig
+rm -rf libunistring
+mkdir libunistring
+tar -xf ../libunistring.tar.gz -C libunistring --strip-components=1
+cd libunistring
 
 mkdir _build
 export PREFIX=`pwd`'/_build'
 
-# Build macOS
+# Build
 
 if [ ${PLATFORM} = 'macOS' ]; then
 
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-	FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/${PLATFORM} -lfreetype" \
-	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}"
-	./configure --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
-	--prefix="${PREFIX}" \
+	./configure --enable-static --enable-shared=NO --prefix="${PREFIX}"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
+	CFLAGS="-fPIC" \
+	./configure --enable-static --enable-shared=NO --prefix="${PREFIX}"
 
 fi
 
@@ -56,9 +55,9 @@ make -j install
 # Copy the header and library files.
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/fontconfig/* "${OUTPUT}/Headers/fontconfig"
+	cp -R _build/include/* "${OUTPUT}/Headers/libunistring"
 fi
 
-cp _build/lib/libfontconfig.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libunistring.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

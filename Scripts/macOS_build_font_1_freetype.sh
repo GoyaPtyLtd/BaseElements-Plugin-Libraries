@@ -3,45 +3,59 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+if [ $(uname) = 'Darwin' ]; then
+	export PLATFORM='macOS'
+elif [ $(uname -m) = 'aarch64' ]; then
+	export PLATFORM='linuxARM'
+else
+	export PLATFORM='linux'
+fi
+
 export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
 # Remove old libraries
 
-rm -f Libraries/macOS/libfreetype.a
-rm -rf Headers/freetype2
-mkdir Headers/freetype2
+rm -f Libraries/${PLATFORM}/libfreetype.a
+
+if [ ${PLATFORM} = 'macOS' ]; then
+	rm -rf Headers/freetype2
+	mkdir Headers/freetype2
+fi
 
 # Switch to our build directory
 
-cd ../source/macOS
+cd ../source/${PLATFORM}
 
 rm -rf freetype
 mkdir freetype
 tar -xf ../freetype.tar.gz -C freetype --strip-components=1
 cd freetype
 
-mkdir _build_macos
-mkdir _build_ios
-mkdir _build_iosSimulator
-mkdir _build_iosSimulatorArm
-mkdir _build_iosSimulatorx86
+mkdir _build
+export PREFIX=`pwd`'/_build'
 
-export PREFIX=`pwd`'/_build_macos'
-export PREFIX_ios=`pwd`'/_build_ios'
-export PREFIX_iosSimulator=`pwd`'/_build_iosSimulator'
-export PREFIX_iosSimulatorArm=`pwd`'/_build_iosSimulatorArm'
-export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
+# Build
 
-# Build macOS
+if [ ${PLATFORM} = 'macOS' ]; then
+	
+	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no \
+	--prefix=${PREFIX}
 
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" ./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no --prefix=${PREFIX}
+elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
+
+fi
+
 make -j install
 
 # Copy the header and library files.
 
-cp -R _build_macos/include/freetype2/* "${OUTPUT}/Headers/freetype2"
-cp _build_macos/lib/libfreetype.a "${OUTPUT}/Libraries/macOS"
+if [ ${PLATFORM} = 'macOS' ]; then
+	cp -R _build/include/freetype2/* "${OUTPUT}/Headers/freetype2"
+fi
+
+cp _build/lib/libfreetype.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

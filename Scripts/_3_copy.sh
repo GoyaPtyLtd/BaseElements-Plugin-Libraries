@@ -1,12 +1,16 @@
 #!/bin/bash
 set -e
 
-./copy/copy_boost.sh
-./copy/copy_duktape.sh
-./copy/copy_jq.sh
+cd copy 
 
-./copy/copy_curl.sh
-./copy/copy_image.sh
-./copy/copy_xml.sh
+./copy_boost.sh
+./copy_duktape.sh
+./copy_jq.sh
 
-./copy/copy_font.sh
+./copy_curl.sh
+./copy_image.sh
+./copy_xml.sh
+
+./copy_font.sh
+
+cd ..

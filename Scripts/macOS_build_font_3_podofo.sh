@@ -36,18 +36,22 @@ export PREFIX_iosSimulatorx86=`pwd`'/_build_iosSimulatorx86'
 
 # Build macOS
 
-#		 -DLIBXML2_LIBRARY="${OUTPUT}/Libraries/macOS/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT}/Headers/libxml" \
+#		-DOPENSSL_CRYPTO_LIBRARY="${OUTPUT}/Libraries/macOS/libcrypto.a" \
+#		-DOPENSSL_SSL_LIBRARY="${OUTPUT}/Libraries/macOS/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT}/Headers/openssl" \
+#		-DLIBXML2_LIBRARY="${OUTPUT}/Libraries/macOS/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT}/Headers/libxml" \
+#		-DLIBXML2_XMLLINT_EXECUTABLE="${SRCROOT}/macOS/libxml/_build_macos/bin/xmllint" \
+
+# 	-DFONTCONFIG_INCLUDE_DIR="${SRCROOT}/Headers" -DFONTCONFIG_LIBRARY_RELEASE="${SRCROOT}/Libraries/macOS/libfontconfig.a" -DPODOFO_BUILD_LIB_ONLY=TRUE -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.13 -stdlib=libc++" -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.13 -stdlib=libc++" -DCMAKE_CXX_STANDARD=11 -DCXX_STANDARD_REQUIRED=ON ./
+
 
 
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
 		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
-         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfreetype.a" -DFREETYPE_INCLUDE_DIRS="${OUTPUT}/Headers/freetype2" \
-		 -DFontconfig_LIBRARY="${OUTPUT}/Libraries/macOS/fontconfig.a" -DFontconfig_INCLUDE_DIR="${OUTPUT}/Headers" \
-		 -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT}/Libraries/macOS/libcrypto.a" \
-		 -DOPENSSL_SSL_LIBRARY="${OUTPUT}/Libraries/macOS/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT}/Headers/openssl" \
-		 -DLIBXML2_LIBRARY="${OUTPUT}/Libraries/macOS/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT}/Headers/libxml" \
-		 -DLIBXML2_XMLLINT_EXECUTABLE="${SRCROOT}/macOS/libxml/_build_macos/bin/xmllint" \
-		 -DJPEG_LIBRARY="${OUTPUT}/Libraries/macOS/libjpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT}/Headers/libturbojpeg" \
+         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libfreetype.a" -DFREETYPE_INCLUDE_DIR="${OUTPUT}/Headers/freetype2" \
+		 -DFONTCONFIG_LIBRARIES="${OUTPUT}/Libraries/macOS/fontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT}/Headers" \
+		 -DLIBCRYPTO_LIBRARIES="${OUTPUT}/Libraries/macOS/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT}/Headers/openssl" \
+		 -DZLIB_LIBRARIES="${OUTPUT}/Libraries/macOS/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT}/Headers/zlib" \
+		 -DLIBJPEG_LIBRARY_RELEASE="${OUTPUT}/Libraries/macOS/libjpeg.a" -DLIBJPEG_INCLUDE_DIR="${OUTPUT}/Headers/libturbojpeg" \
 		 -DPNG_LIBRARY="${OUTPUT}/Libraries/macOS/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT}/Headers/libpng" \
 		 -DCMAKE_CXX_STANDARD=11 \
 		 -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \

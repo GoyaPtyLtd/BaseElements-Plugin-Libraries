@@ -46,6 +46,10 @@ if [ ${PLATFORM} = 'macOS' ]; then
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
+	CFLAGS="-fPIC" \
+	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no \
+	--prefix=${PREFIX}
+
 fi
 
 make -j install

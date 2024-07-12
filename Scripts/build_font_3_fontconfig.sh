@@ -48,6 +48,11 @@ if [ ${PLATFORM} = 'macOS' ]; then
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
+	CFLAGS="-fPIC" \
+	LDFLAGS="-L${OUTPUT}/Libraries/linux" --with-expat=/usr/lib64/libexpat.so.1
+	FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/${PLATFORM} -lfreetype" \
+	 ./configure --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
+	--prefix="${PREFIX}" \
 
 fi
 

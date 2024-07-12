@@ -8,11 +8,14 @@ cd BaseElements-Plugin-Libraries/Output
 
 export OUTPUT=`pwd`
 
+cp Libraries/macOS/libunistring.a "${START}/BaseElements-Plugin/Libraries/macOS"
 cp Libraries/macOS/libfreetype.a "${START}/BaseElements-Plugin/Libraries/macOS"
 cp Libraries/macOS/libfontconfig.a "${START}/BaseElements-Plugin/Libraries/macOS"
 cp Libraries/macOS/libpodofo.a "${START}/BaseElements-Plugin/Libraries/macOS"
 
 rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/freetype2/" "${START}/BaseElements-Plugin/Headers/freetype2"
+
+rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/libunistring/" "${START}/BaseElements-Plugin/Headers/libunistring"
 
 rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/fontconfig/" "${START}/BaseElements-Plugin/Headers/fontconfig"
 

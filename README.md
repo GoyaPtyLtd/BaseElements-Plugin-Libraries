@@ -54,20 +54,32 @@ If you're compiling the plugin you may also need to clone it :
 Then switch to the Scripts folder as the base from which to call various compile scripts.
 
     cd BaseElements-Plugin-Libraries/Scripts
-    chmod +x ./*
 
 Then run the script that downloads all the current source files :
 
-    ./_getSource.sh
+    ./_1_getSource.sh
 
-You don't need to re-run this unless it changes in github and there's a new version of one of the libraries. Each build process starts from a clean folder and unpacks the archive at the beginning, so you only need to download once. You can then run any of the individual build scripts, or build everything :
+You don't need to re-run this unless it changes in github and there's a new version of one of the libraries. Each build process starts from a clean folder and unpacks the archive at the beginning, so you only need to download once. You can then run any of the individual **build** scripts, or build everything :
 
-    ./_macOS_build_all.sh
+    ./_2_build.sh
+    
+That will then run through every single build process and will take hours on most macs.
 
-Once you've built a library or set of libraries and you want to test the plugin build folder, switch to the Copy folder from Scripts and run a copy script :
+### Updating to a new library version.
 
-    cd Copy
-    ./_macOS_copy_boost.sh
+So for example, there's a new version of libcurl that you want to build and test for.  The steps would be :
+
+* Pull down the git repos for both the library and the plugin as above.
+* Check that the BE plugin compiles successfully.
+* If you've previously run any scripts, clear things out by running the **_cleanOutputFolder.sh** script.
+* Modify the **_1_getSource.sh** script to reference the new download.
+* Run the _1_getSource.sh script to download your new version.
+* change to the build directory.
+* Run the **build_curl_0_all.sh** script, or run each individual curl build scripts in turn.
+* Once all the parts are compiling, then switch to the copy folder, and run the copy_curl.sh script.
+* Switch to xCode and attempt to compile the plugin.  Fix any newly introduced errors.
+* Run FileMaker Pro or FileMaker Server with the new plugin, and run the BaseElements Plugin Tests.fmp12 file and run all the relevant tests.
+* Submit a pull request for the changes to the library, we'll probably run the same tests and then incorporate them into the main 
 
 Then open XCode, and try a build from there. If it succeeds, run the "BaseElements Plugin Tests.fmp12" file test scripts. If there's issues, we need to resolve them, either in the BE Plugin code, or in the compile settings for that library.
 
@@ -77,7 +89,7 @@ Just documenting this here as none of the ubuntu script are tested yet.
 
     sudo apt update
     sudo apt install git-all git-lfs codeblocks
-    bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+    sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
     sudo apt install clang-format clang-tidy clang-tools clang clangd libc++-dev libc++abi-dev libclang-dev libclang1 liblldb-dev libllvm-ocaml-dev libomp-dev libomp5 lld lldb llvm-dev llvm-runtime llvm python3-clang gcc-multilib g++-multilib gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
 
     sudo mkdir /opt/FileMaker

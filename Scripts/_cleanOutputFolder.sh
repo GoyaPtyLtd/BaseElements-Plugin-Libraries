@@ -8,13 +8,44 @@
 #
 #=======================================================================
 
+export SRCROOT=`pwd`
+
+if [ $(uname) = 'Darwin' ]; then
+	export PLATFORM='macOS'
+elif [ $(uname -m) = 'aarch64' ]; then
+	export PLATFORM='linuxARM'
+else
+	export PLATFORM='linux'
+fi
+
 cd ../Output
 
 find ./Headers -not -name 'README.md' -delete
 
-find ./Libraries/iOS -not -name 'README.md' -delete
-find ./Libraries/linux -not -name 'README.md' -delete
-find ./Libraries/linuxARM -not -name 'README.md' -delete
-find ./Libraries/macOS -not -name 'README.md' -delete
-find ./Libraries/win64 -not -name 'README.md' -delete
+find ./Libraries/${PLATFORM} -not -name 'README.md' -delete
 
+cd ../source/${PLATFORM}
+
+rm -rf boost
+rm -rf curl
+rm -rf duktape
+rm -rf fontconfig
+rm -rf freetype
+rm -rf ImageMagick
+rm -rf jq
+rm -rf libde265
+rm -rf libheif
+rm -rf libiconv
+rm -rf libopenjp2
+rm -rf libpng
+rm -rf libssh
+rm -rf libturbojpeg
+rm -rf libunistring
+rm -rf libxml
+rm -rf libxslt
+rm -rf openssl
+rm -rf poco
+rm -rf podofo
+rm -rf zlib
+
+cd ${SRCROOT}

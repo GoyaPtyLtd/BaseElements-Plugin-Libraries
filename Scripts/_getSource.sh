@@ -173,12 +173,16 @@ wget -q -nv -O poco.tar.gz https://github.com/pocoproject/poco/archive/refs/tags
 
 #=====PODOFO======
 #
-#Download podofo from  http://podofo.sourceforge.net/download.html
+# new : Download podofo from  http://podofo.sourceforge.net/download.html
+# new : Download podofo from  https://sourceforge.net/projects/podofo/files/podofo/0.9.8/
 
 echo "Downloading podofo ( 19 of 20 ) ..."
 
+rm -f libunistring.tar.gz
+wget -q -nv -O libunistring.tar.gz https://ftp.gnu.org/gnu/libunistring/libunistring-1.2.tar.gz
+
 rm -f podofo.tar.gz
-wget -q -nv -O podofo.tar.gz https://github.com/podofo/podofo/archive/refs/tags/0.10.3.tar.gz
+wget -q -nv -O podofo.tar.gz https://ixpeering.dl.sourceforge.net/project/podofo/podofo/0.9.8/podofo-0.9.8.tar.gz
 
 #=====ZLIB======
 #

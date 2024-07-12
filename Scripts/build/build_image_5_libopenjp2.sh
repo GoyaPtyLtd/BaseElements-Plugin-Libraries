@@ -11,6 +11,7 @@ else
 	export PLATFORM='linux'
 fi
 
+cd ..
 export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`

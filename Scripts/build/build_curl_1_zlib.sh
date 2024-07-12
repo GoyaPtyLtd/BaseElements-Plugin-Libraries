@@ -11,30 +11,29 @@ else
 	export PLATFORM='linux'
 fi
 
+cd ..
 export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
 # Remove old libraries and headers
 
-rm -f Libraries/${PLATFORM}/libxslt.a
-rm -f Libraries/${PLATFORM}/libexslt.a
+rm -f Libraries/${PLATFORM}/libz.a
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/libxslt
-	mkdir Headers/libxslt
+	rm -rf Headers/zlib
+	mkdir Headers/zlib
 fi
+
 
 # Switch to our build directory
 
 cd ../source/${PLATFORM}
 
-export LIBXML=`pwd`'/libxml/_build'
-
-rm -rf libxslt
-mkdir libxslt
-tar -xf ../libxslt.tar.xz -C libxslt --strip-components=1
-cd libxslt
+rm -rf zlib
+mkdir zlib
+tar -xf ../zlib.tar.xz -C zlib --strip-components=1
+cd zlib
 
 mkdir _build
 export PREFIX=`pwd`'/_build'
@@ -44,16 +43,12 @@ export PREFIX=`pwd`'/_build'
 if [ ${PLATFORM} = 'macOS' ]; then
 
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-	./configure --disable-shared --without-python --without-crypto \
-	--with-libxml-prefix="${LIBXML}" \
-	--prefix="${PREFIX}"
+	./configure --static --prefix="${PREFIX}"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
-	CFLAGS=-fPIC \
-	./configure --disable-shared --without-python --without-crypto \
-	--with-libxml-prefix="${LIBXML}" \
-	--prefix="${PREFIX}"
+	CFLAGS="-fPIC" \
+	./configure --static --prefix="${PREFIX}"
 
 fi
 
@@ -62,11 +57,9 @@ make -j install
 # Copy the header and library files.
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/libxslt/* "${OUTPUT}/Headers/libxslt"
+	cp -R _build/include/* "${OUTPUT}/Headers/zlib"
 fi
 
-cp _build/lib/libxslt.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/lib/libexslt.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libz.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}
-

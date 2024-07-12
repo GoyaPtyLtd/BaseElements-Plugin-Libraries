@@ -11,28 +11,28 @@ else
 	export PLATFORM='linux'
 fi
 
+cd ..
 export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
-# Remove old libraries and headers
+# Remove old libraries
 
-rm -f Libraries/${PLATFORM}/libz.a
+rm -f Libraries/${PLATFORM}/libfreetype.a
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/zlib
-	mkdir Headers/zlib
+	rm -rf Headers/freetype2
+	mkdir Headers/freetype2
 fi
-
 
 # Switch to our build directory
 
 cd ../source/${PLATFORM}
 
-rm -rf zlib
-mkdir zlib
-tar -xf ../zlib.tar.xz -C zlib --strip-components=1
-cd zlib
+rm -rf freetype
+mkdir freetype
+tar -xf ../freetype.tar.gz -C freetype --strip-components=1
+cd freetype
 
 mkdir _build
 export PREFIX=`pwd`'/_build'
@@ -40,14 +40,16 @@ export PREFIX=`pwd`'/_build'
 # Build
 
 if [ ${PLATFORM} = 'macOS' ]; then
-
+	
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-	./configure --static --prefix="${PREFIX}"
+	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no \
+	--prefix=${PREFIX}
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	CFLAGS="-fPIC" \
-	./configure --static --prefix="${PREFIX}"
+	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no \
+	--prefix=${PREFIX}
 
 fi
 
@@ -56,9 +58,9 @@ make -j install
 # Copy the header and library files.
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/* "${OUTPUT}/Headers/zlib"
+	cp -R _build/include/freetype2/* "${OUTPUT}/Headers/freetype2"
 fi
 
-cp _build/lib/libz.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libfreetype.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

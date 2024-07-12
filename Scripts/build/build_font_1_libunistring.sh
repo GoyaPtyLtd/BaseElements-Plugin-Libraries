@@ -11,27 +11,28 @@ else
 	export PLATFORM='linux'
 fi
 
+cd ..
 export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
 
 # Remove old libraries and headers
 
-rm -f Libraries/${PLATFORM}/libjq.a
+rm -f Libraries/${PLATFORM}/libunistring.a
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/jq
-	mkdir Headers/jq
+	rm -rf Headers/libunistring
+	mkdir Headers/libunistring
 fi
 
 # Switch to our build directory
 
 cd ../source/${PLATFORM}
 
-rm -rf jq
-mkdir jq
-tar -xf ../jq.tar.gz  -C jq --strip-components=1
-cd jq
+rm -rf libunistring
+mkdir libunistring
+tar -xf ../libunistring.tar.gz -C libunistring --strip-components=1
+cd libunistring
 
 mkdir _build
 export PREFIX=`pwd`'/_build'
@@ -41,16 +42,12 @@ export PREFIX=`pwd`'/_build'
 if [ ${PLATFORM} = 'macOS' ]; then
 
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-	./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
-	--enable-all-static --enable-pthread-tls --without-oniguruma \
-	--prefix="${PREFIX}"
+	./configure --enable-static --enable-shared=NO --prefix="${PREFIX}"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	CFLAGS="-fPIC" \
-	./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
-	--enable-all-static --enable-pthread-tls --without-oniguruma \
-	--prefix="${PREFIX}"
+	./configure --enable-static --enable-shared=NO --prefix="${PREFIX}"
 
 fi
 
@@ -59,13 +56,9 @@ make -j install
 # Copy the header and library files.
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/* "${OUTPUT}/Headers/jq"
-
-	# jq seems to require the version.h file, but doesn't put it into the prefix.
-	cp src/version.h "${OUTPUT}/Headers/jq"
-
+	cp -R _build/include/* "${OUTPUT}/Headers/libunistring"
 fi
 
-cp _build/lib/libjq.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libunistring.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

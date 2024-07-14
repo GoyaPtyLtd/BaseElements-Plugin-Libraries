@@ -1,8 +1,6 @@
 #!/bin/bash
 set -e
 
-#
-
 echo "Starting $(basename "$0") Build"
 
 if [ $(uname) = 'Darwin' ]; then
@@ -12,8 +10,8 @@ elif [ $(uname -m) = 'aarch64' ]; then
 else
 	export PLATFORM='linux'
 fi
-#Doesn't need to run on anything except mac.  So all this is just in case of future use
 
+cd ..
 export SRCROOT=`pwd`
 cd ../Output
 export OUTPUT=`pwd`
@@ -63,7 +61,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 fi
 
-make -j install DESTDIR="${PREFIX}"
+make -j install
 
 # Copy the header and library files.
 

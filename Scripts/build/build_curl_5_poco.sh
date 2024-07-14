@@ -61,7 +61,6 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
 	# Needs a change to just the POCO_TARGET_OSARCH once the bug in their config is fixed - now needs both so it builds into the right folders
 	# It is ignoring the target value
-
 	make -s -j distclean
 
 	./configure --cflags="-mmacosx-version-min=10.15" \
@@ -73,16 +72,17 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=x86_64
 	# Needs a change to just the POCO_TARGET_OSARCH once the bug in their config is fixed - now needs both so it builds into the right folders
 	# It is ignoring the target value
-
 	make -s -j distclean
 
-	lipo -create "${PREFIX_x86_64}/lib/libPocoCrypto.a" "${PREFIX_arm64}/lib/libPocoCrypto.a" -output "${PREFIX}/libPocoCrypto.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoFoundation.a" "${PREFIX_arm64}/lib/libPocoFoundation.a" -output "${PREFIX}/libPocoFoundation.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoJSON.a" "${PREFIX_arm64}/lib/libPocoJSON.a" -output "${PREFIX}/libPocoJSON.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoNet.a" "${PREFIX_arm64}/lib/libPocoNet.a" -output "${PREFIX}/libPocoNet.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoPDF.a" "${PREFIX_arm64}/lib/libPocoPDF.a" -output "${PREFIX}/libPocoPDF.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoXML.a" "${PREFIX_arm64}/lib/libPocoXML.a" -output "${PREFIX}/libPocoXML.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoZip.a" "${PREFIX_arm64}/lib/libPocoZip.a" -output "${PREFIX}/libPocoZip.a"
+	mkdir ${PREFIX}/lib
+
+	lipo -create "${PREFIX_x86_64}/lib/libPocoCrypto.a" "${PREFIX_arm64}/lib/libPocoCrypto.a" -output "${PREFIX}/lib/libPocoCrypto.a"
+	lipo -create "${PREFIX_x86_64}/lib/libPocoFoundation.a" "${PREFIX_arm64}/lib/libPocoFoundation.a" -output "${PREFIX}/lib/libPocoFoundation.a"
+	lipo -create "${PREFIX_x86_64}/lib/libPocoJSON.a" "${PREFIX_arm64}/lib/libPocoJSON.a" -output "${PREFIX}/lib/libPocoJSON.a"
+	lipo -create "${PREFIX_x86_64}/lib/libPocoNet.a" "${PREFIX_arm64}/lib/libPocoNet.a" -output "${PREFIX}/lib/libPocoNet.a"
+	lipo -create "${PREFIX_x86_64}/lib/libPocoPDF.a" "${PREFIX_arm64}/lib/libPocoPDF.a" -output "${PREFIX}/lib/libPocoPDF.a"
+	lipo -create "${PREFIX_x86_64}/lib/libPocoXML.a" "${PREFIX_arm64}/lib/libPocoXML.a" -output "${PREFIX}/lib/libPocoXML.a"
+	lipo -create "${PREFIX_x86_64}/lib/libPocoZip.a" "${PREFIX_arm64}/lib/libPocoZip.a" -output "${PREFIX}/lib/libPocoZip.a"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
@@ -99,16 +99,16 @@ fi
 # Copy the header and library files.
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/Poco/* "${OUTPUT}/Headers/Poco"
+	cp -R _build_x86_64/include/Poco/* "${OUTPUT}/Headers/Poco"
 fi
 
-cp _build/libPocoCrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/libPocoFoundation.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/libPocoJSON.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/libPocoNet.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/libPocoPDF.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/libPocoXML.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/libPocoZip.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libPocoCrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libPocoFoundation.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libPocoJSON.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libPocoNet.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libPocoPDF.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libPocoXML.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libPocoZip.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 # Return to source directory
 

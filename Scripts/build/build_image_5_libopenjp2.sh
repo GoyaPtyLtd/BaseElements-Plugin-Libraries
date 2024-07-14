@@ -58,14 +58,14 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 fi
 
-make install DESTDIR="${PREFIX}"
+make -j install
 
 # Copy the header and library files.
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/usr/local/include/openjpeg-2.5/* "${OUTPUT}/Headers/libopenjp2"
+	cp -R _build/include/openjpeg-2.5/* "${OUTPUT}/Headers/libopenjp2"
 fi
 
-cp _build/usr/local/lib/libopenjp2.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libopenjp2.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

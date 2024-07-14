@@ -44,10 +44,9 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	export PREFIX_x86_64=`pwd`'/_build_x86_64'
 
 	CFLAGS="-mmacosx-version-min=10.15" \
-	./configure darwin64-x86_64-cc no-engine no-shared \
+	./configure darwin64-x86_64-cc no-shared no-docs no-tests \
 	--prefix="${PREFIX_x86_64}"
 	
-	#first build is install so we get headers
 	make install
 	make -s -j distclean
 
@@ -55,19 +54,20 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	export PREFIX_arm64=`pwd`'/_build_arm64'
 
 	CFLAGS="-mmacosx-version-min=10.15" \
-	./configure darwin64-arm64-cc no-engine no-shared \
+	./configure darwin64-arm64-cc no-shared no-docs no-tests \
 	--prefix="${PREFIX_arm64}"
 	
-	#install_sw leaves out headers
-	make install_sw
+	make install
 	make -s -j distclean
 
-	lipo -create "${PREFIX_x86_64}/lib/libcrypto.a" "${PREFIX_arm64}/lib/libcrypto.a" -output "${PREFIX}/libcrypto.a"
-	lipo -create "${PREFIX_x86_64}/lib/libssl.a" "${PREFIX_arm64}/lib/libssl.a" -output "${PREFIX}/libssl.a"
+	mkdir ${PREFIX}/lib
+
+	lipo -create "${PREFIX_x86_64}/lib/libcrypto.a" "${PREFIX_arm64}/lib/libcrypto.a" -output "${PREFIX}/lib/libcrypto.a"
+	lipo -create "${PREFIX_x86_64}/lib/libssl.a" "${PREFIX_arm64}/lib/libssl.a" -output "${PREFIX}/lib/libssl.a"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
-	./Configure linux-generic64 no-engine no-shared \
+	./Configure linux-generic64 no-shared no-docs no-tests \
 	--prefix="${PREFIX}"
 	make
 	make -j install_sw
@@ -80,7 +80,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	cp -R _build_x86_64/include/openssl/* "${OUTPUT}/Headers/openssl"
 fi
 
-cp _build/libcrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/libssl.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libcrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libssl.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

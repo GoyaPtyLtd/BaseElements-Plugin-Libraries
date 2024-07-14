@@ -60,7 +60,9 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	make install
 	make -s -j distclean
 
-	lipo -create "${PREFIX_x86_64}/lib/libpng16.a" "${PREFIX_arm64}/lib/libpng16.a" -output "${PREFIX}/libpng16.a"
+	mkdir ${PREFIX}/lib
+
+	lipo -create "${PREFIX_x86_64}/lib/libpng16.a" "${PREFIX_arm64}/lib/libpng16.a" -output "${PREFIX}/lib/libpng16.a"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
@@ -78,6 +80,6 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	cp -R _build_x86_64/include/libpng16/* "${OUTPUT}/Headers/libpng"
 fi
 
-cp _build/libpng16.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libpng16.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

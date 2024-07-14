@@ -40,29 +40,56 @@ export PREFIX=`pwd`'/_build'
 # Build
 
 if [ ${PLATFORM} = 'macOS' ]; then
-
-	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DENABLE_SHARED=NO -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-	-DCMAKE_INSTALL_PREFIX="${PREFIX}"  ./
 	
+	mkdir _build_arm64
+	export PREFIX_arm64=`pwd`'/_build_arm64'
+	
+	echo "set(CMAKE_SYSTEM_NAME Darwin)" > toolchain.cmake
+	echo "set(CMAKE_SYSTEM_PROCESSOR aarch64)" >> toolchain.cmake
+	
+	CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
+	cmake --fresh -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DENABLE_SHARED=NO -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+	-DCMAKE_TOOLCHAIN_FILE=toolchain.cmake \
+	-DCMAKE_INSTALL_PREFIX="${PREFIX_arm64}" ./
+
+	make install
+
+	mkdir _build_x86_64
+	export PREFIX_x86_64=`pwd`'/_build_x86_64'
+	
+	echo "set(CMAKE_SYSTEM_NAME Darwin)" > toolchain.cmake
+	echo "set(CMAKE_SYSTEM_PROCESSOR x86_64)" >> toolchain.cmake
+	
+	CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
+	cmake --fresh -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DENABLE_SHARED=NO -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+	-DCMAKE_TOOLCHAIN_FILE=toolchain.cmake \
+	-DCMAKE_INSTALL_PREFIX="${PREFIX_x86_64}"  ./
+	
+	make install
+
+	mkdir -p ${PREFIX}/lib
+
+	lipo -create "${PREFIX_x86_64}/lib/libturbojpeg.a" "${PREFIX_arm64}/lib/libturbojpeg.a" -output "${PREFIX}/lib/libturbojpeg.a"
+	lipo -create "${PREFIX_x86_64}/lib/libjpeg.a" "${PREFIX_arm64}/lib/libjpeg.a" -output "${PREFIX}/lib/libjpeg.a"
+
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=NO -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 	-DCMAKE_IGNORE_PATH=/usr/lib/x86_64-linux-gnu/ \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}"  ./
 
-fi
+	make install
 
-make install DESTDIR="${PREFIX}"
+fi
 
 # Copy the header and library files.
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/opt/libjpeg-turbo/include/* "${OUTPUT}/Headers/libturbojpeg"
+	cp -R _build_x86_64/include/* "${OUTPUT}/Headers/libturbojpeg"
 fi
 
-cp _build/opt/libjpeg-turbo/lib/libturbojpeg.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/opt/libjpeg-turbo/lib/libjpeg.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libturbojpeg.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp _build/lib/libjpeg.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 # Return to source directory
 

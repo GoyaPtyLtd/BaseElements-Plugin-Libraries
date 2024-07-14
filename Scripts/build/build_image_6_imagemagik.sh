@@ -41,8 +41,6 @@ export PREFIX=`pwd`'/_build'
 
 if [ ${PLATFORM} = 'macOS' ]; then
 
-	CXX=clang++ \
-	CC=clang \
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers/turbojpeg" \
 	CPPFLAGS="-I${OUTPUT}/Headers/turbojpeg" \
 	CXXFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15  -I${OUTPUT}/Headers/turbojpeg" \
@@ -67,6 +65,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 fi
 
+make
 make -j install
 
 # Copy the header and library files.

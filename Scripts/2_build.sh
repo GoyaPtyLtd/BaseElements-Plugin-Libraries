@@ -7,10 +7,10 @@ cd build
 ./build_duktape.sh
 ./build_jq.sh
 
-./build_curl_0_all.sh
-./build_image_0_all.sh
-./build_xml_0_all.sh
+./build_curl.sh
+./build_image.sh
+./build_xml.sh
 
-./build_font_0_all.sh
+./build_font.sh
 
 cd ..

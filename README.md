@@ -90,9 +90,9 @@ Just documenting this here as none of the ubuntu script are tested yet.
     sudo apt update
     sudo apt install git-all git-lfs codeblocks
     sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
-    sudo apt install clang-format clang-tidy clang-tools clang clangd libc++-dev libc++abi-dev \
+    sudo apt install make clang-format clang-tidy clang-tools clang clangd libc++-dev libc++abi-dev \
         libclang-dev libclang1 liblldb-dev libllvm-ocaml-dev libomp-dev libomp5 lld lldb llvm-dev \
-        llvm-runtime llvm python3-clang gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
+        llvm-runtime llvm python3-clang g++ gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
 
     sudo mkdir /opt/FileMaker
     sudo chown "${USER:=$(/usr/bin/id -run)}:$USER" /opt/FileMaker

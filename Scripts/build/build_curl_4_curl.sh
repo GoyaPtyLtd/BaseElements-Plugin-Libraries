@@ -30,6 +30,9 @@ fi
 cd ../source/${PLATFORM}
 
 export ZLIB=`pwd`'/zlib/_build'
+export OPENSSL=`pwd`'/openssl/_build'
+export LIBSSH=`pwd`'/libssh/_build'
+
 export OPENSSL_x86=`pwd`'/openssl/_build_x86_64'
 export OPENSSL_arm=`pwd`'/openssl/_build_arm64'
 export LIBSSH_x86=`pwd`'/libssh/_build_x86_64'

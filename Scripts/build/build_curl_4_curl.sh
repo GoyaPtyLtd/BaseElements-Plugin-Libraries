@@ -100,7 +100,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	--with-libssh2=${LIBSSH} \
 	--prefix="${PREFIX}"
 
-	make -j install_sw
+	make -j install
 
 fi
 

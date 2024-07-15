@@ -3,9 +3,8 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
-cd ..
 export SRCROOT=`pwd`
-cd ../Output
+cd ../../Output
 export OUTPUT=`pwd`
 
 # Switch to our build directory

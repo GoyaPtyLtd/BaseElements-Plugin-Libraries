@@ -11,9 +11,8 @@ else
 	export PLATFORM='linux'
 fi
 
-cd ..
 export SRCROOT=`pwd`
-cd ../Output
+cd ../../Output
 export OUTPUT=`pwd`
 
 # Remove old libraries and headers

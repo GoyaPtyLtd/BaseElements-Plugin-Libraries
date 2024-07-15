@@ -29,6 +29,7 @@ fi
 
 cd ../source/${PLATFORM}
 
+export OPENSSL=`pwd`'/openssl/_build'
 export OPENSSL_x86=`pwd`'/openssl/_build_x86_64'
 export OPENSSL_arm=`pwd`'/openssl/_build_arm64'
 

@@ -67,7 +67,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
-	./configure linux-generic64 no-shared no-docs no-tests \
+	./Configure linux-generic64 no-shared no-docs no-tests \
 	--prefix="${PREFIX}"
 	make
 	make -j install_sw

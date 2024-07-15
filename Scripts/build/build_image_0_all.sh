@@ -1,6 +1,18 @@
 #!/bin/bash
 set -e
 
+export SRCROOT=`pwd`
+cd ../../source/${PLATFORM}
+
+rm -rf libturbojpeg
+rm -rf libde265
+rm -rf libheif
+rm -rf libpng
+rm -rf libopenjp2
+rm -rf ImageMagick
+
+cd ${SRCROOT}
+
 ./build_image_1_libturbojpeg.sh
 ./build_image_2_libde265.sh
 ./build_image_3_libheif.sh

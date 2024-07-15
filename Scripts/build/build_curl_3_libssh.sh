@@ -29,6 +29,7 @@ fi
 
 cd ../source/${PLATFORM}
 
+export LIBZ=`pwd`'/zlib/_build'
 export OPENSSL=`pwd`'/openssl/_build'
 export OPENSSL_x86=`pwd`'/openssl/_build_x86_64'
 export OPENSSL_arm=`pwd`'/openssl/_build_arm64'
@@ -56,7 +57,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/zlib" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" LIBS="-ldl" \
 	./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
-	--with-libz \
+	--with-libz --with-libz-prefix=${LIBZ} \
 	--with-crypto=openssl --with-libssl-prefix=${OPENSSL_x86} \
 	--host=x86_64-apple-darwin \
 	--prefix="${PREFIX_x86_64}"
@@ -71,7 +72,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/zlib" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" LIBS="-ldl" \
 	./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
-	--with-libz \
+	--with-libz --with-libz-prefix=${LIBZ} \
 	--with-crypto=openssl --with-libssl-prefix=${OPENSSL_arm} \
 	--host=x86_64-apple-darwin \
 	--prefix="${PREFIX_arm64}"
@@ -90,7 +91,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/zlib" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}" LIBS="-ldl" \
 	./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
-	--with-libz \
+	--with-libz --with-libz-prefix=${LIBZ} \
 	--with-crypto=openssl --with-libssl-prefix=${OPENSSL} \
 	--prefix="${PREFIX}"
 

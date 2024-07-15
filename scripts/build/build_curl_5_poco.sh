@@ -54,7 +54,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	./configure --cflags="-mmacosx-version-min=10.15" \
 	--prefix="${PREFIX_x86_64}" \
 	--no-sharedlibs --static --poquito --no-tests --no-samples \
-	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis,Util" \
+	--omit="CppParser,Crypto,Data,Encodings,MongoDB,PageCompiler,Redis,Util" \
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
 	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
@@ -65,7 +65,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	./configure --cflags="-mmacosx-version-min=10.15" \
 	--prefix="${PREFIX_arm64}" \
 	--no-sharedlibs --static --poquito --no-tests --no-samples \
-	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis,Util" \
+	--omit="CppParser,Crypto,Data,Encodings,MongoDB,PageCompiler,Redis,Util" \
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
 	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=x86_64
@@ -88,7 +88,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	./configure --cflags=-fPIC \
 	--prefix="${PREFIX}" \
 	--no-sharedlibs --static --poquito --no-tests --no-samples \
-	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis,Util" \
+	--omit="CppParser,Crypto,Data,Encodings,MongoDB,PageCompiler,Redis,Util" \
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
 	make install

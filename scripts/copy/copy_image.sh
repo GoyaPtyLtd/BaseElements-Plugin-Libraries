@@ -17,17 +17,17 @@ export OUTPUT=`pwd`
 cp Libraries/${PLATFORM}/libturbojpeg.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 cp Libraries/${PLATFORM}/libjpeg.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 
-cp Libraries/${PLATFORM}/libMagick++-7.Q16HDRI.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
-cp Libraries/${PLATFORM}/libMagickCore-7.Q16HDRI.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
-cp Libraries/${PLATFORM}/libMagickWand-7.Q16HDRI.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
-
-cp Libraries/${PLATFORM}/libopenjp2.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
-
-cp Libraries/${PLATFORM}/libheif.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+cp Libraries/${PLATFORM}/libde265.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 
 cp Libraries/${PLATFORM}/libpng16.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 
-cp Libraries/${PLATFORM}/libde265.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+cp Libraries/${PLATFORM}/libheif.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+
+cp Libraries/${PLATFORM}/libopenjp2.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+
+cp Libraries/${PLATFORM}/libMagick++-7.Q16HDRI.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+cp Libraries/${PLATFORM}/libMagickCore-7.Q16HDRI.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+cp Libraries/${PLATFORM}/libMagickWand-7.Q16HDRI.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 
 if [ ${PLATFORM} = 'macOS' ]; then
 

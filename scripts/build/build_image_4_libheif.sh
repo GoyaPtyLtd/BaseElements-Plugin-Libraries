@@ -43,6 +43,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	-DBUILD_SHARED_LIBS:BOOL=OFF -DWITH_REDUCED_VISIBILITY=OFF -DWITH_UNCOMPRESSED_CODEC=OFF \
 	-DWITH_AOM_DECODER:BOOL=OFF -DWITH_AOM_ENCODER:BOOL=OFF \
 	-DWITH_X265:BOOL=OFF -DWITH_LIBSHARPYUV:BOOL=OFF \
+	-DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
 	-DZLIB_INCLUDE_DIR="${OUTPUT}/Headers/zlib/" -DZLIB_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libz.a" \
 	-DLIBDE265_INCLUDE_DIR="${OUTPUT}/Headers/" -DLIBDE265_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libde265.a" \
 	-DJPEG_INCLUDE_DIR="${OUTPUT}/Headers/libturbojpeg/" -DJPEG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libjpeg.a" ./
@@ -64,7 +65,7 @@ make -j install
 
 # Copy the header and library files.
 
-cp -R _build/include/* "${OUTPUT}/Headers/libheif"
+cp -R _build/include/libheif/* "${OUTPUT}/Headers/libheif"
 cp _build/lib/libheif.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

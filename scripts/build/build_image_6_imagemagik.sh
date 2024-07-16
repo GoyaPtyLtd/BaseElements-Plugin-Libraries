@@ -26,6 +26,18 @@ mkdir Headers/ImageMagick-7
 
 cd ../source/${PLATFORM}
 
+export TURBOJPEGarm=`pwd`'/libturbojpeg/_build_arm64/lib/pkgconfig'
+export LIBPNGarm=`pwd`'/libpng/_build_arm64/lib/pkgconfig'
+
+export TURBOJPEGx86=`pwd`'/libturbojpeg/_build_arm64/lib/pkgconfig'
+export LIBPNGx86=`pwd`'/libpng/_build_arm64/lib/pkgconfig'
+
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/libde265/_build/lib/pkgconfig'
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/libheif/_build/lib/pkgconfig'
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/fontconfig/_build/lib/pkgconfig'
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/freetype/_build/lib/pkgconfig'
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/libopenjp2/_build/lib/pkgconfig'
+
 rm -rf ImageMagick
 mkdir ImageMagick
 tar -xf ../ImageMagick.tar.gz  -C ImageMagick --strip-components=1
@@ -38,36 +50,67 @@ export PREFIX=`pwd`'/_build'
 
 if [ ${PLATFORM} = 'macOS' ]; then
 
-	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT}/Headers/turbojpeg" \
-	CPPFLAGS="-I${OUTPUT}/Headers/turbojpeg" \
-	CXXFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15  -I${OUTPUT}/Headers/turbojpeg" \
-	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM} -ljpeg" \
-	./configure --disable-shared --prefix="${PREFIX}" \
-	--without-utilities --disable-docs --disable-dependency-tracking --with-quantum-depth=16 \
+	mkdir _build_arm64
+	export PREFIX_arm64=`pwd`'/_build_arm64'
+
+	PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${TURBOJPEGarm}:${LIBPNGarm} \
+	CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
+	CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
+	./configure --disable-shared --disable-docs --disable-dependency-tracking \
+	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
+	--without-utilities --without-zlib --without-xml --without-lzma --with-quantum-depth=16 \
     --enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
-	--without-zlib --without-xml \
-	JPEG_LIBS="-L${OUTPUT}/Libraries/${PLATFORM} -ljpeg"
+	--host=x86_64-apple-darwin --prefix="${PREFIX_arm64}"
+
+	make
+	make -j install
+	make -s -j distclean
+	
+	mkdir _build_x86_64
+	export PREFIX_x86_64=`pwd`'/_build_x86_64'
+
+	PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${TURBOJPEGx86}:${LIBPNGx86} \
+	CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
+	CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
+	./configure --disable-shared --disable-docs --disable-dependency-tracking \
+	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
+	--without-utilities --without-zlib --without-xml --without-lzma --with-quantum-depth=16 \
+	--enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
+	--host=x86_64-apple-darwin --prefix="${PREFIX_x86_64}"
+	
+	make
+	make -j install
+	make -s -j distclean
+
+	mkdir ${PREFIX}/lib
+
+	lipo -create "${PREFIX_x86_64}/lib/libMagick++-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagick++-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagick++-7.Q16HDRI.a"
+	
+	lipo -create "${PREFIX_x86_64}/lib/libMagickCore-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagickCore-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagickCore-7.Q16HDRI.a"
+	
+	lipo -create "${PREFIX_x86_64}/lib/libMagickWand-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagickWand-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagickWand-7.Q16HDRI.a"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
-	CFLAGS="-I${OUTPUT}/Headers/turbojpeg" \
-	CPPFLAGS="-I${OUTPUT}/Headers/turbojpeg" \
-	CXXFLAGS="-I${OUTPUT}/Headers/turbojpeg" \
-	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM} -ljpeg" \
-	./configure --disable-shared --prefix="${PREFIX}" \
-	--without-utilities --disable-docs --disable-dependency-tracking --with-quantum-depth=16 \
-	--enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
-	--without-zlib --without-xml \
-	JPEG_LIBS="-L${OUTPUT}/Libraries/${PLATFORM} -ljpeg"
+	./configure --disable-shared --disable-docs --disable-dependency-tracking \
+	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
+	--without-utilities --without-zlib --without-xml --without-lzma --with-quantum-depth=16 \
+	--enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
+	--prefix="${PREFIX}" \
+
+	make
+	make -j install
 
 fi
 
-make
-make -j install
 
 # Copy the header and library files.
 
-cp -R _build/include/ImageMagick-7/* "${OUTPUT}/Headers/ImageMagick-7"
+if [ ${PLATFORM} = 'macOS' ]; then
+	cp -R _build_x86_64/include/ImageMagick-7/* "${OUTPUT}/Headers/ImageMagick-7"
+else
+	cp -R _build/include/ImageMagick-7/* "${OUTPUT}/Headers/ImageMagick-7"
+fi
 
 cp _build/lib/libMagick++-7.Q16HDRI.a "${OUTPUT}/Libraries/${PLATFORM}/"
 cp _build/lib/libMagickCore-7.Q16HDRI.a "${OUTPUT}/Libraries/${PLATFORM}/"

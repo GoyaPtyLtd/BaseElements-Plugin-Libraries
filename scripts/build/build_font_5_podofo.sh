@@ -69,13 +69,9 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
          -DFREETYPE_LIBRARY_RELEASE="${OUTPUT}/Libraries/${PLATFORM}/libfreetype.a" -DFREETYPE_INCLUDE_DIR="${OUTPUT}/Headers/freetype2" \
 		 -DWANT_FONTCONFIG:BOOL=TRUE \
 		 -DFONTCONFIG_LIBRARIES="${OUTPUT}/Libraries/${PLATFORM}/fontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT}/Headers" \
-		 -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libcrypto.a" \
-		 -DOPENSSL_SSL_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT}/Headers/openssl" \
-		 -DLIBXML2_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT}/Headers/libxml" \
-		 -DLIBXML2_XMLLINT_EXECUTABLE="${SRCROOT}/Output/${PLATFORM}/libxml/_build/bin/xmllint" \
+		 -DOPENSSL_INCLUDE_DIR="${OUTPUT}/Headers/openssl" \
 		 -DUNISTRING_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libunistring.a" -DUNISTRING_INCLUDE_DIR="${OUTPUT}/Headers/libunistring" \
 		 -DZLIB_LIBRARY_RELEASE="${OUTPUT}/Libraries/${PLATFORM}/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT}/Headers/zlib" \
-		 -DJPEG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libjpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT}/Headers/libturbojpeg" \
 		 -DPNG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT}/Headers/libpng" \
 		 -DWANT_LIB64:BOOL=TRUE \
 		 -DCMAKE_CXX_FLAGS="-fPIC" .
@@ -87,7 +83,11 @@ make -j install
 # Copy the header and library files.
 
 cp -R _build/include/podofo/* "${OUTPUT}/Headers/podofo"
-cp _build/lib/libpodofo.a "${OUTPUT}/Libraries/${PLATFORM}"
+if [ ${PLATFORM} = 'macOS' ]; then
+	cp _build/lib/libpodofo.a "${OUTPUT}/Libraries/${PLATFORM}"
+else
+	cp _build/lib64/libpodofo.a "${OUTPUT}/Libraries/${PLATFORM}"
+fi
 
 # Return to source directory
 

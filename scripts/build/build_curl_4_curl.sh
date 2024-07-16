@@ -71,7 +71,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	
 	CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
 	./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
-	--without-libpsl --without-brotli --without-zstd --enable-ldap=no \
+	--without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 \
 	--enable-mqtt --with-zlib=${ZLIB} \
 	--with-openssl=${OPENSSL_arm} \
 	--with-libssh2=${LIBSSH_arm} \
@@ -91,7 +91,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	
 	./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
-	--without-libpsl --without-brotli --without-zstd --enable-ldap=no \
+	--without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 \
 	--enable-mqtt --with-zlib=${ZLIB} \
 	--with-openssl=${OPENSSL} \
 	--with-libssh2=${LIBSSH} \

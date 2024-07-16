@@ -45,6 +45,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	echo "set(CMAKE_SYSTEM_PROCESSOR aarch64)" >> toolchain.cmake
 	
 	CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
+	LDFLAGS="-ld_classic" \
 	cmake --fresh -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DENABLE_SHARED=NO -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 	-DCMAKE_TOOLCHAIN_FILE=toolchain.cmake \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX_arm64}" ./
@@ -58,6 +59,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	echo "set(CMAKE_SYSTEM_PROCESSOR x86_64)" >> toolchain.cmake
 	
 	CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
+	LDFLAGS="-ld_classic" \
 	cmake --fresh -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DENABLE_SHARED=NO -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 	-DCMAKE_TOOLCHAIN_FILE=toolchain.cmake \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX_x86_64}"  ./

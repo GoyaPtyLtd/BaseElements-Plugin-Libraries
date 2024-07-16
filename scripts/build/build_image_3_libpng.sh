@@ -26,7 +26,7 @@ mkdir Headers/libpng
 
 cd ../source/${PLATFORM}
 
-export ZLIB=`pwd`'/zlib/_build'
+export ZLIB=`pwd`'/zlib/_build/'
 
 rm -rf libpng
 mkdir libpng

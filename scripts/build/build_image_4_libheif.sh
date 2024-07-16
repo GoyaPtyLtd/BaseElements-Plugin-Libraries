@@ -64,7 +64,7 @@ make -j install
 
 # Copy the header and library files.
 
-cp -R _build/include/* "${OUTPUT}/Headers/libheif"
+cp -R _build/include/libheif/* "${OUTPUT}/Headers/libheif"
 cp _build/lib/libheif.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

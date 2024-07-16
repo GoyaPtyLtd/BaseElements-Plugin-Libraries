@@ -14,6 +14,8 @@ fi
 cd BaseElements-Plugin-Libraries/Output
 export OUTPUT=`pwd`
 
+cp Libraries/${PLATFORM}/libz.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+
 cp Libraries/${PLATFORM}/libcrypto.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 cp Libraries/${PLATFORM}/libssl.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 
@@ -30,6 +32,8 @@ cp Libraries/${PLATFORM}/libPocoXML.a "${START}/BaseElements-Plugin/Libraries/${
 cp Libraries/${PLATFORM}/libPocoZip.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 
 if [ ${PLATFORM} = 'macOS' ]; then
+
+	rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/zlib/" "${START}/BaseElements-Plugin/Headers/zlib"
 
 	rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/openssl/" "${START}/BaseElements-Plugin/Headers/openssl"
 

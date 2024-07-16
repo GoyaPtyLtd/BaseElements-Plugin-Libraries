@@ -26,6 +26,8 @@ mkdir Headers/libpng
 
 cd ../source/${PLATFORM}
 
+export ZLIB=`pwd`'/zlib/_build'
+
 rm -rf libpng
 mkdir libpng
 tar -xf ../libpng.tar.gz  -C libpng --strip-components=1
@@ -43,7 +45,7 @@ export PREFIX_arm64=`pwd`'/_build_arm64'
 if [ ${PLATFORM} = 'macOS' ]; then
 	CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
 	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules \
-	--host="aarch64-apple-darwin" \
+	--host="aarch64-apple-darwin" --with-libz-prefix=${ZLIB} \
 	--prefix="${PREFIX_x86_64}"
 
 	make install
@@ -51,7 +53,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 
 	CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
 	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules \
-	--host="aarch64-apple-darwin" \
+	--host="aarch64-apple-darwin" --with-libz-prefix=${ZLIB} \
 	--prefix="${PREFIX_arm64}"
 
 	make install
@@ -65,6 +67,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	CFLAGS="-fPIC" \
 	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules \
+	--with-libz-prefix=${ZLIB} \
 	--prefix="${PREFIX}"
 
 	make install

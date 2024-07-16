@@ -45,8 +45,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	-DWITH_X265:BOOL=OFF -DWITH_LIBSHARPYUV:BOOL=OFF \
 	-DZLIB_INCLUDE_DIR="${OUTPUT}/Headers/" -DZLIB_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libz.a" \
 	-DLIBDE265_INCLUDE_DIR="${OUTPUT}/Headers/" -DLIBDE265_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libde265.a" \
-	-DJPEG_INCLUDE_DIR="${OUTPUT}/Headers/" -DJPEG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libjpeg.a" \
-	-DPNG_PNG_INCLUDE_DIR="${OUTPUT}/Headers/" -DPNG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libpng.a" ./
+	-DJPEG_INCLUDE_DIR="${OUTPUT}/Headers/" -DJPEG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libjpeg.a" ./
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	
@@ -57,8 +56,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	-DWITH_X265:BOOL=OFF -DWITH_LIBSHARPYUV:BOOL=OFF \
 	-DZLIB_INCLUDE_DIR="${OUTPUT}/Headers/" -DZLIB_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libz.a" \
 	-DLIBDE265_INCLUDE_DIR="${OUTPUT}/Headers/" -DLIBDE265_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libde265.a" \
-	-DJPEG_INCLUDE_DIR="${OUTPUT}/Headers/" -DJPEG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libjpeg.a" \
-	-DPNG_PNG_INCLUDE_DIR="${OUTPUT}/Headers/" -DPNG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libpng.a" ./
+	-DJPEG_INCLUDE_DIR="${OUTPUT}/Headers/" -DJPEG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libjpeg.a" ./
 
 fi
 

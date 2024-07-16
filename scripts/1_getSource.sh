@@ -15,7 +15,7 @@ cd ../source
 echo "Downloading Boost ( 1 of 20 ) ..."
 
 rm -f boost.tar.gz
-wget -q -nv -O boost.tar.gz https://boostorg.jfrog.io/artifactory/main/release/1.84.0/source/boost_1_84_0.tar.gz
+wget -q -nv -O boost.tar.gz https://archives.boost.io/release/1.85.0/source/boost_1_85_0.tar.gz
 
 #=====CURL======
 ##

@@ -99,9 +99,9 @@ fi
 # Copy the header and library files.
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build_x86_64/include/libssh2/* "${OUTPUT}/Headers/libssh2"
+	cp -R _build_x86_64/include/* "${OUTPUT}/Headers/libssh2"
 else
-	cp -R _build/include/libssh2/* "${OUTPUT}/Headers/libssh2"
+	cp -R _build/include/* "${OUTPUT}/Headers/libssh2"
 fi
 
 cp _build/lib/libssh2.a "${OUTPUT}/Libraries/${PLATFORM}"

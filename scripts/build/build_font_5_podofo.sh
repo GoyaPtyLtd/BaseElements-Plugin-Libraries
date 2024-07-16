@@ -26,8 +26,6 @@ mkdir Headers/podofo
 
 cd ../source/${PLATFORM}
 
-export LIBUNISTRING=`pwd`'/libunistring/_build'
-
 rm -rf podofo
 mkdir podofo
 tar -xf ../podofo.tar.gz -C podofo --strip-components=1

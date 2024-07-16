@@ -41,6 +41,9 @@ wget -q -nv -O duktape.tar.xz https://duktape.org/duktape-2.7.0.tar.xz
 
 echo "Downloading fontconfig ( 4 of 20 ) ..."
 
+rm -f expat.tar.xz
+wget -q -nv -O expat.tar.xz https://github.com/libexpat/libexpat/releases/download/R_2_6_2/expat-2.6.2.tar.xz
+
 rm -f fontconfig.tar.gz
 wget -q -nv -O fontconfig.tar.gz https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.gz
 

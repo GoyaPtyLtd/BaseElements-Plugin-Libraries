@@ -26,6 +26,8 @@ mkdir Headers/fontconfig
 
 cd ../source/${PLATFORM}
 
+export LIBEXPAT=`pwd`'/libexpat/_build'
+
 rm -rf fontconfig
 mkdir fontconfig
 tar -xf ../fontconfig.tar.gz -C fontconfig --strip-components=1
@@ -40,19 +42,19 @@ if [ ${PLATFORM} = 'macOS' ]; then
 
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}" \
-	LIBXML2_CFLAGS="-I${OUTPUT}/Headers/libxml" LIBXML2_LIBS="-L${OUTPUT}/Libraries/${PLATFORM}" \
 	FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/${PLATFORM} -lfreetype" \
-	./configure --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules --enable-libxml2 \
+	./configure --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
+	--with-expat=${LIBEXPAT} \
 	--prefix="${PREFIX}" 
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	CFLAGS="-fPIC" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}" \
-	LIBXML2_CFLAGS="-I${OUTPUT}/Headers/libxml" LIBXML2_LIBS="-L${OUTPUT}/Libraries/${PLATFORM}" \
 	FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/${PLATFORM} -lfreetype" \
-	 ./configure --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules --enable-libxml2 \
-	--prefix="${PREFIX}" \
+	./configure --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
+	--with-expat=${LIBEXPAT} \
+	--prefix="${PREFIX}" 
 
 fi
 

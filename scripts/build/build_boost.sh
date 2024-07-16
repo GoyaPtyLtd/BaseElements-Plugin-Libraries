@@ -64,9 +64,7 @@ fi
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/boost/* "${OUTPUT}/Headers/boost"
-fi
+cp -R _build/include/boost/* "${OUTPUT}/Headers/boost"
 
 cp _build/lib/libboost_atomic.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libboost_date_time.a "${OUTPUT}/Libraries/${PLATFORM}"

@@ -56,10 +56,7 @@ make -j install
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/freetype2/* "${OUTPUT}/Headers/freetype2"
-fi
-
+cp -R _build/include/freetype2/* "${OUTPUT}/Headers/freetype2"
 cp _build/lib/libfreetype.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

@@ -61,9 +61,7 @@ make -j install
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/libxslt/* "${OUTPUT}/Headers/libxslt"
-fi
+cp -R _build/include/libxslt/* "${OUTPUT}/Headers/libxslt"
 
 cp _build/lib/libxslt.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libexslt.a "${OUTPUT}/Libraries/${PLATFORM}"

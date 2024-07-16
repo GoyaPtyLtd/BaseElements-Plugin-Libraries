@@ -105,10 +105,7 @@ fi
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build_x86_64/include/curl/* "${OUTPUT}/Headers/curl"
-fi
-
+cp -R _build_x86_64/include/curl/* "${OUTPUT}/Headers/curl"
 cp _build/lib/libcurl.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 # Return to source directory

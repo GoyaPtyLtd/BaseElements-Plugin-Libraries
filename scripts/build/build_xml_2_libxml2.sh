@@ -62,10 +62,9 @@ make -j install
 if [ ${PLATFORM} = 'macOS' ]; then
 	#This affects when you're compiling in XCode later - it will look for the system iconv, this makes it use our one.
 	sed -i '' -e 's|#include <iconv/iconv\.h\>|#include <iconv\.h>|g' "${PREFIX}/include/libxml2/libxml/encoding.h"
-	
-	cp -R _build/include/libxml2/libxml/* "${OUTPUT}/Headers/libxml"
 fi
 
+cp -R _build/include/libxml2/libxml/* "${OUTPUT}/Headers/libxml"
 cp _build/lib/libxml2.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

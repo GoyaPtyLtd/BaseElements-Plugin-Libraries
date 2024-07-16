@@ -60,10 +60,7 @@ make -j install
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/fontconfig/* "${OUTPUT}/Headers/fontconfig"
-fi
-
+cp -R _build/include/fontconfig/* "${OUTPUT}/Headers/fontconfig"
 cp _build/lib/libfontconfig.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

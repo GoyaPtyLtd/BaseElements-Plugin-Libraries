@@ -97,9 +97,7 @@ fi
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build_x86_64/include/Poco/* "${OUTPUT}/Headers/Poco"
-fi
+cp -R _build_x86_64/include/Poco/* "${OUTPUT}/Headers/Poco"
 
 cp _build/lib/libPocoCrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libPocoFoundation.a "${OUTPUT}/Libraries/${PLATFORM}"

@@ -64,10 +64,7 @@ make -j install
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/* "${OUTPUT}/Headers/libheif"
-fi
-
+cp -R _build/include/* "${OUTPUT}/Headers/libheif"
 cp _build/lib/libheif.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

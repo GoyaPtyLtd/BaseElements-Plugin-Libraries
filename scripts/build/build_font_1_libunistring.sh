@@ -54,10 +54,7 @@ make -j install
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/* "${OUTPUT}/Headers/libunistring"
-fi
-
+cp -R _build/include/* "${OUTPUT}/Headers/libunistring"
 cp _build/lib/libunistring.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

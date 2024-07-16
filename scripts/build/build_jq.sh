@@ -58,13 +58,9 @@ make -j install
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/* "${OUTPUT}/Headers/jq"
-
-	# jq seems to require the version.h file, but doesn't put it into the prefix.
-	cp src/version.h "${OUTPUT}/Headers/jq"
-
-fi
+# jq seems to require the version.h file, but doesn't put it into the prefix.
+cp src/version.h "${OUTPUT}/Headers/jq"
+cp -R _build/include/* "${OUTPUT}/Headers/jq"
 
 cp _build/lib/libjq.a "${OUTPUT}/Libraries/${PLATFORM}"
 

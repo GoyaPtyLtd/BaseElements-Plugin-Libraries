@@ -55,10 +55,7 @@ make -j install
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/* "${OUTPUT}/Headers/zlib"
-fi
-
+cp -R _build/include/* "${OUTPUT}/Headers/zlib"
 cp _build/lib/libz.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

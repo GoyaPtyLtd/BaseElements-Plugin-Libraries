@@ -83,9 +83,7 @@ fi
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build_x86_64/include/* "${OUTPUT}/Headers/libturbojpeg"
-fi
+cp -R _build_x86_64/include/* "${OUTPUT}/Headers/libturbojpeg"
 
 cp _build/lib/libturbojpeg.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libjpeg.a "${OUTPUT}/Libraries/${PLATFORM}"

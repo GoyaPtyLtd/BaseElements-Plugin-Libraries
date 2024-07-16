@@ -90,10 +90,7 @@ make -j install
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/podofo/* "${OUTPUT}/Headers/podofo"
-fi
-
+cp -R _build/include/podofo/* "${OUTPUT}/Headers/podofo"
 cp _build/lib/libpodofo.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 # Return to source directory

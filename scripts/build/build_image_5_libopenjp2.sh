@@ -61,10 +61,7 @@ make -j install
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/openjpeg-2.5/* "${OUTPUT}/Headers/libopenjp2"
-fi
-
+cp -R _build/include/openjpeg-2.5/* "${OUTPUT}/Headers/libopenjp2"
 cp _build/lib/libopenjp2.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

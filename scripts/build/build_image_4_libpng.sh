@@ -75,10 +75,7 @@ fi
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build_x86_64/include/libpng16/* "${OUTPUT}/Headers/libpng"
-fi
-
+cp -R _build_x86_64/include/libpng16/* "${OUTPUT}/Headers/libpng"
 cp _build/lib/libpng16.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 cd ${SRCROOT}

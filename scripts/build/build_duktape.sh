@@ -3,13 +3,21 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
+if [ $(uname) = 'Darwin' ]; then
+	export PLATFORM='macOS'
+elif [ $(uname -m) = 'aarch64' ]; then
+	export PLATFORM='linuxARM'
+else
+	export PLATFORM='linux'
+fi
+
 export SRCROOT=`pwd`
 cd ../../Output
 export OUTPUT=`pwd`
 
 # Switch to our build directory
 
-cd ../source/macOS
+cd ../source/${PLATFORM}
 
 rm -rf duktape
 mkdir duktape

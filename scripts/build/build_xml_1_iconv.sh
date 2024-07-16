@@ -55,9 +55,7 @@ make install
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/* "${OUTPUT}/Headers/iconv"
-fi
+cp -R _build/include/* "${OUTPUT}/Headers/iconv"
 
 cp _build/lib/libiconv.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libcharset.a "${OUTPUT}/Libraries/${PLATFORM}"

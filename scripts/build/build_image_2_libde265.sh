@@ -57,10 +57,7 @@ make -j install
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build/include/libde265/* "${OUTPUT}/Headers/libde265"
-fi
-
+cp -R _build/include/libde265/* "${OUTPUT}/Headers/libde265"
 cp _build/lib/libde265.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 # Return to source directory

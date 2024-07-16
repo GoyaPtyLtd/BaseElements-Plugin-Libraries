@@ -20,9 +20,9 @@ fi
 
 cd ../Output
 
-find ./Headers -not -name 'README.md' -delete
+find ./Headers/* -not -name 'README.md' -delete
 
-find ./Libraries/${PLATFORM} -not -name 'README.md' -delete
+find ./Libraries/${PLATFORM}/* -not -name 'README.md' -delete
 
 cd ../source/${PLATFORM}
 

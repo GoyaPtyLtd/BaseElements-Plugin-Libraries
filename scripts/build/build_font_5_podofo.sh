@@ -59,8 +59,8 @@ if [ ${PLATFORM} = 'macOS' ]; then
 		 -DLIBJPEG_LIBRARY_RELEASE="${OUTPUT}/Libraries/${PLATFORM}/libjpeg.a" -DLIBJPEG_INCLUDE_DIR="${OUTPUT}/Headers/libturbojpeg" \
 		 -DPNG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT}/Headers/libpng" \
 		 -DCMAKE_CXX_STANDARD=11 \
-		 -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=11.0 -stdlib=libc++" \
-		 -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=11.0 -stdlib=libc++" .
+		 -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" \
+		 -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" .
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 

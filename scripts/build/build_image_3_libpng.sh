@@ -44,16 +44,18 @@ export PREFIX_arm64=`pwd`'/_build_arm64'
 
 if [ ${PLATFORM} = 'macOS' ]; then
 	CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
+	CPPFLAGS=" -I${OUTPUT}/Headers/zlib" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules \
-	--host="aarch64-apple-darwin" --with-libz-prefix=${ZLIB} \
+	--host="aarch64-apple-darwin" \
 	--prefix="${PREFIX_x86_64}"
 
 	make install
 	make -s -j distclean
 
 	CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
+	CPPFLAGS=" -I${OUTPUT}/Headers/zlib" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules \
-	--host="aarch64-apple-darwin" --with-libz-prefix=${ZLIB} \
+	--host="aarch64-apple-darwin" \
 	--prefix="${PREFIX_arm64}"
 
 	make install
@@ -66,8 +68,8 @@ if [ ${PLATFORM} = 'macOS' ]; then
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	CFLAGS="-fPIC" \
+	CPPFLAGS=" -I${OUTPUT}/Headers/zlib" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules \
-	--with-libz-prefix=${ZLIB} \
 	--prefix="${PREFIX}"
 
 	make install

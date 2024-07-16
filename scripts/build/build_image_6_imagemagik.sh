@@ -21,10 +21,8 @@ rm -f Libraries/${PLATFORM}/libMagick++-7.Q16HDRI.a
 rm -f Libraries/${PLATFORM}/libMagickCore-7.Q16HDRI.a
 rm -f Libraries/${PLATFORM}/libMagickWand-7.Q16HDRI.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/ImageMagick-7
-	mkdir Headers/ImageMagick-7
-fi
+rm -rf Headers/ImageMagick-7
+mkdir Headers/ImageMagick-7
 
 cd ../source/${PLATFORM}
 

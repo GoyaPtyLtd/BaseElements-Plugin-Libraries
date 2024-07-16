@@ -19,11 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libz.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/zlib
-	mkdir Headers/zlib
-fi
-
+rm -rf Headers/zlib
+mkdir Headers/zlib
 
 # Switch to our build directory
 

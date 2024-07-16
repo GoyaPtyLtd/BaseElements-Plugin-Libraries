@@ -20,10 +20,8 @@ export OUTPUT=`pwd`
 rm -f Libraries/${PLATFORM}/libcrypto.a
 rm -f Libraries/${PLATFORM}/libssl.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/openssl
-	mkdir Headers/openssl
-fi
+rm -rf Headers/openssl
+mkdir Headers/openssl
 
 # Switch to our build directory
 

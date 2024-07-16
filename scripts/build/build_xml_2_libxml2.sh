@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libxml2.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/libxml
-	mkdir Headers/libxml
-fi
+rm -rf Headers/libxml
+mkdir Headers/libxml
 
 # Switch to our build directory
 

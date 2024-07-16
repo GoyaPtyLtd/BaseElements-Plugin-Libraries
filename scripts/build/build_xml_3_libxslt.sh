@@ -20,10 +20,8 @@ export OUTPUT=`pwd`
 rm -f Libraries/${PLATFORM}/libxslt.a
 rm -f Libraries/${PLATFORM}/libexslt.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/libxslt
-	mkdir Headers/libxslt
-fi
+rm -rf Headers/libxslt
+mkdir Headers/libxslt
 
 # Switch to our build directory
 

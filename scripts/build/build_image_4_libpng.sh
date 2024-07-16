@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libpng.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/libpng
-	mkdir Headers/libpng
-fi
+rm -rf Headers/libpng
+mkdir Headers/libpng
 
 # Switch to our build directory
 

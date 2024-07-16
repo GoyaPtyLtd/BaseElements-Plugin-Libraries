@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libcurl.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/curl
-	mkdir Headers/curl
-fi
+rm -rf Headers/curl
+mkdir Headers/curl
 
 # Switch to our build directory
 

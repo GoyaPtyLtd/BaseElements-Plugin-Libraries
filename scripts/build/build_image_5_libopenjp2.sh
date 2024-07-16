@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libopenjp2.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/libopenjp2
-	mkdir Headers/libopenjp2
-fi
+rm -rf Headers/libopenjp2
+mkdir Headers/libopenjp2
 
 # Switch to our build directory
 

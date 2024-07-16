@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libunistring.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/libunistring
-	mkdir Headers/libunistring
-fi
+rm -rf Headers/libunistring
+mkdir Headers/libunistring
 
 # Switch to our build directory
 

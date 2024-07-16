@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/macOS/libfontconfig.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/fontconfig
-	mkdir Headers/fontconfig
-fi
+rm -rf Headers/fontconfig
+mkdir Headers/fontconfig
 
 # Switch to our build directory
 

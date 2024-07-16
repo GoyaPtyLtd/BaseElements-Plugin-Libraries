@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libssh2.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/libssh2
-	mkdir Headers/libssh2
-fi
+rm -rf Headers/libssh2
+mkdir Headers/libssh2
 
 # Switch to our build directory
 

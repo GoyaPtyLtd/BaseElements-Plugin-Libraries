@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libheif.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/libheif
-	mkdir Headers/libheif
-fi
+rm -rf Headers/libheif
+mkdir Headers/libheif
 
 # Switch to our build directory
 

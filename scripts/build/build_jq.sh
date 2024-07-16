@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libjq.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/jq
-	mkdir Headers/jq
-fi
+rm -rf Headers/jq
+mkdir Headers/jq
 
 # Switch to our build directory
 

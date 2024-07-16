@@ -20,10 +20,8 @@ export OUTPUT=`pwd`
 rm -f Libraries/${PLATFORM}/libiconv.a
 rm -f Libraries/${PLATFORM}/libcharset.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/iconv
-	mkdir Headers/iconv
-fi
+rm -rf Headers/iconv
+mkdir Headers/iconv
 
 # Switch to our build directory
 

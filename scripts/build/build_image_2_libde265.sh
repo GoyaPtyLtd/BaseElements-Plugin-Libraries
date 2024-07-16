@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libde265.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/libde265
-	mkdir Headers/libde265
-fi
+rm -rf Headers/libde265
+mkdir Headers/libde265
 
 # Switch to our build directory
 

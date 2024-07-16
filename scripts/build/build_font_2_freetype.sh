@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libfreetype.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/freetype2
-	mkdir Headers/freetype2
-fi
+rm -rf Headers/freetype2
+mkdir Headers/freetype2
 
 # Switch to our build directory
 

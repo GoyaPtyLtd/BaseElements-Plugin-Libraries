@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libpodofo.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/podofo
-	mkdir Headers/podofo
-fi
+rm -rf Headers/podofo
+mkdir Headers/podofo
 
 # Switch to our build directory
 

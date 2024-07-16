@@ -25,10 +25,8 @@ rm -f Libraries/${PLATFORM}/libPocoPDF.a
 rm -f Libraries/${PLATFORM}/libPocoXML.a
 rm -f Libraries/${PLATFORM}/libPocoZip.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/Poco
-	mkdir Headers/Poco
-fi
+rm -rf Headers/Poco
+mkdir Headers/Poco
 
 # Switch to our build directory
 

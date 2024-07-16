@@ -19,10 +19,8 @@ export OUTPUT=`pwd`
 
 rm -f Libraries/${PLATFORM}/libturbojpeg.a
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	rm -rf Headers/libturbojpeg
-	mkdir Headers/libturbojpeg
-fi
+rm -rf Headers/libturbojpeg
+mkdir Headers/libturbojpeg
 
 # Switch to our build directory
 

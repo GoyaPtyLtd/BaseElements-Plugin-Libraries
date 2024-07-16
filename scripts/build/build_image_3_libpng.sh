@@ -79,9 +79,9 @@ fi
 # Copy the header and library files.
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build_x86_64/include/libpng/* "${OUTPUT}/Headers/libpng"
+	cp -R _build_x86_64/include/libpng16/* "${OUTPUT}/Headers/libpng"
 else
-	cp -R _build/include/libpng/* "${OUTPUT}/Headers/libpng"
+	cp -R _build/include/libpng16/* "${OUTPUT}/Headers/libpng"
 fi
 
 cp _build/lib/libpng16.a "${OUTPUT}/Libraries/${PLATFORM}"

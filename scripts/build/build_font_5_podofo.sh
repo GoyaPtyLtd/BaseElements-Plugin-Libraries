@@ -69,9 +69,11 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
          -DFREETYPE_LIBRARY_RELEASE="${OUTPUT}/Libraries/${PLATFORM}/libfreetype.a" -DFREETYPE_INCLUDE_DIR="${OUTPUT}/Headers/freetype2" \
 		 -DWANT_FONTCONFIG:BOOL=TRUE \
 		 -DFONTCONFIG_LIBRARIES="${OUTPUT}/Libraries/${PLATFORM}/fontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT}/Headers" \
+		 -DLIBCRYPTO_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT}/Headers" \
 		 -DOPENSSL_INCLUDE_DIR="${OUTPUT}/Headers/openssl" \
 		 -DUNISTRING_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libunistring.a" -DUNISTRING_INCLUDE_DIR="${OUTPUT}/Headers/libunistring" \
 		 -DZLIB_LIBRARY_RELEASE="${OUTPUT}/Libraries/${PLATFORM}/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT}/Headers/zlib" \
+		 -DLIBJPEG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libjpeg.a" -DLIBJPEG_INCLUDE_DIR="${OUTPUT}/Headers/libturbojpeg" \
 		 -DPNG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT}/Headers/libpng" \
 		 -DWANT_LIB64:BOOL=TRUE \
 		 -DCMAKE_CXX_FLAGS="-fPIC" .

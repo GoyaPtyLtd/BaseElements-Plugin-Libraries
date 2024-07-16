@@ -73,7 +73,11 @@ fi
 
 # Copy the header and library files.
 
-cp -R _build_x86_64/include/openssl/* "${OUTPUT}/Headers/openssl"
+if [ ${PLATFORM} = 'macOS' ]; then
+	cp -R _build_x86_64/include/openssl/* "${OUTPUT}/Headers/openssl"
+else
+	cp -R _build/include/openssl/* "${OUTPUT}/Headers/openssl"
+fi
 
 cp _build/lib/libcrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libssl.a "${OUTPUT}/Libraries/${PLATFORM}"

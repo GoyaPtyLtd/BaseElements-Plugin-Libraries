@@ -45,7 +45,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	./configure --disable-shared --prefix="${PREFIX}" \
 	--without-utilities --disable-docs --disable-dependency-tracking --with-quantum-depth=16 \
     --enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
-	--without-zlib --without-xml \
+	--without-zlib --without-xml --without-lzma \
 	JPEG_LIBS="-L${OUTPUT}/Libraries/${PLATFORM} -ljpeg"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
@@ -57,7 +57,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	./configure --disable-shared --prefix="${PREFIX}" \
 	--without-utilities --disable-docs --disable-dependency-tracking --with-quantum-depth=16 \
 	--enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
-	--without-zlib --without-xml \
+	--without-zlib --without-xml --without-lzma \
 	JPEG_LIBS="-L${OUTPUT}/Libraries/${PLATFORM} -ljpeg"
 
 fi

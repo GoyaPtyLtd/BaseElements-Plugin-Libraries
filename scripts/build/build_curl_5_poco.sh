@@ -59,7 +59,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
-	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=x86_64 OPENSSL_DIR=${OPENSSL}
+	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=x86_64
 	# Needs a change to just the POCO_TARGET_OSARCH once the bug in their config is fixed - now needs both so it builds into the right folders
 	# It is ignoring the target value
 	make -s -j distclean
@@ -70,7 +70,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
-	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=x86_64 OPENSSL_DIR=${OPENSSL}
+	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=x86_64
 	# Needs a change to just the POCO_TARGET_OSARCH once the bug in their config is fixed - now needs both so it builds into the right folders
 	# It is ignoring the target value
 	make -s -j distclean
@@ -93,7 +93,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
-	make install -s -j4 OPENSSL_DIR=${OPENSSL}
+	make install -s -j4
 	
 fi
 

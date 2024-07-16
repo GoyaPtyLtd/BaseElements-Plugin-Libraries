@@ -41,14 +41,14 @@ export PREFIX=`pwd`'/_build'
 if [ ${PLATFORM} = 'macOS' ]; then
 
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-	./configure --disable-shared --with-threads --without-python --without-zlib --without-lzma \
+	./configure --disable-shared --with-threads --with-sax1 --without-python --without-zlib --without-lzma \
 	--with-iconv="${ICONV}" \
 	--prefix="${PREFIX}"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	CFLAGS=-fPIC \
-	./configure --disable-shared --with-threads --without-python --without-zlib --without-lzma \
+	./configure --disable-shared --with-threads --with-sax1 --without-python --without-zlib --without-lzma \
 	--prefix="${PREFIX}"
 
 fi

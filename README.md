@@ -10,10 +10,9 @@ The goal is to turn this into a single script for each FileMaker platform ( Mac,
 
 ### TODO
 
-1. Check the imageMagick compile uses all the libraries we've compiled and not others.
+1. Build ubuntu x86 and arm versions.
 2. Add all the iOS build stuff to the mac scripts.
 3. Build a Windows script library.
-4. Build ubuntu x86 and arm versions.
 
 If you're at all interested in the BE plugin and compiling code for it, or helping out, we'd love some assistance.
 
@@ -53,15 +52,15 @@ If you're compiling the plugin you may also need to clone it :
 
 Then switch to the Scripts folder as the base from which to call various compile scripts.
 
-    cd BaseElements-Plugin-Libraries/Scripts
+    cd BaseElements-Plugin-Libraries/scripts
 
 Then run the script that downloads all the current source files :
 
-    ./_1_getSource.sh
+    ./1_getSource.sh
 
 You don't need to re-run this unless it changes in github and there's a new version of one of the libraries. Each build process starts from a clean folder and unpacks the archive at the beginning, so you only need to download once. You can then run any of the individual **build** scripts, or build everything :
 
-    ./_2_build.sh
+    ./2_build.sh
     
 That will then run through every single build process and will take hours on most macs.
 

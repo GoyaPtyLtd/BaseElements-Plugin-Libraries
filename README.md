@@ -46,9 +46,11 @@ It shouldn't matter where you put the local version of the repository, but we pu
 
     git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
 
-If you're compiling the plugin you may also need to clone it :
+If you're compiling the plugin you may also need to clone that, and because it's large you'll need to use ssh to clone it :
 
-    git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin.git
+    git clone git@github.com:GoyaPtyLtd/BaseElements-Plugin.git
+
+If you don't have ssh setup for git, instructions are here : [https://phoenixnap.com/kb/git-clone-ssh](https://phoenixnap.com/kb/git-clone-ssh)
 
 Then switch to the Scripts folder as the base from which to call various compile scripts.
 

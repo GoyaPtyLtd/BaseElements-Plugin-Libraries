@@ -22,6 +22,7 @@ rm -f Libraries/${PLATFORM}/libPocoFoundation.a
 rm -f Libraries/${PLATFORM}/libPocoJSON.a
 rm -f Libraries/${PLATFORM}/libPocoNet.a
 rm -f Libraries/${PLATFORM}/libPocoPDF.a
+rm -f Libraries/${PLATFORM}/libPocoUtil.a
 rm -f Libraries/${PLATFORM}/libPocoXML.a
 rm -f Libraries/${PLATFORM}/libPocoZip.a
 

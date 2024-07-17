@@ -73,16 +73,14 @@ So for example, there's a new version of libcurl that you want to build and test
 * Pull down the git repos for both the library and the plugin as above.
 * Check that the BE plugin compiles successfully.
 * If you've previously run any scripts, clear things out by running the **_cleanOutputFolder.sh** script.
-* Modify the **_1_getSource.sh** script to reference the new download.
-* Run the **_1_getSource.sh** script to download your new version.
-* change to the build directory.
+* Modify the **1_getSource.sh** script to reference the new download.
+* Run the **1_getSource.sh** script to download your new version.
+* change to the **build** directory.
 * Run the **build_curl_0_all.sh** script, or run each individual curl build scripts in turn.
-* Once all the parts are compiling, then switch to the copy folder, and run the **copy_curl.sh** script.
+* Once all the parts are compiling, then switch to the **copy** folder, and run the **copy_curl.sh** script.
 * Switch to xCode and attempt to compile the plugin.  Fix any newly introduced errors.
 * Run FileMaker Pro or FileMaker Server with the new plugin, and run the BaseElements Plugin Tests.fmp12 file and run all the relevant tests.
 * Submit a pull request for the changes to the library, we'll probably run the same tests and then incorporate them into the main 
-
-Then open XCode, and try a build from there. If it succeeds, run the "BaseElements Plugin Tests.fmp12" file test scripts. If there's issues, we need to resolve them, either in the BE Plugin code, or in the compile settings for that library.
 
 ### Ubuntu Setup
 

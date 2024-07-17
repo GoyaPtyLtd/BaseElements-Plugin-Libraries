@@ -16,11 +16,11 @@ cd BaseElements-Plugin-Libraries/Output
 
 export OUTPUT=`pwd`
 
-cp Libraries/macOS/libunistring.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
-cp Libraries/macOS/libexpat.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
-cp Libraries/macOS/libfreetype.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
-cp Libraries/macOS/libfontconfig.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
-cp Libraries/macOS/libpodofo.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+cp Libraries/${PLATFORM}/libunistring.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+cp Libraries/${PLATFORM}/libexpat.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+cp Libraries/${PLATFORM}/libfreetype.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+cp Libraries/${PLATFORM}/libfontconfig.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+cp Libraries/${PLATFORM}/libpodofo.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 
 if [ ${PLATFORM} = 'macOS' ]; then
 

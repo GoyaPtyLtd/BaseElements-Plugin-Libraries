@@ -63,7 +63,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--host=x86_64-apple-darwin --prefix="${PREFIX_arm64}"
 
 	make
-	make -j install
+	make -j$(nproc) install
 	make -s -j distclean
 	
 	mkdir _build_x86_64
@@ -79,7 +79,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--host=x86_64-apple-darwin --prefix="${PREFIX_x86_64}"
 	
 	make
-	make -j install
+	make -j$(nproc) install
 	make -s -j distclean
 
 	mkdir ${PREFIX}/lib
@@ -100,7 +100,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	--prefix="${PREFIX}" \
 
 	make
-	make -j install
+	make -j$(nproc) install
 
 fi
 

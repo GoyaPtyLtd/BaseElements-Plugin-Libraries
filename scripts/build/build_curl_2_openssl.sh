@@ -67,7 +67,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	./Configure linux-generic64 no-shared no-docs no-tests \
 	--prefix="${PREFIX}"
 	make
-	make -j install_sw
+	make -j$(nproc) install_sw
 
 fi
 

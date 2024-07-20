@@ -50,7 +50,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 fi
 
-make -j install
+make -j$(nproc) install
 
 # Copy the header and library files.
 

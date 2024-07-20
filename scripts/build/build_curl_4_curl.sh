@@ -97,7 +97,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	--with-libssh2=${LIBSSH} \
 	--prefix="${PREFIX}"
 
-	make -j install
+	make -j$(nproc) install
 
 fi
 

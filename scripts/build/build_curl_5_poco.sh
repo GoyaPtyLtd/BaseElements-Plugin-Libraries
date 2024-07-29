@@ -59,8 +59,6 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
 	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
-	# Needs a change to just the POCO_TARGET_OSARCH once the bug in their config is fixed - now needs both so it builds into the right folders
-	# It is ignoring the target value
 	make -s -j distclean
 
 	./configure --cflags="-mmacosx-version-min=10.15" \
@@ -70,8 +68,6 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
 	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=x86_64
-	# Needs a change to just the POCO_TARGET_OSARCH once the bug in their config is fixed - now needs both so it builds into the right folders
-	# It is ignoring the target value
 	make -s -j distclean
 
 	mkdir ${PREFIX}/lib

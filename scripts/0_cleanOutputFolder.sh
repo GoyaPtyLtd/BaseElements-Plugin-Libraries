@@ -24,6 +24,8 @@ find ./Headers/* -not -name 'README.md' -delete
 
 find ./Libraries/${PLATFORM}/* -not -name 'README.md' -delete
 
+find ./Source/* -not -name 'README.md' -not -type d -delete
+
 cd ../source/${PLATFORM}
 
 rm -rf boost
@@ -34,6 +36,7 @@ rm -rf freetype
 rm -rf ImageMagick
 rm -rf jq
 rm -rf libde265
+rm -rf libexpat
 rm -rf libheif
 rm -rf libiconv
 rm -rf libopenjp2

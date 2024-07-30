@@ -13,4 +13,6 @@ cd copy
 
 ./copy_font.sh
 
+./copy_headers.sh
+
 cd ..

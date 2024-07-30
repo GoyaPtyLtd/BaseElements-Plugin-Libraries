@@ -22,6 +22,8 @@ rm -f Libraries/${PLATFORM}/libexslt.a
 
 rm -rf Headers/libxslt
 mkdir Headers/libxslt
+rm -rf Headers/libexslt
+mkdir Headers/libexslt
 
 # Switch to our build directory
 
@@ -61,6 +63,7 @@ make install
 # Copy the header and library files.
 
 cp -R _build/include/libxslt/* "${OUTPUT}/Headers/libxslt"
+cp -R _build/include/libexslt/* "${OUTPUT}/Headers/libexslt"
 
 cp _build/lib/libxslt.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libexslt.a "${OUTPUT}/Libraries/${PLATFORM}"

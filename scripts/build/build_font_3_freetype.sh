@@ -48,9 +48,10 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no \
 	--prefix=${PREFIX}
 
+	make -j$(($(nproc) + 1))
 fi
 
-make -j$(nproc) install
+make install
 
 # Copy the header and library files.
 

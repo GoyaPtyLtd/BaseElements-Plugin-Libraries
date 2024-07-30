@@ -50,9 +50,11 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	--enable-all-static --enable-pthread-tls --without-oniguruma \
 	--prefix="${PREFIX}"
 
+	make -j$(($(nproc) + 1))
+
 fi
 
-make -j$(nproc) install
+make install
 
 # Copy the header and library files.
 

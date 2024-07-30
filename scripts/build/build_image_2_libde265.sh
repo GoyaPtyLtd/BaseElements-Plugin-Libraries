@@ -49,9 +49,10 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	#./configure --prefix="${PREFIX}" --disable-shared --enable-static --disable-dec265 --disable-sherlock265 --disable-sse --disable-dependency-tracking
 
+	make -j $(($(nproc) + 1))
 fi
 
-make -j$(nproc) install
+make install
 
 # Copy the header and library files.
 

@@ -92,7 +92,8 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	--with-crypto=openssl --with-libssl-prefix=${OPENSSL} \
 	--prefix="${PREFIX}"
 
-	make -j$(nproc) install
+	make -j$(($(nproc) + 1))
+	make install
 
 fi
 

@@ -46,9 +46,10 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	CFLAGS="-fPIC" \
 	./configure --static --prefix="${PREFIX}"
 
+	make -j$(($(nproc) + 1))
 fi
 
-make -j$(nproc) install
+make install
 
 # Copy the header and library files.
 

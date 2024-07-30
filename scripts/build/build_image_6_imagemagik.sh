@@ -99,8 +99,8 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	--enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
 	--prefix="${PREFIX}" \
 
-	make
-	make -j$(nproc) install
+	make -j$(($(nproc) + 1))
+	make install
 
 fi
 

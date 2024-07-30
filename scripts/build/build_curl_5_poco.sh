@@ -89,7 +89,8 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
-	make install -s -j4
+	make -j$(($(nproc) + 1))
+	make install
 	
 fi
 

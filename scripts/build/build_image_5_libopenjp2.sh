@@ -53,9 +53,11 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	-DCMAKE_LIBRARY_PATH:path="${OUTPUT}/Libraries/${PLATFORM}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT}/Headers" \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
 
+	make -j$(($(nproc) + 1))
+
 fi
 
-make -j$(nproc) install
+make install
 
 # Copy the header and library files.
 

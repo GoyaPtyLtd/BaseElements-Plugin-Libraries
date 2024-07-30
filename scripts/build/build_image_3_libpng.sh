@@ -72,6 +72,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules \
 	--prefix="${PREFIX}"
 
+	make -j$(($(nproc) + 1))
 	make install
 
 fi

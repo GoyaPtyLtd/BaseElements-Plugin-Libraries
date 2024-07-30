@@ -77,6 +77,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	-DCMAKE_IGNORE_PATH=/usr/lib/x86_64-linux-gnu/ \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}"  ./
 
+	make -j$(($(nproc) + 1))
 	make install
 
 fi

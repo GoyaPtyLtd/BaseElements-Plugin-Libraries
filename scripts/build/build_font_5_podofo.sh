@@ -78,9 +78,11 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 		 -DWANT_LIB64:BOOL=TRUE \
 		 -DCMAKE_CXX_FLAGS="-fPIC" .
 
+	make -j $(($(nproc) + 1))
+
 fi
 
-make -j$(nproc) install
+make install
 
 # Copy the header and library files.
 

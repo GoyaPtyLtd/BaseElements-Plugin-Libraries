@@ -56,9 +56,10 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	--with-expat=${LIBEXPAT} \
 	--prefix="${PREFIX}" 
 
+	make -j$(($(nproc) + 1))
 fi
 
-make -j$(nproc) install
+make install
 
 # Copy the header and library files.
 

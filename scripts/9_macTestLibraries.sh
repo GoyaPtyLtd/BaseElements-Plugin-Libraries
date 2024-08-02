@@ -3,7 +3,6 @@ set -e
 
 cd ../Output/Libraries/macOS
 
-lipo -info ./libPocoXML.a
 lipo -info ./libboost_atomic.a
 lipo -info ./libboost_date_time.a
 lipo -info ./libboost_filesystem.a
@@ -32,6 +31,8 @@ lipo -info ./libPocoFoundation.a
 lipo -info ./libPocoJSON.a
 lipo -info ./libPocoNet.a
 lipo -info ./libPocoPDF.a
+lipo -info ./libPocoUtil.a
+lipo -info ./libPocoXML.a
 lipo -info ./libPocoZip.a
 lipo -info ./libpodofo.a
 lipo -info ./libssh2.a

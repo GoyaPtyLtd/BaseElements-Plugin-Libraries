@@ -39,13 +39,13 @@ export PREFIX=`pwd`'/_build'
 if [ ${PLATFORM} = 'macOS' ]; then
 	
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no \
+	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-brotli=no --with-png=no --with-zlib=no \
 	--prefix=${PREFIX}
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	CFLAGS="-fPIC" \
-	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-png=no --with-zlib=no \
+	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-brotli=no --with-png=no --with-zlib=no \
 	--prefix=${PREFIX}
 
 	make -j$(($(nproc) + 1))

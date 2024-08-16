@@ -21,6 +21,8 @@ cp Libraries/${PLATFORM}/libssl.a "${START}/BaseElements-Plugin/Libraries/${PLAT
 
 cp Libraries/${PLATFORM}/libssh2.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 
+cp Libraries/${PLATFORM}/libnghttp2.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
+
 cp Libraries/${PLATFORM}/libcurl.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 
 cp Libraries/${PLATFORM}/libPocoCrypto.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
@@ -39,6 +41,8 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/openssl/" "${START}/BaseElements-Plugin/Headers/openssl"
 
 	rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/libssh2/" "${START}/BaseElements-Plugin/Headers/libssh2"
+
+	rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/nghttp2/" "${START}/BaseElements-Plugin/Headers/nghttp2"
 
 	rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/curl/" "${START}/BaseElements-Plugin/Headers/curl"
 

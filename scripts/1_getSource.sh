@@ -12,7 +12,7 @@ cd ../source
 #
 #Boost is available from  http://www.boost.org/
 
-echo "Downloading Boost ( 1 of 20 ) ..."
+echo "Downloading Boost ( 1 of 22 ) ..."
 
 rm -f boost.tar.gz
 wget -q -nv -O boost.tar.gz https://archives.boost.io/release/1.85.0/source/boost_1_85_0.tar.gz
@@ -21,7 +21,7 @@ wget -q -nv -O boost.tar.gz https://archives.boost.io/release/1.85.0/source/boos
 ##
 #Download the source from  http://curl.haxx.se/download.html
 
-echo "Downloading Curl ( 2 of 20 ) ..."
+echo "Downloading Curl ( 2 of 22 ) ..."
 
 rm -f curl.tar.gz
 wget -q -nv -O curl.tar.gz https://curl.se/download/curl-8.6.0.tar.gz
@@ -30,7 +30,7 @@ wget -q -nv -O curl.tar.gz https://curl.se/download/curl-8.6.0.tar.gz
 #
 #Download the source from  http://duktape.org/
 
-echo "Downloading duktape ( 3 of 20 ) ..."
+echo "Downloading duktape ( 3 of 22 ) ..."
 
 rm -f duktape.tar.xz
 wget -q -nv -O duktape.tar.xz https://duktape.org/duktape-2.7.0.tar.xz
@@ -39,7 +39,7 @@ wget -q -nv -O duktape.tar.xz https://duktape.org/duktape-2.7.0.tar.xz
 #
 #Download fontconfig from   https://www.freedesktop.org/wiki/Software/fontconfig/
 
-echo "Downloading fontconfig ( 4 of 20 ) ..."
+echo "Downloading fontconfig ( 4 of 22 ) ..."
 
 rm -f expat.tar.xz
 wget -q -nv -O expat.tar.xz https://github.com/libexpat/libexpat/releases/download/R_2_6_2/expat-2.6.2.tar.xz
@@ -51,7 +51,7 @@ wget -q -nv -O fontconfig.tar.gz https://www.freedesktop.org/software/fontconfig
 #
 #Download freetype from  https://sourceforge.net/projects/freetype/files/freetype2/
 
-echo "Downloading freetype ( 5 of 20 ) ..."
+echo "Downloading freetype ( 5 of 22 ) ..."
 
 rm -f freetype.tar.gz
 wget -q -nv -O freetype.tar.gz https://sourceforge.net/projects/freetype/files/freetype2/2.13.2/freetype-2.13.2.tar.gz
@@ -60,7 +60,7 @@ wget -q -nv -O freetype.tar.gz https://sourceforge.net/projects/freetype/files/f
 #
 #Download the source for libiconv from  https://www.gnu.org/software/libiconv/#downloading
 
-echo "Downloading libiconv ( 6 of 20 ) ..."
+echo "Downloading libiconv ( 6 of 22 ) ..."
 
 rm -f libiconv.tar.gz
 wget -q -nv -O libiconv.tar.gz https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz
@@ -69,7 +69,7 @@ wget -q -nv -O libiconv.tar.gz https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.1
 #
 #Download the source from  https://github.com/strukturag/libde265/releases
 
-echo "Downloading libde265 ( 7 of 20 ) ..."
+echo "Downloading libde265 ( 7 of 22 ) ..."
 
 rm -f libde265.tar.gz
 wget -q -nv -O libde265.tar.gz https://github.com/strukturag/libde265/archive/refs/tags/v1.0.15.tar.gz
@@ -79,7 +79,7 @@ wget -q -nv -O libde265.tar.gz https://github.com/strukturag/libde265/archive/re
 #
 #Download the source from  https://github.com/uclouvain/openjpeg/releases
 
-echo "Downloading openjpeg ( 8 of 20 ) ..."
+echo "Downloading openjpeg ( 8 of 22 ) ..."
 
 rm -f libopenjp2.tar.gz
 wget -q -nv -O libopenjp2.tar.gz https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.5.2.tar.gz
@@ -88,7 +88,7 @@ wget -q -nv -O libopenjp2.tar.gz https://github.com/uclouvain/openjpeg/archive/r
 #
 #Download the source from  https://github.com/strukturag/libheif/releases
 
-echo "Downloading libheif ( 9 of 20 ) ..."
+echo "Downloading libheif ( 9 of 22 ) ..."
 
 rm -f libheif.tar.gz
 wget -q -nv -O libheif.tar.gz https://github.com/strukturag/libheif/releases/download/v1.17.6/libheif-1.17.6.tar.gz
@@ -97,7 +97,7 @@ wget -q -nv -O libheif.tar.gz https://github.com/strukturag/libheif/releases/dow
 #
 #Download the source from  http://ijg.org/files/
 
-echo "Downloading libjpeg ( 10 of 20 ) ..."
+echo "Downloading libjpeg ( 10 of 22 ) ..."
 
 rm -f libjpeg.tar.gz
 wget -q -nv -O libjpeg.tar.gz http://ijg.org/files/jpegsrc.v9f.tar.gz
@@ -106,7 +106,7 @@ wget -q -nv -O libjpeg.tar.gz http://ijg.org/files/jpegsrc.v9f.tar.gz
 #
 #Download the source from  https://github.com/libjpeg-turbo/libjpeg-turbo/releases
 
-echo "Downloading libjpeg-turbo ( 11 of 20 ) ..."
+echo "Downloading libjpeg-turbo ( 11 of 22 ) ..."
 
 rm -f libturbojpeg.tar.gz
 wget -q -nv -O libturbojpeg.tar.gz https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.0.3/libjpeg-turbo-3.0.3.tar.gz
@@ -115,7 +115,7 @@ wget -q -nv -O libturbojpeg.tar.gz https://github.com/libjpeg-turbo/libjpeg-turb
 #
 #Download the source from  https://github.com/ImageMagick/ImageMagick/releases
 
-echo "Downloading ImageMagick ( 12 of 20 ) ..."
+echo "Downloading ImageMagick ( 12 of 22 ) ..."
 
 rm -f ImageMagick.tar.gz
 wget -q -nv -O ImageMagick.tar.gz https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.1-29.tar.gz
@@ -124,7 +124,7 @@ wget -q -nv -O ImageMagick.tar.gz https://github.com/ImageMagick/ImageMagick/arc
 #
 #Download the source from  https://github.com/jqlang/jq/releases
 
-echo "Downloading jq ( 13 of 20 ) ..."
+echo "Downloading jq ( 13 of 22 ) ..."
 
 rm -f jq.tar.gz
 wget -q -nv -O jq.tar.gz https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-1.7.1.tar.gz
@@ -133,7 +133,7 @@ wget -q -nv -O jq.tar.gz https://github.com/jqlang/jq/releases/download/jq-1.7.1
 #
 #Download the source from  http://www.libssh2.org/
 
-echo "Downloading libssh2 ( 14 of 20 ) ..."
+echo "Downloading libssh2 ( 14 of 22 ) ..."
 
 rm -f libssh.tar.gz
 wget -q -nv -O libssh.tar.gz https://libssh2.org/download/libssh2-1.11.0.tar.gz
@@ -142,7 +142,7 @@ wget -q -nv -O libssh.tar.gz https://libssh2.org/download/libssh2-1.11.0.tar.gz
 #
 #Download the source for libxml2 from  http://xmlsoft.org/downloads.html
 
-echo "Downloading libxml2 ( 15 of 20 ) ..."
+echo "Downloading libxml2 ( 15 of 22 ) ..."
 
 rm -f libxml.tar.xz
 wget -q -nv -O libxml.tar.xz https://download.gnome.org/sources/libxml2/2.13/libxml2-2.13.0.tar.xz
@@ -151,7 +151,7 @@ wget -q -nv -O libxml.tar.xz https://download.gnome.org/sources/libxml2/2.13/lib
 #
 #Download the source from  https://github.com/GNOME/libxslt/tags
 
-echo "Downloading libxslt ( 16 of 20 ) ..."
+echo "Downloading libxslt ( 16 of 22 ) ..."
 
 rm -f libxslt.tar.xz
 wget -q -nv -O libxslt.tar.xz https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.42.tar.xz
@@ -160,7 +160,7 @@ wget -q -nv -O libxslt.tar.xz https://download.gnome.org/sources/libxslt/1.1/lib
 #
 #Download the latest openssl source from   http://www.openssl.org/source/
 
-echo "Downloading openssl ( 17 of 20 ) ..."
+echo "Downloading openssl ( 17 of 22 ) ..."
 
 rm -f openssl.tar.gz
 wget -q -nv -O openssl.tar.gz https://www.openssl.org/source/openssl-3.2.1.tar.gz
@@ -169,7 +169,7 @@ wget -q -nv -O openssl.tar.gz https://www.openssl.org/source/openssl-3.2.1.tar.g
 #
 #Download the source from  http://pocoproject.org/download/
 
-echo "Downloading Poco ( 18 of 20 ) ..."
+echo "Downloading Poco ( 18 of 22 ) ..."
 
 rm -f poco.tar.gz
 wget -q -nv -O poco.tar.gz https://github.com/pocoproject/poco/archive/refs/tags/poco-1.13.3-release.tar.gz
@@ -179,7 +179,7 @@ wget -q -nv -O poco.tar.gz https://github.com/pocoproject/poco/archive/refs/tags
 # new : Download podofo from  http://podofo.sourceforge.net/download.html
 # new : Download podofo from  https://sourceforge.net/projects/podofo/files/podofo/0.9.8/
 
-echo "Downloading podofo ( 19 of 20 ) ..."
+echo "Downloading podofo ( 19 of 22 ) ..."
 
 rm -f libunistring.tar.gz
 wget -q -nv -O libunistring.tar.gz https://ftp.gnu.org/gnu/libunistring/libunistring-1.2.tar.gz
@@ -191,7 +191,7 @@ wget -q -nv -O podofo.tar.gz https://ixpeering.dl.sourceforge.net/project/podofo
 #
 #Download zlib from  https://www.zlib.net
 
-echo "Downloading zlib ( 20 of 20 ) ..."
+echo "Downloading zlib ( 20 of 22 ) ..."
 
 rm -f zlib.tar.xz
 wget -q -nv -O zlib.tar.xz https://www.zlib.net/zlib-1.3.1.tar.xz
@@ -200,10 +200,21 @@ wget -q -nv -O zlib.tar.xz https://www.zlib.net/zlib-1.3.1.tar.xz
 #
 #Download the source from  https://github.com/pnggroup/libpng/tags
 
-echo "Downloading libjpeg-turbo ( 11 of 21 ) ..."
+echo "Downloading libjpeg-turbo ( 11 of 22 ) ..."
 
 rm -f libpng.tar.gz
 wget -q -nv -O libpng.tar.gz https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.43.tar.gz
+
+#=====libnghttp2======
+#
+#Download the source from  https://github.com/nghttp2/nghttp2/archive/refs/tags/v1.62.1.tar.gz
+
+echo "Downloading nghttp2 ( 11 of 22 ) ..."
+
+rm -f nghttp2.tar.xz
+wget -q -nv -O nghttp2.tar.xz https://github.com/nghttp2/nghttp2/releases/download/v1.62.1/nghttp2-1.62.1.tar.xz
+
+#=====end======
 
 
 echo "Downloading Complete."

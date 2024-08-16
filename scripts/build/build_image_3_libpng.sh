@@ -34,36 +34,18 @@ tar -xf ../libpng.tar.gz  -C libpng --strip-components=1
 cd libpng
 
 mkdir _build
-mkdir _build_x86_64
-mkdir _build_arm64
 export PREFIX=`pwd`'/_build'
-export PREFIX_x86_64=`pwd`'/_build_x86_64'
-export PREFIX_arm64=`pwd`'/_build_arm64'
 
 # Build
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
+
+	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
 	CPPFLAGS=" -I${OUTPUT}/Headers/zlib" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
-	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules \
-	--host="aarch64-apple-darwin" \
-	--prefix="${PREFIX_x86_64}"
+	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules --disable-arm-neon \
+	--prefix="${PREFIX}"
 
 	make install
-	make -s -j distclean
-
-	CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
-	CPPFLAGS=" -I${OUTPUT}/Headers/zlib" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
-	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules \
-	--host="aarch64-apple-darwin" \
-	--prefix="${PREFIX_arm64}"
-
-	make install
-	make -s -j distclean
-
-	mkdir ${PREFIX}/lib
-
-	lipo -create "${PREFIX_x86_64}/lib/libpng16.a" "${PREFIX_arm64}/lib/libpng16.a" -output "${PREFIX}/lib/libpng16.a"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
@@ -79,11 +61,7 @@ fi
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
-	cp -R _build_x86_64/include/libpng16/* "${OUTPUT}/Headers/libpng"
-else
-	cp -R _build/include/libpng16/* "${OUTPUT}/Headers/libpng"
-fi
+cp -R _build/include/libpng16/* "${OUTPUT}/Headers/libpng"
 
 cp _build/lib/libpng16.a "${OUTPUT}/Libraries/${PLATFORM}"
 

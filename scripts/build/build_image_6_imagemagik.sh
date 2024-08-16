@@ -26,12 +26,7 @@ mkdir Headers/ImageMagick-7
 
 cd ../source/${PLATFORM}
 
-export TURBOJPEGarm=`pwd`'/libturbojpeg/_build_arm64/lib/pkgconfig'
-export LIBPNGarm=`pwd`'/libpng/_build_arm64/lib/pkgconfig'
-
-export TURBOJPEGx86=`pwd`'/libturbojpeg/_build_arm64/lib/pkgconfig'
-export LIBPNGx86=`pwd`'/libpng/_build_arm64/lib/pkgconfig'
-
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/libpng/_build/lib/pkgconfig'
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/libde265/_build/lib/pkgconfig'
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/libheif/_build/lib/pkgconfig'
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/fontconfig/_build/lib/pkgconfig'
@@ -53,9 +48,9 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	mkdir _build_arm64
 	export PREFIX_arm64=`pwd`'/_build_arm64'
 
-	PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${TURBOJPEGarm}:${LIBPNGarm} \
 	CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
 	CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
+	CPPFLAGS=" -I${OUTPUT}/Headers/libturbojpeg" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
 	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
 	--without-utilities --without-zlib --without-xml --without-lzma --with-quantum-depth=16 \
@@ -69,9 +64,9 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	mkdir _build_x86_64
 	export PREFIX_x86_64=`pwd`'/_build_x86_64'
 
-	PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${TURBOJPEGx86}:${LIBPNGx86} \
 	CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
 	CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
+	CPPFLAGS=" -I${OUTPUT}/Headers/libturbojpeg" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
 	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
 	--without-utilities --without-zlib --without-xml --without-lzma --with-quantum-depth=16 \

@@ -21,7 +21,6 @@ rm -f Libraries/${PLATFORM}/libPocoCrypto.a
 rm -f Libraries/${PLATFORM}/libPocoFoundation.a
 rm -f Libraries/${PLATFORM}/libPocoJSON.a
 rm -f Libraries/${PLATFORM}/libPocoNet.a
-rm -f Libraries/${PLATFORM}/libPocoPDF.a
 rm -f Libraries/${PLATFORM}/libPocoUtil.a
 rm -f Libraries/${PLATFORM}/libPocoXML.a
 rm -f Libraries/${PLATFORM}/libPocoZip.a
@@ -76,7 +75,6 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	lipo -create "${PREFIX_x86_64}/lib/libPocoFoundation.a" "${PREFIX_arm64}/lib/libPocoFoundation.a" -output "${PREFIX}/lib/libPocoFoundation.a"
 	lipo -create "${PREFIX_x86_64}/lib/libPocoJSON.a" "${PREFIX_arm64}/lib/libPocoJSON.a" -output "${PREFIX}/lib/libPocoJSON.a"
 	lipo -create "${PREFIX_x86_64}/lib/libPocoNet.a" "${PREFIX_arm64}/lib/libPocoNet.a" -output "${PREFIX}/lib/libPocoNet.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoPDF.a" "${PREFIX_arm64}/lib/libPocoPDF.a" -output "${PREFIX}/lib/libPocoPDF.a"
 	lipo -create "${PREFIX_x86_64}/lib/libPocoXML.a" "${PREFIX_arm64}/lib/libPocoXML.a" -output "${PREFIX}/lib/libPocoXML.a"
 	lipo -create "${PREFIX_x86_64}/lib/libPocoUtil.a" "${PREFIX_arm64}/lib/libPocoUtil.a" -output "${PREFIX}/lib/libPocoUtil.a"
 	lipo -create "${PREFIX_x86_64}/lib/libPocoZip.a" "${PREFIX_arm64}/lib/libPocoZip.a" -output "${PREFIX}/lib/libPocoZip.a"
@@ -106,7 +104,6 @@ cp _build/lib/libPocoCrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libPocoFoundation.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libPocoJSON.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libPocoNet.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/lib/libPocoPDF.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libPocoXML.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libPocoUtil.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libPocoZip.a "${OUTPUT}/Libraries/${PLATFORM}"

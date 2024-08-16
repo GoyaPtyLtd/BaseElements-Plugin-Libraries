@@ -30,8 +30,7 @@ lipo -info ./libPocoCrypto.a
 lipo -info ./libPocoFoundation.a
 lipo -info ./libPocoJSON.a
 lipo -info ./libPocoNet.a
-lipo -info ./libPocoPDF.a
-lipo -info ./libPocoUtil.a
+\lipo -info ./libPocoUtil.a
 lipo -info ./libPocoXML.a
 lipo -info ./libPocoZip.a
 lipo -info ./libpodofo.a

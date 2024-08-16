@@ -29,7 +29,6 @@ cp Libraries/${PLATFORM}/libPocoCrypto.a "${START}/BaseElements-Plugin/Libraries
 cp Libraries/${PLATFORM}/libPocoFoundation.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 cp Libraries/${PLATFORM}/libPocoJSON.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 cp Libraries/${PLATFORM}/libPocoNet.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
-cp Libraries/${PLATFORM}/libPocoPDF.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 cp Libraries/${PLATFORM}/libPocoUtil.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 cp Libraries/${PLATFORM}/libPocoXML.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 cp Libraries/${PLATFORM}/libPocoZip.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"

@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-export SRCROOT=`pwd`
+SRCROOT=$(pwd)
 cd ../../Output
-export OUTPUT=`pwd`
+OUTPUT=$(pwd)
 
 # Switch to our build directory
 
@@ -42,4 +42,4 @@ cp -R src "${OUTPUT}/Source/duktape"
 
 # Return to source directory
 
-cd ${SRCROOT}
+cd "${SRCROOT}"

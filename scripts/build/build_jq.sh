@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-export SRCROOT=`pwd`
+SRCROOT=$(pwd)
 cd ../../Output
-export OUTPUT=`pwd`
+OUTPUT=$(pwd)
 
 # Remove old libraries and headers
 
@@ -76,4 +76,4 @@ cp -R _build/include/* "${OUTPUT}/Headers/jq"
 
 cp _build/lib/libjq.a "${OUTPUT}/Libraries/${PLATFORM}"
 
-cd ${SRCROOT}
+cd "${SRCROOT}"

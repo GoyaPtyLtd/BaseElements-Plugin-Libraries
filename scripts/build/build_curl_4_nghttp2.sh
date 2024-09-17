@@ -15,9 +15,9 @@ else
 	export PLATFORM='linux'
 fi
 
-export SRCROOT=`pwd`
+SRCROOT=$(pwd)
 cd ../../Output
-export OUTPUT=`pwd`
+OUTPUT=$(pwd)
 
 # Remove old libraries and headers
 
@@ -68,5 +68,5 @@ cp _build/lib/libnghttp2.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 # Return to source directory
 
-cd ${SRCROOT}
+cd "${SRCROOT}"
 

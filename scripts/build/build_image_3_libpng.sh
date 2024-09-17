@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-export SRCROOT=`pwd`
+SRCROOT=$(pwd)
 cd ../../Output
-export OUTPUT=`pwd`
+OUTPUT=$(pwd)
 
 # Remove old libraries and headers
 
@@ -77,4 +77,4 @@ cp -R _build/include/libpng16/* "${OUTPUT}/Headers/libpng"
 
 cp _build/lib/libpng16.a "${OUTPUT}/Libraries/${PLATFORM}"
 
-cd ${SRCROOT}
+cd "${SRCROOT}"

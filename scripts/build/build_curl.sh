@@ -10,7 +10,7 @@ rm -rf libssh
 rm -rf curl
 rm -rf poco
 
-cd ${SRCROOT}
+cd "${SRCROOT}"
 
 ./build_curl_1_zlib.sh
 ./build_curl_2_openssl.sh

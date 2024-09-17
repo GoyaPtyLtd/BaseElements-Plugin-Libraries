@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-export SRCROOT=`pwd`
+SRCROOT=$(pwd)
 cd ../../Output
-export OUTPUT=`pwd`
+OUTPUT=$(pwd)
 
 # Remove old libraries
 
@@ -78,4 +78,4 @@ make install
 cp -R _build/include/fontconfig/* "${OUTPUT}/Headers/fontconfig"
 cp _build/lib/libfontconfig.a "${OUTPUT}/Libraries/${PLATFORM}"
 
-cd ${SRCROOT}
+cd "${SRCROOT}"

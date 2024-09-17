@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-export SRCROOT=`pwd`
+SRCROOT=$(pwd)
 cd ../../Output
-export OUTPUT=`pwd`
+OUTPUT=$(pwd)
 
 # Remove old libraries and headers
 
@@ -76,4 +76,4 @@ make install
 cp -R _build/include/openjpeg-2.5/* "${OUTPUT}/Headers/libopenjp2"
 cp _build/lib/libopenjp2.a "${OUTPUT}/Libraries/${PLATFORM}"
 
-cd ${SRCROOT}
+cd "${SRCROOT}"

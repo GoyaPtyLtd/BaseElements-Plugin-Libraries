@@ -9,7 +9,7 @@ rm -rf freetype
 rm -rf fontconfig
 rm -rf podofo
 
-cd ${SRCROOT}
+cd "${SRCROOT}"
 
 ./build_font_1_libunistring.sh
 ./build_font_2_libexpat.sh

@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-export SRCROOT=`pwd`
+SRCROOT=$(pwd)
 cd ../../Output
-export OUTPUT=`pwd`
+OUTPUT=$(pwd)
 
 # Remove old libraries
 
@@ -71,5 +71,5 @@ cp -R _build/include/* "${OUTPUT}/Headers/iconv"
 cp _build/lib/libiconv.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libcharset.a "${OUTPUT}/Libraries/${PLATFORM}"
 
-cd ${SRCROOT}
+cd "${SRCROOT}"
 

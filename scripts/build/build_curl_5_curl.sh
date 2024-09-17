@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-export SRCROOT=`pwd`
+SRCROOT=$(pwd)
 cd ../../Output
-export OUTPUT=`pwd`
+OUTPUT=$(pwd)
 
 # Remove old libraries and headers
 
@@ -121,5 +121,5 @@ cp _build/lib/libcurl.a "${OUTPUT}/Libraries/${PLATFORM}"
 
 # Return to source directory
 
-cd ${SRCROOT}
+cd "${SRCROOT}"
 

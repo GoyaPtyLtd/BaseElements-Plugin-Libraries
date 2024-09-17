@@ -11,7 +11,7 @@ rm -rf libpng
 rm -rf libopenjp2
 rm -rf ImageMagick
 
-cd ${SRCROOT}
+cd "${SRCROOT}"
 
 ./build_image_1_libturbojpeg.sh
 ./build_image_2_libde265.sh

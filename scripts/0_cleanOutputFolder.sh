@@ -63,4 +63,4 @@ rm -rf poco
 rm -rf podofo
 rm -rf zlib
 
-cd ${SRCROOT}
+cd "${SRCROOT}"

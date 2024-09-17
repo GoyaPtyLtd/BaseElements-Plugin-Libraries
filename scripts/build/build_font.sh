@@ -15,4 +15,3 @@ cd ${SRCROOT}
 ./build_font_2_libexpat.sh
 ./build_font_3_freetype.sh
 ./build_font_4_fontconfig.sh
-./build_font_5_podofo.sh

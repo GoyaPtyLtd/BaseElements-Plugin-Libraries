@@ -8,9 +8,10 @@ cd build
 ./build_jq.sh
 
 ./build_curl.sh
+./build_font.sh
 ./build_image.sh
 ./build_xml.sh
 
-./build_font.sh
+./build_podofo.sh
 
 cd ..

@@ -33,6 +33,7 @@ export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/libheif/_build/lib/pkgconfig'
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/fontconfig/_build/lib/pkgconfig'
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/freetype/_build/lib/pkgconfig'
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/libopenjp2/_build/lib/pkgconfig'
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/libturbojpeg/_build/lib/pkgconfig'
 
 rm -rf ImageMagick
 mkdir ImageMagick
@@ -89,8 +90,6 @@ if [ ${PLATFORM} = 'macOS' ]; then
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	CFLAGS="-fPIC" \
-    CPPFLAGS="-I${OUTPUT}/Headers/libturbojpeg -I${OUTPUT}/Headers/freetype2 -I${OUTPUT}/Headers/fontconfig -I${OUTPUT}/Headers/libde265 -I${OUTPUT}/Headers/libpng -I${OUTPUT}/Headers/libheif -I${OUTPUT}/Headers/libopenjp2 -I${OUTPUT}/Headers/zlib" \
-    LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
 	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
 	--without-utilities --without-xml --without-lzma --with-quantum-depth=16 \

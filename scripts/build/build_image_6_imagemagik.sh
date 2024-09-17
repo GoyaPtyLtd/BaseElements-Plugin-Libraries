@@ -88,7 +88,8 @@ if [ ${PLATFORM} = 'macOS' ]; then
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	CFLAGS="-fPIC" \
-	CPPFLAGS=" -I${OUTPUT}/Headers/libturbojpeg" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
+	CPPFLAGS=" -I${OUTPUT}/Headers/libturbojpeg -I${OUTPUT}/Headers/freetype2 -I${OUTPUT}/Headers/fontconfig -I${OUTPUT}/Headers/libde265 -I${OUTPUT}/Headers/libpng  -I${OUTPUT}/Headers/libheif  -I${OUTPUT}/Headers/libopenjp2" 
+	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
 	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
 	--without-utilities --without-zlib --without-xml --without-lzma --with-quantum-depth=16 \

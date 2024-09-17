@@ -4,13 +4,25 @@ cd ../../..
 
 export START=`pwd`
 
-if [ $(uname) = 'Darwin' ]; then
-	export PLATFORM='macOS'
-elif [ $(uname -m) = 'aarch64' ]; then
-	export PLATFORM='linuxARM'
-else
-	export PLATFORM='linux'
+OS=$(uname -s)		# Linux|Darwin
+ARCH=$(uname -m)	# x86_64|aarch64|arm64
+JOBS=1              # Number of parallel jobs
+if [[ $OS = 'Darwin' ]]; then
+	PLATFORM='macOS'
+    JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+elif [[ $OS = 'Linux' ]]; then
+    JOBS=$(($(nproc) + 1))
+    if [[ $ARCH = 'aarch64' ]]; then
+        PLATFORM='linuxARM'
+    elif [[ $ARCH = 'x86_64' ]]; then
+        PLATFORM='linux'
+    fi
 fi
+if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
+	echo "!! Unknown OS/ARCH: $OS/$ARCH"
+	exit 1
+fi
+
 
 cd BaseElements-Plugin-Libraries/Output
 

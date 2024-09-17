@@ -26,6 +26,7 @@ mkdir Headers/ImageMagick-7
 
 cd ../source/${PLATFORM}
 
+export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/zlib/_build/lib/pkgconfig'
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/libpng/_build/lib/pkgconfig'
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/libde265/_build/lib/pkgconfig'
 export PKG_CONFIG_PATH=$PKG_CONFIG_PATH:`pwd`'/libheif/_build/lib/pkgconfig'
@@ -53,7 +54,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	CPPFLAGS=" -I${OUTPUT}/Headers/libturbojpeg" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
 	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
-	--without-utilities --without-zlib --without-xml --without-lzma --with-quantum-depth=16 \
+	--without-utilities --without-xml --without-lzma --with-quantum-depth=16 \
     --enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
 	--host=x86_64-apple-darwin --prefix="${PREFIX_arm64}"
 
@@ -69,7 +70,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	CPPFLAGS=" -I${OUTPUT}/Headers/libturbojpeg" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
 	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
-	--without-utilities --without-zlib --without-xml --without-lzma --with-quantum-depth=16 \
+	--without-utilities --without-xml --without-lzma --with-quantum-depth=16 \
 	--enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
 	--host=x86_64-apple-darwin --prefix="${PREFIX_x86_64}"
 	
@@ -88,11 +89,11 @@ if [ ${PLATFORM} = 'macOS' ]; then
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	CFLAGS="-fPIC" \
-	CPPFLAGS=" -I${OUTPUT}/Headers/libturbojpeg -I${OUTPUT}/Headers/freetype2 -I${OUTPUT}/Headers/fontconfig -I${OUTPUT}/Headers/libde265 -I${OUTPUT}/Headers/libpng  -I${OUTPUT}/Headers/libheif  -I${OUTPUT}/Headers/libopenjp2" 
-	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
+    CPPFLAGS="-I${OUTPUT}/Headers/libturbojpeg -I${OUTPUT}/Headers/freetype2 -I${OUTPUT}/Headers/fontconfig -I${OUTPUT}/Headers/libde265 -I${OUTPUT}/Headers/libpng -I${OUTPUT}/Headers/libheif -I${OUTPUT}/Headers/libopenjp2 -I${OUTPUT}/Headers/zlib" \
+    LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
 	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
-	--without-utilities --without-zlib --without-xml --without-lzma --with-quantum-depth=16 \
+	--without-utilities --without-xml --without-lzma --with-quantum-depth=16 \
 	--enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
 	--prefix="${PREFIX}" \
 

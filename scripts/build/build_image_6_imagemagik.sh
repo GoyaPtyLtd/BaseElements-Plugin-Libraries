@@ -7,7 +7,7 @@ OS=$(uname -s)		# Linux|Darwin
 ARCH=$(uname -m)	# x86_64|aarch64|arm64
 JOBS=1              # Number of parallel jobs
 if [[ $OS = 'Darwin' ]]; then
-	PLATFORM='macOS'
+		PLATFORM='macOS'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
 elif [[ $OS = 'Linux' ]]; then
     JOBS=$(($(nproc) + 1))
@@ -71,8 +71,8 @@ if [ ${PLATFORM} = 'macOS' ]; then
     --enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
 	--host=x86_64-apple-darwin --prefix="${PREFIX_arm64}"
 
-	make
-	make -j${JOBS} install
+	make -j${JOBS}
+	make install
 	make -s distclean
 
 	mkdir _build_x86_64
@@ -87,8 +87,8 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
 	--host=x86_64-apple-darwin --prefix="${PREFIX_x86_64}"
 
-	make
-	make -j${JOBS} install
+	make -j${JOBS}
+	make install
 	make -s distclean
 
 	mkdir ${PREFIX}/lib

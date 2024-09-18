@@ -41,18 +41,14 @@ cp Libraries/${PLATFORM}/libMagick++-7.Q16HDRI.a "${START}/BaseElements-Plugin/L
 cp Libraries/${PLATFORM}/libMagickCore-7.Q16HDRI.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 cp Libraries/${PLATFORM}/libMagickWand-7.Q16HDRI.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 
-if [ ${PLATFORM} = 'macOS' ]; then
+rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/libturbojpeg/" "${START}/BaseElements-Plugin/Headers/libturbojpeg"
 
-	rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/libturbojpeg/" "${START}/BaseElements-Plugin/Headers/libturbojpeg"
+rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/ImageMagick-7/" "${START}/BaseElements-Plugin/Headers/ImageMagick-7"
 
-	rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/ImageMagick-7/" "${START}/BaseElements-Plugin/Headers/ImageMagick-7"
+rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/libopenjp2/" "${START}/BaseElements-Plugin/Headers/libopenjp2"
 
-	rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/libopenjp2/" "${START}/BaseElements-Plugin/Headers/libopenjp2"
+rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/libheif/" "${START}/BaseElements-Plugin/Headers/libheif"
 
-	rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/libheif/" "${START}/BaseElements-Plugin/Headers/libheif"
+rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/libpng/" "${START}/BaseElements-Plugin/Headers/libpng"
 
-	rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/libpng/" "${START}/BaseElements-Plugin/Headers/libpng"
-
-	rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/libde265/" "${START}/BaseElements-Plugin/Headers/libde265"
-
-fi
+rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/libde265/" "${START}/BaseElements-Plugin/Headers/libde265"

@@ -19,7 +19,6 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 	exit 1
 fi
 
-
 cd BaseElements-Plugin-Libraries/Output
 export OUTPUT=`pwd`
 

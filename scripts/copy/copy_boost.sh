@@ -19,7 +19,6 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 	exit 1
 fi
 
-
 cd BaseElements-Plugin-Libraries/Output
 export OUTPUT=`pwd`
 
@@ -31,5 +30,4 @@ cp Libraries/${PLATFORM}/libboost_regex.a "${START}/BaseElements-Plugin/Librarie
 cp Libraries/${PLATFORM}/libboost_thread.a "${START}/BaseElements-Plugin/Libraries/${PLATFORM}"
 
 rsync -rv --delete --no-group --no-owner --no-perms --no-times --checksum  --stats "${OUTPUT}/Headers/boost/" "${START}/BaseElements-Plugin/Headers/boost"
-fi
 

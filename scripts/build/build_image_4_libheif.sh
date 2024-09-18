@@ -51,7 +51,7 @@ export PREFIX=`pwd`'/_build'
 if [ ${PLATFORM} = 'macOS' ]; then
 
 	export MACOSX_DEPLOYMENT_TARGET=10.15
-		
+
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
 	cmake -G "Unix Makefiles" --preset=release-noplugins -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_BUILD_TYPE=RELEASE \
 	-DBUILD_SHARED_LIBS:BOOL=OFF -DWITH_REDUCED_VISIBILITY=OFF -DWITH_UNCOMPRESSED_CODEC=OFF \
@@ -63,7 +63,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	-DJPEG_INCLUDE_DIR="${OUTPUT}/Headers/libturbojpeg/" -DJPEG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libjpeg.a" ./
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
-	
+
 	CFLAGS="-fPIC" \
 	cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_BUILD_TYPE=RELEASE \
 	-DBUILD_SHARED_LIBS:BOOL=OFF -DWITH_REDUCED_VISIBILITY=OFF -DWITH_UNCOMPRESSED_CODEC=OFF \
@@ -73,9 +73,9 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	-DLIBDE265_INCLUDE_DIR="${OUTPUT}/Headers/" -DLIBDE265_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libde265.a" \
 	-DJPEG_INCLUDE_DIR="${OUTPUT}/Headers/libturbojpeg/" -DJPEG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libjpeg.a" ./
 
-	make -j$(($(nproc) + 1))
 fi
 
+make -j${JOBS}
 make install
 
 # Copy the header and library files.

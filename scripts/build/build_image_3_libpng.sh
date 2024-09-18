@@ -57,8 +57,6 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules --disable-arm-neon \
 	--prefix="${PREFIX}"
 
-	make install
-
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	CFLAGS="-fPIC" \
@@ -66,10 +64,10 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules \
 	--prefix="${PREFIX}"
 
-	make -j$(($(nproc) + 1))
-	make install
-
 fi
+
+make -j${JOBS}
+make install
 
 # Copy the header and library files.
 

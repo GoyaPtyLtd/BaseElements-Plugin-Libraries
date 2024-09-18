@@ -58,9 +58,9 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	CFLAGS=-fPIC \
 	./configure --disable-shared --prefix="${PREFIX}"
 
-	make -j$(($(nproc) + 1))
 fi
 
+make -j${JOBS}
 make install
 
 

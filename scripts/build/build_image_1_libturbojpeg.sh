@@ -49,33 +49,35 @@ export PREFIX=`pwd`'/_build'
 # Build
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	
+
 	mkdir _build_arm64
 	export PREFIX_arm64=`pwd`'/_build_arm64'
-	
+
 	echo "set(CMAKE_SYSTEM_NAME Darwin)" > toolchain.cmake
 	echo "set(CMAKE_SYSTEM_PROCESSOR aarch64)" >> toolchain.cmake
-	
+
 	CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
 	LDFLAGS="-ld_classic" \
 	cmake --fresh -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DENABLE_SHARED=NO -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 	-DCMAKE_TOOLCHAIN_FILE=toolchain.cmake \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX_arm64}" ./
 
+	make -j${JOBS}
 	make install
 
 	mkdir _build_x86_64
 	export PREFIX_x86_64=`pwd`'/_build_x86_64'
-	
+
 	echo "set(CMAKE_SYSTEM_NAME Darwin)" > toolchain.cmake
 	echo "set(CMAKE_SYSTEM_PROCESSOR x86_64)" >> toolchain.cmake
-	
+
 	CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
 	LDFLAGS="-ld_classic" \
 	cmake --fresh -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DENABLE_SHARED=NO -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 	-DCMAKE_TOOLCHAIN_FILE=toolchain.cmake \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX_x86_64}"  ./
-	
+
+	make -j${JOBS}
 	make install
 
 	mkdir -p ${PREFIX}/lib
@@ -89,7 +91,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	-DCMAKE_IGNORE_PATH=/usr/lib/x86_64-linux-gnu/ \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}"  ./
 
-	make -j$(($(nproc) + 1))
+	make -j${JOBS}
 	make install
 
 fi

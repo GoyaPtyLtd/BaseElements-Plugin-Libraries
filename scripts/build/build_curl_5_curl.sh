@@ -69,12 +69,12 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2  \
 	--with-zlib=${ZLIB} --with-openssl=${OPENSSL_x86} --with-libssh2=${LIBSSH} --with-nghttp2=${NGHTTP2} \
 	--prefix="${PREFIX_x86_64}" \
-	--host=x86_64-apple-darwin 
+	--host=x86_64-apple-darwin
 
-	make -j$(($(sysctl -n hw.ncpu) + 1))
+	make -j${JOBS}
 	make install
-	make -s -j distclean
-	
+	make -s distclean
+
 	mkdir _build_arm64
 	export PREFIX_arm64=`pwd`'/_build_arm64'
 
@@ -85,25 +85,25 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2  \
 	--with-zlib=${ZLIB} --with-openssl=${OPENSSL_arm} --with-libssh2=${LIBSSH} --with-nghttp2=${NGHTTP2} \
 	--prefix="${PREFIX_arm64}" \
-	--host=x86_64-apple-darwin 
+	--host=x86_64-apple-darwin
 
-	make -j$(($(sysctl -n hw.ncpu) + 1))
+	make -j${JOBS}
 	make install
-	make -s -j distclean
-	
+	make -s distclean
+
 	lipo -create "${PREFIX_x86_64}/lib/libcurl.a" "${PREFIX_arm64}/lib/libcurl.a" -output "${PREFIX}/lib/libcurl.a"
 
 	# TODO this had  --without-libpsl --without-brotli --without-zstd added to it for compatibility with latest curl.  It would be good to at least add the libpsl but I don't know about the others
 	# TODO also investigate libidn which is also in podofo
-	
+
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
-	
+
 	./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
 	--without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 \
 	--with-zlib=${ZLIB} --with-openssl=${OPENSSL} --with-libssh2=${LIBSSH} \
 	--prefix="${PREFIX}"
 
-	make -j$(($(nproc) + 1))
+	make -j${JOBS}
 	make install
 
 fi

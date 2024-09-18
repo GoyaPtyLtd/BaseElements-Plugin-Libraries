@@ -55,9 +55,9 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	CFLAGS="-mmacosx-version-min=10.15" \
 	./configure darwin64-x86_64-cc no-shared no-docs no-tests \
 	--prefix="${PREFIX_x86_64}"
-	
-	make install
-	make -s -j distclean
+
+	make -j${JOBS} install
+	make -s distclean
 
 	mkdir _build_arm64
 	export PREFIX_arm64=`pwd`'/_build_arm64'
@@ -65,9 +65,9 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	CFLAGS="-mmacosx-version-min=10.15" \
 	./configure darwin64-arm64-cc no-shared no-docs no-tests \
 	--prefix="${PREFIX_arm64}"
-	
-	make install
-	make -s -j distclean
+
+	make -j${JOBS} install
+	make -s distclean
 
 	mkdir ${PREFIX}/lib
 
@@ -78,7 +78,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	./Configure linux-generic64 no-shared no-docs no-tests \
 	--prefix="${PREFIX}"
-	make -j$(($(nproc) + 1))
+	make -j${JOBS}
 	make install_sw
 
 fi

@@ -49,7 +49,7 @@ export PREFIX=`pwd`'/_build'
 # Build
 
 if [ ${PLATFORM} = 'macOS' ]; then
-	
+
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
 	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-brotli=no --with-png=no --with-zlib=no \
 	--prefix=${PREFIX}
@@ -60,9 +60,9 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-brotli=no --with-png=no --with-zlib=no \
 	--prefix=${PREFIX}
 
-	make -j$(($(nproc) + 1))
 fi
 
+make -j${JOBS}
 make install
 
 # Copy the header and library files.

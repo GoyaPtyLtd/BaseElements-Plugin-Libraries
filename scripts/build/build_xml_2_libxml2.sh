@@ -63,9 +63,9 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	./configure --disable-shared --with-threads --with-sax1 --without-python --without-zlib --without-lzma \
 	--prefix="${PREFIX}"
 
-	make -j$(($(nproc) + 1))
 fi
 
+make -j${JOBS}
 make install
 
 # Copy the header and library files.

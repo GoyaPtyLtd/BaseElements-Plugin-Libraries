@@ -61,7 +61,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--with-crypto=openssl \
 	--host=x86_64-apple-darwin \
 	--prefix="${PREFIX}"
-	
+
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 	CFLAGS=-fPIC \
@@ -74,7 +74,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
 fi
 
-make -j$(($(nproc) + 1))
+make -j${JOBS}
 make install
 
 

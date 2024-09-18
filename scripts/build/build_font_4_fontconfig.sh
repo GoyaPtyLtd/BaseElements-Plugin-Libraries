@@ -57,7 +57,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/${PLATFORM} -lfreetype" \
 	./configure --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
 	--with-expat=${LIBEXPAT} \
-	--prefix="${PREFIX}" 
+	--prefix="${PREFIX}"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 
@@ -66,11 +66,11 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/${PLATFORM} -lfreetype" \
 	./configure --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
 	--with-expat=${LIBEXPAT} \
-	--prefix="${PREFIX}" 
+	--prefix="${PREFIX}"
 
-	make -j$(($(nproc) + 1))
 fi
 
+make -j${JOBS}
 make install
 
 # Copy the header and library files.

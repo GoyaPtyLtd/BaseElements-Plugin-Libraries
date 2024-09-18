@@ -69,8 +69,8 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
-	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
-	make -s -j distclean
+	make install -s -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
+	make -s distclean
 
 	./configure --cflags="-mmacosx-version-min=10.15" \
 	--prefix="${PREFIX_arm64}" \
@@ -78,8 +78,8 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
-	make install -s -j4 POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=x86_64
-	make -s -j distclean
+	make install -s -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=x86_64
+	make -s distclean
 
 	mkdir ${PREFIX}/lib
 
@@ -99,9 +99,9 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
-	make -j$(($(nproc) + 1))
+	make -j${JOBS}
 	make install
-	
+
 fi
 
 # Copy the header and library files.

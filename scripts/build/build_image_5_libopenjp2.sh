@@ -57,7 +57,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
-	
+
 	CFLAGS="-fPIC" \
 	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
 	-DCMAKE_IGNORE_PATH=/usr/lib/x86_64-linux-gnu/ \
@@ -65,10 +65,9 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	-DCMAKE_LIBRARY_PATH:path="${OUTPUT}/Libraries/${PLATFORM}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT}/Headers" \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
 
-	make -j$(($(nproc) + 1))
-
 fi
 
+make -j${JOBS}
 make install
 
 # Copy the header and library files.

@@ -2,11 +2,13 @@
 
 This is set of scripts and tools that are used to build the external libraries used in the BE plugin : https://github.com/GoyaPtyLtd/BaseElements-Plugin
 
-If you want to compile the BE plugin, then you don't need this, the current main build of the BE plugin should compile as is on latest macOS at least. Working with this library is only to build newer versions of the open source libraries used in the BE Plugin. If you're experienced in shell scripting, or in compiling open source tools, then we'd love some help with this project.
+You need to use this to build the libraries used in the BE plugin itself.  As of BE 5.1.0 the Headers and Libraries aren't included in the main repository, and they need to be built from here.
 
 ### Goals
 
-The goal is to turn this into a single script for each FileMaker platform ( Mac, Windows, Ubuntu linux ) that builds the various open source libraries in a configuration that works in the BE Plugin. Each library can then be updated and copied along with it's dependencies into the main BE Plugin folder
+The goal is to turn this into a single script for each FileMaker platform ( Mac, Windows, Ubuntu linux ) that builds the various open source libraries in a configuration that works in the BE Plugin. Each library can then be updated and copied along with it's dependencies into the main BE Plugin folder.
+
+We're a fair way along with this, we have both Mac and Linux building from the same set of files.  The iOS builds should also be possible to do from here.
 
 ### TODO
 
@@ -18,25 +20,21 @@ If you're at all interested in the BE plugin and compiling code for it, or helpi
 
 ### Getting Started
 
-To start with, we recommend you fork the BaseElements-Plugin-Libraries repository to your own account so you can test and push changes into the fork instead of our main - that makes it easier to submit patches.
+To start with, we recommend you fork the BaseElements-Plugin-Libraries repository to your own account so you can test and push changes into the fork instead of our main - that makes it easier to submit patches.  If you've done that, make sure to change the location of the repositories below.
 
-Each of the different OS versions has it's own Setup routine, that is a one off.
+Each of the different OS versions has it's own one off setup.
 
 ### macOS Setup
 
-On the mac you compile for x86, arm and iOS all from the one place, so the compile scripts for mac will build both macOS and iOS versions ( eventually, we're working on macOS only for now ).
+On the mac you compile for x86, arm and iOS all from the one place, so the compile scripts for mac will build macOS ( and iOS versions eventually, we're working on macOS only for now ).
 
-You need to install **XCode** and the XCode command line tools.
+You need to install **XCode** and the XCode command line tools - if you don't have the tools, then they'll be installed for you when you try to install brew below.
 
-There are a bunch of open source tools required as well, to make things easier we recommend you install these with [brew](https://brew.sh). Open that link then follow the install instructions there. Our set of installed tools are :
+There are a bunch of open source tools required as well, to make things easier we recommend you install these with [brew](https://brew.sh). Open that link then follow the install instructions there. Once you've got brew and the xcode command line tools installed, run this command to install the extras you need :
 
     brew install autoconf automake cmake gettext git git-lfs gnu-tar libtool m4 pkg-config protobuf wget xz
 
-Not all of these may be needed, this was we had last time we checked. You want to avoid using lots of brew libraries as the compile options may find those instead of the ones we've built into the scripts.
-
-You also need to configure git with git-lfs :
-
-    git lfs install
+Not all of these may be needed, this was we had last time we checked. You want to avoid using lots of brew libraries as the compile options may find those instead of the ones we've built into the scripts, but we do try to hard code to our specific library versions.
 
 It shouldn't matter where you put the local version of the repository, but we put it at ~/Documents/GitHub :
 
@@ -45,12 +43,31 @@ It shouldn't matter where you put the local version of the repository, but we pu
     cd Documents/GitHub
 
     git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
+    
+Then follow the Build Process below.
 
-If you're compiling the plugin you may also need to clone that, and because it's large you'll need to use ssh to clone it :
+### Ubuntu Setup
 
-    git clone git@github.com:GoyaPtyLtd/BaseElements-Plugin.git
+Ubuntu works fairly similarly to mac, but the setup is a little different.
 
-If you don't have ssh setup for git, instructions are here : [https://phoenixnap.com/kb/git-clone-ssh](https://phoenixnap.com/kb/git-clone-ssh)
+    sudo apt update
+    sudo apt install git-all wget zip
+    sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+    sudo apt install make cmake gperf clang-format clang-tidy clang-tools clang clangd libc++-dev libc++abi-dev \
+        libclang-dev libclang1 liblldb-dev libllvm-ocaml-dev libomp-dev libomp5 lld lldb llvm-dev \
+        llvm-runtime llvm python3-clang g++ gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
+ 
+ It shouldn't matter where you put the local version of the repository, but we put it at ~/source :
+ 
+    cd ~
+    mkdir source
+    cd source
+ 
+    git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
+
+Then follow the Build Process below.
+
+### Build Process
 
 Then switch to the Scripts folder as the base from which to call various compile scripts.
 
@@ -64,41 +81,22 @@ You don't need to re-run this unless it changes in github and there's a new vers
 
     ./2_build.sh
     
-That will then run through every single build process and will take hours on most macs.
+That will then run through every single build process and will take hours on most macs, seems to be only minutes on linux.
+
+Once that is done, assuming no errors, you can can then go to the BE plugin repository and build that.  There's no need to copy anything across.
 
 ### Updating to a new library version.
 
 So for example, there's a new version of libcurl that you want to build and test for.  The steps would be :
 
-* Pull down the git repos for both the library and the plugin as above.
-* Check that the BE plugin compiles successfully.
-* If you've previously run any scripts, clear things out by running the **_cleanOutputFolder.sh** script.
 * Modify the **1_getSource.sh** script to reference the new download.
+* Change to the **script** directory.
+* Run the **0_cleanOutputFolder.sh** if you've done builds before and it's not a clean clone.
 * Run the **1_getSource.sh** script to download your new version.
-* change to the **build** directory.
-* Run the **build_curl_0_all.sh** script, or run each individual curl build scripts in turn.
-* Once all the parts are compiling, then switch to the **copy** folder, and run the **copy_curl.sh** script.
-* Switch to xCode and attempt to compile the plugin.  Fix any newly introduced errors.
+* Run the **2_build.sh.sh** script and fix any issues that come up.  
+* Switch to xCode and compile the plugin.  Fix any newly introduced errors.
 * Run FileMaker Pro or FileMaker Server with the new plugin, and run the BaseElements Plugin Tests.fmp12 file and run all the relevant tests.
-* Submit a pull request for the changes to the library, we'll probably run the same tests and then incorporate them into the main 
-
-### Ubuntu Setup
-
-Just documenting this here as none of the ubuntu script are tested yet.
-
-    sudo apt update
-    sudo apt install git-all git-lfs codeblocks
-    sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
-    sudo apt install make cmake gperf clang-format clang-tidy clang-tools clang clangd libc++-dev libc++abi-dev \
-        libclang-dev libclang1 liblldb-dev libllvm-ocaml-dev libomp-dev libomp5 lld lldb llvm-dev \
-        llvm-runtime llvm python3-clang g++ gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
-
-    sudo mkdir /opt/FileMaker
-    sudo chown "${USER:=$(/usr/bin/id -run)}:$USER" /opt/FileMaker
-
-    git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
-
-We run codeblocks via sudo as it usually means that it can find the various libraries it needs easier. If there's a better way to do that, then that would be good :)
+* Submit a pull request for the changes to the library, we'll probably run the same tests and then incorporate them into the development branch for the next build.
 
 ### Windows Setup
 

@@ -72,9 +72,9 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--host=x86_64-apple-darwin --prefix="${PREFIX_arm64}"
 
 	make
-	make -j$(nproc) install
-	make -s -j distclean
-	
+	make -j${JOBS} install
+	make -s distclean
+
 	mkdir _build_x86_64
 	export PREFIX_x86_64=`pwd`'/_build_x86_64'
 
@@ -86,17 +86,17 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
 	--enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
 	--host=x86_64-apple-darwin --prefix="${PREFIX_x86_64}"
-	
+
 	make
-	make -j$(nproc) install
-	make -s -j distclean
+	make -j${JOBS} install
+	make -s distclean
 
 	mkdir ${PREFIX}/lib
 
 	lipo -create "${PREFIX_x86_64}/lib/libMagick++-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagick++-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagick++-7.Q16HDRI.a"
-	
+
 	lipo -create "${PREFIX_x86_64}/lib/libMagickCore-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagickCore-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagickCore-7.Q16HDRI.a"
-	
+
 	lipo -create "${PREFIX_x86_64}/lib/libMagickWand-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagickWand-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagickWand-7.Q16HDRI.a"
 
 elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
@@ -108,7 +108,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	--enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
 	--prefix="${PREFIX}" \
 
-	make -j$(($(nproc) + 1))
+	make -j${JOBS}
 	make install
 
 fi

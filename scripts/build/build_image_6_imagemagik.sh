@@ -67,7 +67,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	CPPFLAGS=" -I${OUTPUT}/Headers/libturbojpeg" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
 	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
-	--without-utilities --without-xml --without-lzma --with-quantum-depth=16 \
+	--without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
     --enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
 	--host=x86_64-apple-darwin --prefix="${PREFIX_arm64}"
 
@@ -83,7 +83,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	CPPFLAGS=" -I${OUTPUT}/Headers/libturbojpeg" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
 	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
-	--without-utilities --without-xml --without-lzma --with-quantum-depth=16 \
+	--without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
 	--enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
 	--host=x86_64-apple-darwin --prefix="${PREFIX_x86_64}"
 	
@@ -104,7 +104,7 @@ elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
 	CFLAGS="-fPIC" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
 	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
-	--without-utilities --without-xml --without-lzma --with-quantum-depth=16 \
+	--without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
 	--enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
 	--prefix="${PREFIX}" \
 

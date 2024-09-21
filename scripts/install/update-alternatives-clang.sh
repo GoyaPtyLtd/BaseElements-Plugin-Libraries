@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 function register_clang_version {
-    local version=8
+    local version=18
     local priority=100
 
     update-alternatives \

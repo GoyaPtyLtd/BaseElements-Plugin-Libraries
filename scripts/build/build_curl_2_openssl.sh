@@ -76,7 +76,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	lipo -create "${PREFIX_x86_64}/lib/libcrypto.a" "${PREFIX_arm64}/lib/libcrypto.a" -output "${PREFIX}/lib/libcrypto.a"
 	lipo -create "${PREFIX_x86_64}/lib/libssl.a" "${PREFIX_arm64}/lib/libssl.a" -output "${PREFIX}/lib/libssl.a"
 
-elif [[ $OS = 'linux' ]]; then
+elif [[ $OS = 'Linux' ]]; then
 
 	./Configure linux-generic64 no-shared no-docs no-tests \
 	--prefix="${PREFIX}"

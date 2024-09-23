@@ -55,7 +55,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--enable-all-static --enable-pthread-tls --without-oniguruma \
 	--prefix="${PREFIX}"
 
-elif [[ $OS = 'linux' ]]; then
+elif [[ $OS = 'Linux' ]]; then
 
 	CFLAGS="-fPIC" \
 	./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \

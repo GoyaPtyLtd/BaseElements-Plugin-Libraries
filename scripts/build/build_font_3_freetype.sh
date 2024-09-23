@@ -54,7 +54,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-brotli=no --with-png=no --with-zlib=no \
 	--prefix=${PREFIX}
 
-elif [[ $OS = 'linux' ]]; then
+elif [[ $OS = 'Linux' ]]; then
 
 	CFLAGS="-fPIC" \
 	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-brotli=no --with-png=no --with-zlib=no \

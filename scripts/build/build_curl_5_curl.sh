@@ -96,7 +96,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	# TODO this had  --without-libpsl --without-brotli --without-zstd added to it for compatibility with latest curl.  It would be good to at least add the libpsl but I don't know about the others
 	# TODO also investigate libidn which is also in podofo
 
-elif [[ $OS = 'linux' ]]; then
+elif [[ $OS = 'Linux' ]]; then
 
 	./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
 	--without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 \

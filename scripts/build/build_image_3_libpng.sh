@@ -57,7 +57,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules --disable-arm-neon \
 	--prefix="${PREFIX}"
 
-elif [[ $OS = 'linux' ]]; then
+elif [[ $OS = 'Linux' ]]; then
 
 	CFLAGS="-fPIC" \
 	CPPFLAGS=" -I${OUTPUT}/Headers/zlib" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \

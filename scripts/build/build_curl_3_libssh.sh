@@ -62,7 +62,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--host=x86_64-apple-darwin \
 	--prefix="${PREFIX}"
 
-elif [[ $OS = 'linux' ]]; then
+elif [[ $OS = 'Linux' ]]; then
 
 	CFLAGS=-fPIC \
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/zlib" \

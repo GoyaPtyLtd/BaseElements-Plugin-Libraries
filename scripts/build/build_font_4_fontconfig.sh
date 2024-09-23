@@ -59,7 +59,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--with-expat=${LIBEXPAT} \
 	--prefix="${PREFIX}"
 
-elif [[ $OS = 'linux' ]]; then
+elif [[ $OS = 'Linux' ]]; then
 
 	CFLAGS="-fPIC" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}" \

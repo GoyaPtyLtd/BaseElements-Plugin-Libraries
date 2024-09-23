@@ -56,7 +56,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 	make -j${JOBS}
 
-elif [[ $OS = 'linux' ]]; then
+elif [[ $OS = 'Linux' ]]; then
 
 	./configure --enable-lib-only \
 	--prefix="${PREFIX}"

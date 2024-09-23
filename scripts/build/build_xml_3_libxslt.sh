@@ -60,7 +60,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--with-libxml-prefix="${LIBXML}" \
 	--prefix="${PREFIX}"
 
-elif [[ $OS = 'linux' ]]; then
+elif [[ $OS = 'Linux' ]]; then
 
 	CFLAGS=-fPIC \
 	./configure --disable-shared --without-python --without-crypto \

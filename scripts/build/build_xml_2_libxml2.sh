@@ -57,7 +57,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--with-iconv="${ICONV}" \
 	--prefix="${PREFIX}"
 
-elif [[ $OS = 'linux' ]]; then
+elif [[ $OS = 'Linux' ]]; then
 
 	CFLAGS=-fPIC \
 	./configure --disable-shared --with-threads --with-sax1 --without-python --without-zlib --without-lzma \

@@ -56,7 +56,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	-DCMAKE_LIBRARY_PATH:path="${OUTPUT}/Libraries/${PLATFORM}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT}/Headers" \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
 
-elif [[ $OS = 'linux' ]]; then
+elif [[ $OS = 'Linux' ]]; then
 
 	CFLAGS="-fPIC" \
 	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \

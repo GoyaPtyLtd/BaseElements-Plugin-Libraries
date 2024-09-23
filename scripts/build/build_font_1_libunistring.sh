@@ -53,7 +53,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
 	./configure --enable-static --enable-shared=NO --prefix="${PREFIX}"
 
-elif [[ $OS = 'linux' ]]; then
+elif [[ $OS = 'Linux' ]]; then
 
 	CFLAGS="-fPIC" \
 	./configure --enable-static --enable-shared=NO --prefix="${PREFIX}"

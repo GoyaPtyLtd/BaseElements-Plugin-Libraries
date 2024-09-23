@@ -36,6 +36,8 @@ There are a bunch of open source tools required as well, to make things easier w
 
 Not all of these may be needed, this was we had last time we checked. You want to avoid using lots of brew libraries as the compile options may find those instead of the ones we've built into the scripts, but we do try to hard code to our specific library versions.
 
+You should have FileMaker Pro and/or Server installed before starting to build anything - the plugin build process will copy the built plugin to the Pro Extensions folder ready to test.
+
 It shouldn't matter where you put the local version of the repository, but we put it at ~/Documents/GitHub :
 
     cd ~
@@ -43,27 +45,53 @@ It shouldn't matter where you put the local version of the repository, but we pu
     cd Documents/GitHub
 
     git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
+    git clone --depth 1 --branch development https://github.com/GoyaPtyLtd/BaseElements-Plugin.git
     
 Then follow the Build Process below.
 
 ### Ubuntu Setup
 
-Ubuntu works fairly similarly to mac, but the setup is a little different.
+There is some general setup for Ubuntu, but slight differences for Ubuntu 20 vs 22, and x86 vs arm.  These instructions assume you're starting from a clean iso install.  You may come across incompatibilities if you've modified or otherwise installed other packages.
+
+First, update the OS and install FileMaker Server which is required for building the plugin, and is good to keep active for compatibility - if you try to install something incompatible, it will uninstall FMS, which is a sign not to go there.
 
     sudo apt update
-    sudo apt install git-all wget zip
+    sudo apt upgrade
+    sudo apt install zip
+
+**For Ubuntu 20**
+    wget https://downloads.claris.com/esd/fms_21.0.2.202_Ubuntu20_amd64.zip
+    unzip fms_21.0.2.202_Ubuntu20_amd64.zip
+    
+**For Ubuntu 22 x86**
+    wget https://downloads.claris.com/esd/fms_21.0.2.202_Ubuntu22_amd64.zip
+    unzip fms_21.0.2.202_Ubuntu22_amd64.zip
+
+**For Ubuntu 22 arm**
+    wget https://downloads.claris.com/esd/fms_21.0.2.202_Ubuntu22_arm64.zip
+    unzip fms_21.0.2.202_Ubuntu22_arm64.zip
+
+Then install FMS : 
+
+    sudo apt install ./filemaker-server-21.0.2.202-amd64.deb
+
+Install other required software :
+
+    sudo apt install build-essential gperf cmake
     sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
-    sudo apt install make cmake gperf clang-format clang-tidy clang-tools clang clangd libc++-dev libc++abi-dev \
-        libclang-dev libclang1 liblldb-dev libllvm-ocaml-dev libomp-dev libomp5 lld lldb llvm-dev \
-        llvm-runtime llvm python3-clang g++ gcc-aarch64-linux-gnu binutils-aarch64-linux-gnu
- 
- It shouldn't matter where you put the local version of the repository, but we put it at ~/source :
+
+Grab the repos from GitHub : 
  
     cd ~
     mkdir source
     cd source
- 
     git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
+    git clone --depth 1 --branch development https://github.com/GoyaPtyLtd/BaseElements-Plugin.git
+    
+As a one off, on ubuntu 20, you need to reconfigure clang so that the command line tools can find the correct binaries.
+
+    cd BaseElements-Plugin-Libraries/scripts/install
+    sudo ./update-alternatives-clang.sh
 
 Then follow the Build Process below.
 
@@ -71,19 +99,21 @@ Then follow the Build Process below.
 
 Then switch to the Scripts folder as the base from which to call various compile scripts.
 
-    cd BaseElements-Plugin-Libraries/scripts
+    cd ~/source/BaseElements-Plugin-Libraries/scripts
+or
+    cd ~/Documents/GitHub/BaseElements-Plugin-Libraries/scripts
 
 Then run the script that downloads all the current source files :
 
     ./1_getSource.sh
 
-You don't need to re-run this unless it changes in github and there's a new version of one of the libraries. Each build process starts from a clean folder and unpacks the archive at the beginning, so you only need to download once. You can then run any of the individual **build** scripts, or build everything :
+You don't need to re-run this unless a linked version changes in github because there's a new version of one of the libraries. Each build process starts from a clean folder and unpacks the archive at the beginning, so you only need to download once. You can then run any of the individual **build** scripts, or build everything :
 
     ./2_build.sh
     
 That will then run through every single build process and will take hours on most macs, seems to be only minutes on linux.
 
-Once that is done, assuming no errors, you can can then go to the BE plugin repository and build that.  There's no need to copy anything across.
+Once that is done, assuming no errors, all the required headers and libraries will be in the correct Plugin folder, so you can can then go to the BE plugin repository and build that.
 
 ### Updating to a new library version.
 

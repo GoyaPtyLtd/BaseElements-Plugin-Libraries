@@ -60,14 +60,17 @@ First, update the OS and install FileMaker Server which is required for building
     sudo apt install zip
 
 **For Ubuntu 20**
+
     wget https://downloads.claris.com/esd/fms_21.0.2.202_Ubuntu20_amd64.zip
     unzip fms_21.0.2.202_Ubuntu20_amd64.zip
     
 **For Ubuntu 22 x86**
+
     wget https://downloads.claris.com/esd/fms_21.0.2.202_Ubuntu22_amd64.zip
     unzip fms_21.0.2.202_Ubuntu22_amd64.zip
 
 **For Ubuntu 22 arm**
+
     wget https://downloads.claris.com/esd/fms_21.0.2.202_Ubuntu22_arm64.zip
     unzip fms_21.0.2.202_Ubuntu22_arm64.zip
 

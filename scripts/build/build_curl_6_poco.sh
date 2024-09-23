@@ -61,7 +61,7 @@ export PREFIX_arm64=`pwd`'/_build_arm64'
 
 # Build
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 
 	./configure --cflags="-mmacosx-version-min=10.15" \
 	--prefix="${PREFIX_x86_64}" \
@@ -93,7 +93,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	lipo -create "${PREFIX_x86_64}/lib/libPocoUtil.a" "${PREFIX_arm64}/lib/libPocoUtil.a" -output "${PREFIX}/lib/libPocoUtil.a"
 	lipo -create "${PREFIX_x86_64}/lib/libPocoZip.a" "${PREFIX_arm64}/lib/libPocoZip.a" -output "${PREFIX}/lib/libPocoZip.a"
 
-elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
+elif [[ $OS = 'linux' ]]; then
 
 	./configure --cflags=-fPIC \
 	--prefix="${PREFIX}" \
@@ -108,7 +108,7 @@ fi
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 	cp -R _build_x86_64/include/Poco/* "${OUTPUT}/Headers/Poco"
 else
 	cp -R _build/include/Poco/* "${OUTPUT}/Headers/Poco"

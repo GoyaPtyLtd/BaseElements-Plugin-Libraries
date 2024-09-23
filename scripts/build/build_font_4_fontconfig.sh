@@ -50,7 +50,7 @@ export PREFIX=`pwd`'/_build'
 
 # Build macOS
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}" \
@@ -59,7 +59,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--with-expat=${LIBEXPAT} \
 	--prefix="${PREFIX}"
 
-elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
+elif [[ $OS = 'linux' ]]; then
 
 	CFLAGS="-fPIC" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}" \

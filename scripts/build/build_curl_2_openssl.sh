@@ -47,7 +47,7 @@ cd openssl
 mkdir _build
 export PREFIX=`pwd`'/_build'
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 
 	mkdir _build_x86_64
 	export PREFIX_x86_64=`pwd`'/_build_x86_64'
@@ -76,7 +76,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	lipo -create "${PREFIX_x86_64}/lib/libcrypto.a" "${PREFIX_arm64}/lib/libcrypto.a" -output "${PREFIX}/lib/libcrypto.a"
 	lipo -create "${PREFIX_x86_64}/lib/libssl.a" "${PREFIX_arm64}/lib/libssl.a" -output "${PREFIX}/lib/libssl.a"
 
-elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
+elif [[ $OS = 'linux' ]]; then
 
 	./Configure linux-generic64 no-shared no-docs no-tests \
 	--prefix="${PREFIX}"
@@ -87,7 +87,7 @@ fi
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 	cp -R _build_x86_64/include/openssl/* "${OUTPUT}/Headers/openssl"
 else
 	cp -R _build/include/openssl/* "${OUTPUT}/Headers/openssl"

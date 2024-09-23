@@ -51,7 +51,7 @@ export PREFIX=`pwd`'/_build'
 
 # Build
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 
 	CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" \
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/zlib -I${OUTPUT}/Headers/openssl" \
@@ -62,7 +62,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	--host=x86_64-apple-darwin \
 	--prefix="${PREFIX}"
 
-elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
+elif [[ $OS = 'linux' ]]; then
 
 	CFLAGS=-fPIC \
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/zlib" \

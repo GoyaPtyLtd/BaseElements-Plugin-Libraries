@@ -72,7 +72,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
     LINKFLAGS+=(
         '-stdlib=libc++'
     )
-elif [[ $PLATFORM = 'linux' ]]; then
+elif [[ $OS = 'linux' ]]; then
     CXXFLAGS+=(
         -fPIC
     )

@@ -48,14 +48,14 @@ export PREFIX=`pwd`'/_build'
 
 # Build
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
 	./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
 	--enable-all-static --enable-pthread-tls --without-oniguruma \
 	--prefix="${PREFIX}"
 
-elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
+elif [[ $OS = 'linux' ]]; then
 
 	CFLAGS="-fPIC" \
 	./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \

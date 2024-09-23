@@ -50,14 +50,14 @@ export PREFIX=`pwd`'/_build'
 
 # Build
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
 	CPPFLAGS=" -I${OUTPUT}/Headers/zlib" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules --disable-arm-neon \
 	--prefix="${PREFIX}"
 
-elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
+elif [[ $OS = 'linux' ]]; then
 
 	CFLAGS="-fPIC" \
 	CPPFLAGS=" -I${OUTPUT}/Headers/zlib" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \

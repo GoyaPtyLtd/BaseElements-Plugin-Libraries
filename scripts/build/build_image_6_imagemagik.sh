@@ -57,7 +57,7 @@ export PREFIX=`pwd`'/_build'
 
 # Build
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 
 	mkdir _build_arm64
 	export PREFIX_arm64=`pwd`'/_build_arm64'
@@ -99,7 +99,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 
 	lipo -create "${PREFIX_x86_64}/lib/libMagickWand-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagickWand-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagickWand-7.Q16HDRI.a"
 
-elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
+elif [[ $OS = 'linux' ]]; then
 
 	CFLAGS="-fPIC" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
@@ -116,7 +116,7 @@ fi
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 	cp -R _build_x86_64/include/ImageMagick-7/* "${OUTPUT}/Headers/ImageMagick-7"
 else
 	cp -R _build/include/ImageMagick-7/* "${OUTPUT}/Headers/ImageMagick-7"

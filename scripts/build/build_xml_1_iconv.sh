@@ -49,12 +49,12 @@ export PREFIX=`pwd`'/_build'
 
 # Build
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 
 	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
 	./configure --disable-shared --prefix="${PREFIX}"
 
-elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
+elif [[ $OS = 'linux' ]]; then
 
 	CFLAGS=-fPIC \
 	./configure --disable-shared --prefix="${PREFIX}"

@@ -48,7 +48,7 @@ export PREFIX=`pwd`'/_build'
 
 # Build
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 
 	mkdir _build_arm64
 	export PREFIX_arm64=`pwd`'/_build_arm64'
@@ -85,7 +85,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	lipo -create "${PREFIX_x86_64}/lib/libturbojpeg.a" "${PREFIX_arm64}/lib/libturbojpeg.a" -output "${PREFIX}/lib/libturbojpeg.a"
 	lipo -create "${PREFIX_x86_64}/lib/libjpeg.a" "${PREFIX_arm64}/lib/libjpeg.a" -output "${PREFIX}/lib/libjpeg.a"
 
-elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
+elif [[ $OS = 'linux' ]]; then
 
 	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=NO -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 	-DCMAKE_IGNORE_PATH=/usr/lib/x86_64-linux-gnu/ \
@@ -98,7 +98,7 @@ fi
 
 # Copy the header and library files.
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 	cp -R _build_x86_64/include/* "${OUTPUT}/Headers/libturbojpeg"
 else
 	cp -R _build/include/* "${OUTPUT}/Headers/libturbojpeg"

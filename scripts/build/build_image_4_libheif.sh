@@ -48,7 +48,7 @@ export PREFIX=`pwd`'/_build'
 
 # Build
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 
 	export MACOSX_DEPLOYMENT_TARGET=10.15
 
@@ -62,7 +62,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 	-DLIBDE265_INCLUDE_DIR="${OUTPUT}/Headers/" -DLIBDE265_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libde265.a" \
 	-DJPEG_INCLUDE_DIR="${OUTPUT}/Headers/libturbojpeg/" -DJPEG_LIBRARY="${OUTPUT}/Libraries/${PLATFORM}/libjpeg.a" ./
 
-elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
+elif [[ $OS = 'linux' ]]; then
 
 	CFLAGS="-fPIC" \
 	cmake -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_BUILD_TYPE=RELEASE \

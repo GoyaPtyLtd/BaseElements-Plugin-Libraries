@@ -47,7 +47,7 @@ export PREFIX=`pwd`'/_build'
 
 # Build
 
-if [ ${PLATFORM} = 'macOS' ]; then
+if [[ $PLATFORM = 'macOS' ]]; then
 
 	CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" \
 	./configure --enable-lib-only --enable-shared=no --enable-static \
@@ -56,7 +56,7 @@ if [ ${PLATFORM} = 'macOS' ]; then
 
 	make -j${JOBS}
 
-elif [ ${PLATFORM} = 'linux' ]||[ ${PLATFORM} = 'linuxARM' ]; then
+elif [[ $OS = 'linux' ]]; then
 
 	./configure --enable-lib-only \
 	--prefix="${PREFIX}"

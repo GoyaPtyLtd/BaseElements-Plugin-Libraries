@@ -92,7 +92,7 @@ Grab the repos from GitHub :
     
 As a one off, you need to reconfigure clang so that the command line tools can find the correct binaries.  We've provided a script to do this automatically for clang-18.
 
-    cd BaseElements-Plugin-Libraries/scripts/install
+    cd ~/source/BaseElements-Plugin-Libraries/scripts/install
     sudo ./update-alternatives-clang.sh
 
 Then follow the Build Process below.

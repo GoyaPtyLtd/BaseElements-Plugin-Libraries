@@ -80,7 +80,7 @@ Then install FMS :
 
 Install other required software :
 
-    sudo apt install build-essential gperf cmake
+    sudo apt install build-essential gperf cmake git git-lfs
     sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
 
 Grab the repos from GitHub : 
@@ -91,7 +91,7 @@ Grab the repos from GitHub :
     git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
     git clone --depth 1 --branch development https://github.com/GoyaPtyLtd/BaseElements-Plugin.git
     
-As a one off, on ubuntu 20, you need to reconfigure clang so that the command line tools can find the correct binaries.
+As a one off, you need to reconfigure clang so that the command line tools can find the correct binaries.  We've provided a script to do this automatically for clang-18.
 
     cd BaseElements-Plugin-Libraries/scripts/install
     sudo ./update-alternatives-clang.sh

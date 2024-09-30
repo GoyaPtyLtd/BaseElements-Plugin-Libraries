@@ -32,7 +32,6 @@ LIBS=(
     libboost_atomic.a
     libboost_date_time.a
     libboost_filesystem.a
-    libboost_locale.a
     libboost_program_options.a
     libboost_regex.a
     libboost_thread.a
@@ -61,6 +60,7 @@ PREFIX=$(pwd)/_build
 
 ./bootstrap.sh
 
+CFLAGS=()
 CXXFLAGS=()
 LINKFLAGS=()
 if [[ $PLATFORM = 'macOS' ]]; then
@@ -74,17 +74,21 @@ if [[ $PLATFORM = 'macOS' ]]; then
         '-stdlib=libc++'
     )
 elif [[ $OS = 'Linux' ]]; then
+    CFLAGS+=(
+        -fPIC
+    )
     CXXFLAGS+=(
         -fPIC
     )
 fi
 
 ./b2 toolset=clang \
+    cflags="${CFLAGS[*]}" \
     cxxflags="${CXXFLAGS[*]}" \
     linkflags="${LINKFLAGS[*]}" \
     address-model=64 link=static runtime-link=static \
     --with-program_options --with-regex --with-date_time \
-    --with-filesystem --with-thread --with-locale \
+    --with-filesystem --with-thread \
     --prefix="${PREFIX}" -j${JOBS} \
     install
 

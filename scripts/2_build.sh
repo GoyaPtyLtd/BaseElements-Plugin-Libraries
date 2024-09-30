@@ -3,7 +3,6 @@ set -e
 
 cd build 
 
-./build_boost.sh
 ./build_duktape.sh
 ./build_jq.sh
 
@@ -11,6 +10,8 @@ cd build
 ./build_font.sh
 ./build_image.sh
 ./build_xml.sh
+
+./build_boost.sh
 
 ./build_podofo.sh
 

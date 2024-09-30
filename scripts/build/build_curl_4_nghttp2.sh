@@ -9,6 +9,11 @@ JOBS=1              # Number of parallel jobs
 if [[ $OS = 'Darwin' ]]; then
 		PLATFORM='macOS'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+    if [[ $ARCH = 'aarch64' ]]; then
+        HOST='x86_64-apple-darwin'
+    elif [[ $ARCH = 'x86_64' ]]; then
+        HOST='aarch64-apple-darwin'
+    fi
 elif [[ $OS = 'Linux' ]]; then
     JOBS=$(($(nproc) + 1))
     if [[ $ARCH = 'aarch64' ]]; then
@@ -52,7 +57,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" \
 	./configure --enable-lib-only --enable-shared=no --enable-static \
 	--prefix="${PREFIX}" \
-	--host=x86_64-apple-darwin
+	--host="${HOST}" \
 
 	make -j${JOBS}
 

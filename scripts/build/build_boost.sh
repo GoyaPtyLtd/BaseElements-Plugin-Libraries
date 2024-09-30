@@ -58,7 +58,7 @@ PREFIX=$(pwd)/_build
 
 # Build
 
-./bootstrap.sh
+./bootstrap.sh --with-libraries="atomic,chrono,date_time,exception,filesystem,program_options,regex,system,thread"
 
 CFLAGS=()
 CXXFLAGS=()
@@ -73,6 +73,12 @@ if [[ $PLATFORM = 'macOS' ]]; then
     LINKFLAGS+=(
         '-stdlib=libc++'
     )
+    
+    mkdir _build_iOS
+    mkdir _build_iOS_Sim
+    PREFIX_iOS=$(pwd)/_build_iOS
+    PREFIX_iOS_Sim=$(pwd)/_build_iOS_Sim
+
 elif [[ $OS = 'Linux' ]]; then
     CFLAGS+=(
         -fPIC
@@ -87,8 +93,8 @@ fi
     cxxflags="${CXXFLAGS[*]}" \
     linkflags="${LINKFLAGS[*]}" \
     address-model=64 link=static runtime-link=static \
-    --with-program_options --with-regex --with-date_time \
-    --with-filesystem --with-thread --with-atomic \
+    --with-atomic --with-chrono --with-date_time --with-exception \
+    --with-filesystem --with-program_options --with-regex --with-system --with-thread  \
     --prefix="${PREFIX}" -j${JOBS} \
     install
 
@@ -101,8 +107,6 @@ for LIB in "${LIBS[@]}"; do
 done
 
 #Build iOS
-
-#./iOS_build_boost.sh  -ios --boost-version 1.75.0 --boost-libs "program_options regex date_time filesystem thread"
 
 #cp -R dist/boost.xcframework "${OUTPUT}/Libraries/iOS"
 

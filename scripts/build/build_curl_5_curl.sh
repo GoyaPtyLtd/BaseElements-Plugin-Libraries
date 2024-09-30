@@ -9,6 +9,11 @@ JOBS=1              # Number of parallel jobs
 if [[ $OS = 'Darwin' ]]; then
 		PLATFORM='macOS'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+    if [[ $ARCH = 'aarch64' ]]; then
+        HOST='x86_64-apple-darwin'
+    elif [[ $ARCH = 'x86_64' ]]; then
+        HOST='aarch64-apple-darwin'
+    fi
 elif [[ $OS = 'Linux' ]]; then
     JOBS=$(($(nproc) + 1))
     if [[ $ARCH = 'aarch64' ]]; then
@@ -69,7 +74,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2  \
 	--with-zlib=${ZLIB} --with-openssl=${OPENSSL_x86} --with-libssh2=${LIBSSH} --with-nghttp2=${NGHTTP2} \
 	--prefix="${PREFIX_x86_64}" \
-	--host=x86_64-apple-darwin
+	--host="${HOST}"
 
 	make -j${JOBS}
 	make install
@@ -85,7 +90,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2  \
 	--with-zlib=${ZLIB} --with-openssl=${OPENSSL_arm} --with-libssh2=${LIBSSH} --with-nghttp2=${NGHTTP2} \
 	--prefix="${PREFIX_arm64}" \
-	--host=x86_64-apple-darwin
+	--host="${HOST}"
 
 	make -j${JOBS}
 	make install

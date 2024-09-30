@@ -9,6 +9,11 @@ JOBS=1              # Number of parallel jobs
 if [[ $OS = 'Darwin' ]]; then
 		PLATFORM='macOS'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+    if [[ $ARCH = 'aarch64' ]]; then
+        HOST='x86_64-apple-darwin'
+    elif [[ $ARCH = 'x86_64' ]]; then
+        HOST='aarch64-apple-darwin'
+    fi
 elif [[ $OS = 'Linux' ]]; then
     JOBS=$(($(nproc) + 1))
     if [[ $ARCH = 'aarch64' ]]; then
@@ -69,7 +74,8 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
 	--without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
     --enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
-	--host=x86_64-apple-darwin --prefix="${PREFIX_arm64}"
+	--host="${HOST}" \
+	--prefix="${PREFIX_arm64}"
 
 	make -j${JOBS}
 	make install
@@ -85,7 +91,8 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
 	--without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
 	--enable-zero-configuration -enable-hdri --without-bzlib --disable-openmp --disable-assert \
-	--host=x86_64-apple-darwin --prefix="${PREFIX_x86_64}"
+	--host="${HOST}" \
+	--prefix="${PREFIX_x86_64}"
 
 	make -j${JOBS}
 	make install
@@ -94,9 +101,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	mkdir ${PREFIX}/lib
 
 	lipo -create "${PREFIX_x86_64}/lib/libMagick++-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagick++-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagick++-7.Q16HDRI.a"
-
 	lipo -create "${PREFIX_x86_64}/lib/libMagickCore-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagickCore-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagickCore-7.Q16HDRI.a"
-
 	lipo -create "${PREFIX_x86_64}/lib/libMagickWand-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagickWand-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagickWand-7.Q16HDRI.a"
 
 elif [[ $OS = 'Linux' ]]; then

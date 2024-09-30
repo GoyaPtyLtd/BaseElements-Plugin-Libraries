@@ -48,13 +48,6 @@ export PREFIX=`pwd`'/_build'
 
 # Build macOS
 
-#		-DOPENSSL_CRYPTO_LIBRARY="${OUTPUT}/Libraries/macOS/libcrypto.a" \
-#		-DOPENSSL_SSL_LIBRARY="${OUTPUT}/Libraries/macOS/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT}/Headers/openssl" \
-#		-DLIBXML2_LIBRARY="${OUTPUT}/Libraries/macOS/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT}/Headers/libxml" \
-#		-DLIBXML2_XMLLINT_EXECUTABLE="${SRCROOT}/macOS/libxml/_build_macos/bin/xmllint" \
-
-# 	-DFONTCONFIG_INCLUDE_DIR="${SRCROOT}/Headers" -DFONTCONFIG_LIBRARY_RELEASE="${SRCROOT}/Libraries/macOS/libfontconfig.a" -DPODOFO_BUILD_LIB_ONLY=TRUE -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.13 -stdlib=libc++" -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.13 -stdlib=libc++" -DCMAKE_CXX_STANDARD=11 -DCXX_STANDARD_REQUIRED=ON ./
-
 if [[ $PLATFORM = 'macOS' ]]; then
 
 	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \

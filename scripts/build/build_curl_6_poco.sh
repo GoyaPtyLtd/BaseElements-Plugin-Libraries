@@ -9,6 +9,11 @@ JOBS=1              # Number of parallel jobs
 if [[ $OS = 'Darwin' ]]; then
 		PLATFORM='macOS'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+    if [[ $ARCH = 'aarch64' ]]; then
+        HOST='x86_64'
+    elif [[ $ARCH = 'x86_64' ]]; then
+        HOST='aarch64'
+    fi
 elif [[ $OS = 'Linux' ]]; then
     JOBS=$(($(nproc) + 1))
     if [[ $ARCH = 'aarch64' ]]; then
@@ -69,7 +74,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
-	make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
+	make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=${HOST}
 	make install
 	make -s distclean
 
@@ -79,7 +84,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
-	make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=x86_64
+	make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=${HOST}
 	make install
 	make -s distclean
 

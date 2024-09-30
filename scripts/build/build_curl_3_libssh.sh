@@ -9,6 +9,11 @@ JOBS=1              # Number of parallel jobs
 if [[ $OS = 'Darwin' ]]; then
 		PLATFORM='macOS'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+    if [[ $ARCH = 'aarch64' ]]; then
+        HOST='x86_64-apple-darwin'
+    elif [[ $ARCH = 'x86_64' ]]; then
+        HOST='aarch64-apple-darwin'
+    fi
 elif [[ $OS = 'Linux' ]]; then
     JOBS=$(($(nproc) + 1))
     if [[ $ARCH = 'aarch64' ]]; then
@@ -59,7 +64,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
 	--with-libz --with-libz-prefix=${LIBZ} \
 	--with-crypto=openssl \
-	--host=x86_64-apple-darwin \
+	--host="${HOST}" \
 	--prefix="${PREFIX}"
 
 elif [[ $OS = 'Linux' ]]; then

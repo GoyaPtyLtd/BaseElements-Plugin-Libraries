@@ -46,7 +46,7 @@ It shouldn't matter where you put the local version of the repository, but we pu
 
     git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
     git clone --depth 1 --branch development https://github.com/GoyaPtyLtd/BaseElements-Plugin.git
-    
+
 Then follow the Build Process below.
 
 ### Ubuntu Setup
@@ -64,7 +64,7 @@ First, update the OS and install FileMaker Server which is required for building
     wget https://downloads.claris.com/esd/fms_21.0.2.202_Ubuntu20_amd64.zip
     unzip fms_21.0.2.202_Ubuntu20_amd64.zip
     sudo apt install ./filemaker-server-21.0.2.202-amd64.deb
-    
+
 **For Ubuntu 22 x86**
 
     wget https://downloads.claris.com/esd/fms_21.0.2.202_Ubuntu22_amd64.zip
@@ -77,19 +77,19 @@ First, update the OS and install FileMaker Server which is required for building
     unzip fms_21.0.2.202_Ubuntu22_arm64.zip
     sudo apt install ./filemaker-server-21.0.2.202-arm64.deb
 
-Install other required software :
+Install development software :
 
     sudo apt install build-essential gperf cmake git git-lfs
-    sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)"
+    sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" llvm.sh 18
 
-Grab the repos from GitHub : 
- 
+Grab the repos from GitHub :
+
     cd ~
     mkdir source
     cd source
     git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
     git clone --depth 1 --branch development https://github.com/GoyaPtyLtd/BaseElements-Plugin.git
-    
+
 As a one off, you need to reconfigure clang so that the command line tools can find the correct binaries.  We've provided a script to do this automatically for clang-18.
 
     cd ~/source/BaseElements-Plugin-Libraries/scripts/install
@@ -112,7 +112,7 @@ Then run the script that downloads all the current source files :
 You don't need to re-run this unless a linked version changes in github because there's a new version of one of the libraries. Each build process starts from a clean folder and unpacks the archive at the beginning, so you only need to download once. You can then run any of the individual **build** scripts, or build everything :
 
     ./2_build.sh
-    
+
 That will then run through every single build process and will take hours on most macs, seems to be only minutes on linux.
 
 Once that is done, assuming no errors, all the required headers and libraries will be in the correct Plugin folder, so you can can then go to the BE plugin repository and build that.
@@ -125,7 +125,7 @@ So for example, there's a new version of libcurl that you want to build and test
 * Change to the **script** directory.
 * Run the **0_cleanOutputFolder.sh** if you've done builds before and it's not a clean clone.
 * Run the **1_getSource.sh** script to download your new version.
-* Run the **2_build.sh.sh** script and fix any issues that come up.  
+* Run the **2_build.sh.sh** script and fix any issues that come up.
 * Switch to xCode and compile the plugin.  Fix any newly introduced errors.
 * Run FileMaker Pro or FileMaker Server with the new plugin, and run the BaseElements Plugin Tests.fmp12 file and run all the relevant tests.
 * Submit a pull request for the changes to the library, we'll probably run the same tests and then incorporate them into the development branch for the next build.

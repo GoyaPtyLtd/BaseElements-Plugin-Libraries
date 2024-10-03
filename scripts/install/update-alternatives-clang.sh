@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
 
+VERSION=18
+PRIORITY=100
+
 function register_clang_version {
-    local version=18
-    local priority=100
+    local version=$1
+    local priority=$2
 
     update-alternatives \
         --install /usr/bin/llvm-config       llvm-config      /usr/bin/llvm-config-${version} ${priority} \
@@ -51,4 +54,4 @@ function register_clang_version {
 
 }
 
-register_clang_version ${version} ${priority}
+register_clang_version ${VERSION} ${PRIORITY}

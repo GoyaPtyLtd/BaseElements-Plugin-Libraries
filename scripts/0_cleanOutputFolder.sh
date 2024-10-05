@@ -8,7 +8,7 @@
 #
 #=======================================================================
 
-export SRCROOT=`pwd`
+SRCROOT=$(pwd)
 
 OS=$(uname -s)		# Linux|Darwin
 ARCH=$(uname -m)	# x86_64|aarch64|arm64

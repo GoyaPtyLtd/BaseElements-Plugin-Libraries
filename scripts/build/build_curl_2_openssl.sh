@@ -45,12 +45,12 @@ tar -xf ../openssl.tar.gz -C openssl --strip-components=1
 cd openssl
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 if [[ $PLATFORM = 'macOS' ]]; then
 
 	mkdir _build_x86_64
-	export PREFIX_x86_64=`pwd`'/_build_x86_64'
+	PREFIX_x86_64=$(pwd)'/_build_x86_64'
 
 	CFLAGS="-mmacosx-version-min=10.15" \
 	./configure darwin64-x86_64-cc no-shared no-docs no-tests \
@@ -61,7 +61,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	make -s distclean
 
 	mkdir _build_arm64
-	export PREFIX_arm64=`pwd`'/_build_arm64'
+	PREFIX_arm64=$(pwd)'/_build_arm64'
 
 	CFLAGS="-mmacosx-version-min=10.15" \
 	./configure darwin64-arm64-cc no-shared no-docs no-tests \
@@ -78,6 +78,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+  CC=clang CXX=clang++ \
 	./Configure linux-generic64 no-shared no-docs no-tests \
 	--prefix="${PREFIX}"
 	make -j${JOBS}

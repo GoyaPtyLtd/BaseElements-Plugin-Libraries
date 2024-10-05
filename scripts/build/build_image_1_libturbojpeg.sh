@@ -44,14 +44,14 @@ tar -xf ../libturbojpeg.tar.gz  -C libturbojpeg --strip-components=1
 cd libturbojpeg
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
 if [[ $PLATFORM = 'macOS' ]]; then
 
 	mkdir _build_arm64
-	export PREFIX_arm64=`pwd`'/_build_arm64'
+	PREFIX_arm64=$(pwd)'/_build_arm64'
 
 	echo "set(CMAKE_SYSTEM_NAME Darwin)" > toolchain.cmake
 	echo "set(CMAKE_SYSTEM_PROCESSOR aarch64)" >> toolchain.cmake
@@ -66,7 +66,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	make install
 
 	mkdir _build_x86_64
-	export PREFIX_x86_64=`pwd`'/_build_x86_64'
+	PREFIX_x86_64=$(pwd)'/_build_x86_64'
 
 	echo "set(CMAKE_SYSTEM_NAME Darwin)" > toolchain.cmake
 	echo "set(CMAKE_SYSTEM_PROCESSOR x86_64)" >> toolchain.cmake
@@ -87,6 +87,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+  CC=clang CXX=clang++ \
 	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=NO -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
 	-DCMAKE_IGNORE_PATH=/usr/lib/x86_64-linux-gnu/ \
 	-DCMAKE_INSTALL_PREFIX="${PREFIX}"  ./

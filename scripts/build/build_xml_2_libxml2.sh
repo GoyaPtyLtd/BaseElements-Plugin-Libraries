@@ -38,7 +38,7 @@ mkdir Headers/libxml
 
 cd ../source/${PLATFORM}
 
-export ICONV=`pwd`'/libiconv/_build'
+ICONV=$(pwd)'/libiconv/_build'
 
 rm -rf libxml
 mkdir libxml
@@ -46,7 +46,7 @@ tar -xf ../libxml.tar.xz -C libxml --strip-components=1
 cd libxml
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
@@ -59,6 +59,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+  CC=clang CXX=clang++ \
 	CFLAGS=-fPIC \
 	./configure --disable-shared --with-threads --with-sax1 --without-python --without-zlib --without-lzma \
 	--prefix="${PREFIX}"

@@ -38,7 +38,7 @@ mkdir Headers/fontconfig
 
 cd ../source/${PLATFORM}
 
-export LIBEXPAT=`pwd`'/libexpat/_build'
+LIBEXPAT=$(pwd)'/libexpat/_build'
 
 rm -rf fontconfig
 mkdir fontconfig
@@ -46,7 +46,7 @@ tar -xf ../fontconfig.tar.gz -C fontconfig --strip-components=1
 cd fontconfig
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build macOS
 
@@ -61,6 +61,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+  CC=clang CXX=clang++ \
 	CFLAGS="-fPIC" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}" \
 	FREETYPE_CFLAGS="-I${OUTPUT}/Headers/freetype2" FREETYPE_LIBS="-L${OUTPUT}/Libraries/${PLATFORM} -lfreetype" \

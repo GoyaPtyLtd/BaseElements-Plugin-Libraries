@@ -44,7 +44,7 @@ tar -xf ../libunistring.tar.gz -C libunistring --strip-components=1
 cd libunistring
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
@@ -55,6 +55,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+    CC=clang CXX=clang++ \
 	CFLAGS="-fPIC" \
 	./configure --enable-static --enable-shared=NO --prefix="${PREFIX}"
 

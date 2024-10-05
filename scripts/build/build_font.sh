@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-export SRCROOT=`pwd`
+SRCROOT=$(pwd)
 cd ../../source/${PLATFORM}
 
 rm -rf libunistring

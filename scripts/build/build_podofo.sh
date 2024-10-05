@@ -44,7 +44,7 @@ tar -xf ../podofo.tar.gz -C podofo --strip-components=1
 cd podofo
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build macOS
 
@@ -69,6 +69,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+  CC=clang CXX=clang++ \
 	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
 		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
          -DFREETYPE_LIBRARY_RELEASE="${OUTPUT}/Libraries/${PLATFORM}/libfreetype.a" -DFREETYPE_INCLUDE_DIR="${OUTPUT}/Headers/freetype2" \

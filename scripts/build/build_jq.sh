@@ -3,11 +3,11 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
-OS=$(uname -s)		# Linux|Darwin
-ARCH=$(uname -m)	# x86_64|aarch64|arm64
+OS=$(uname -s)      # Linux|Darwin
+ARCH=$(uname -m)    # x86_64|aarch64|arm64
 JOBS=1              # Number of parallel jobs
 if [[ $OS = 'Darwin' ]]; then
-		PLATFORM='macOS'
+    PLATFORM='macOS'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
 elif [[ $OS = 'Linux' ]]; then
     JOBS=$(($(nproc) + 1))
@@ -18,8 +18,8 @@ elif [[ $OS = 'Linux' ]]; then
     fi
 fi
 if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
-	echo "!! Unknown OS/ARCH: $OS/$ARCH"
-	exit 1
+  echo "!! Unknown OS/ARCH: $OS/$ARCH"
+  exit 1
 fi
 
 
@@ -44,23 +44,23 @@ tar -xf ../jq.tar.gz  -C jq --strip-components=1
 cd jq
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
 if [[ $PLATFORM = 'macOS' ]]; then
 
-	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-	./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
-	--enable-all-static --enable-pthread-tls --without-oniguruma \
-	--prefix="${PREFIX}"
+  CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+  ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
+  --enable-all-static --enable-pthread-tls --without-oniguruma \
+  --prefix="${PREFIX}"
 
 elif [[ $OS = 'Linux' ]]; then
 
-	CFLAGS="-fPIC" \
-	./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
-	--enable-all-static --enable-pthread-tls --without-oniguruma \
-	--prefix="${PREFIX}"
+  CC=clang CXX=clang++ CFLAGS="-fPIC" \
+  ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
+  --enable-all-static --enable-pthread-tls --without-oniguruma \
+  --prefix="${PREFIX}"
 
 fi
 

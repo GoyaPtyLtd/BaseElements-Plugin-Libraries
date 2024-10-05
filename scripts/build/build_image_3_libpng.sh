@@ -38,15 +38,13 @@ mkdir Headers/libpng
 
 cd ../source/${PLATFORM}
 
-export ZLIB=`pwd`'/zlib/_build'
-
 rm -rf libpng
 mkdir libpng
 tar -xf ../libpng.tar.gz  -C libpng --strip-components=1
 cd libpng
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
@@ -59,6 +57,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+  CC=clang CXX=clang++ \
 	CFLAGS="-fPIC" \
 	CPPFLAGS=" -I${OUTPUT}/Headers/zlib" LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}/" \
 	./configure --disable-shared --disable-dependency-tracking --disable-silent-rules \

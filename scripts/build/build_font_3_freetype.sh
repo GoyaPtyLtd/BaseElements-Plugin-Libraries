@@ -44,7 +44,7 @@ tar -xf ../freetype.tar.gz -C freetype --strip-components=1
 cd freetype
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
@@ -56,6 +56,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+  CC=clang CXX=clang++ \
 	CFLAGS="-fPIC" \
 	./configure --disable-shared --with-png=no --with-bzip2=no --with-harfbuzz=no --with-brotli=no --with-png=no --with-zlib=no \
 	--prefix=${PREFIX}

@@ -43,8 +43,8 @@ mkdir Headers/libssh2
 
 cd ../source/${PLATFORM}
 
-export LIBZ=`pwd`'/zlib/_build'
-export OPENSSL=`pwd`'/openssl/_build'
+LIBZ=$(pwd)'/zlib/_build'
+OPENSSL=$(pwd)'/openssl/_build'
 
 rm -rf libssh
 mkdir libssh
@@ -52,7 +52,7 @@ tar -xf ../libssh.tar.gz -C libssh --strip-components=1
 cd libssh
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
@@ -69,6 +69,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+  CC=clang CXX=clang++ \
 	CFLAGS=-fPIC \
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/zlib" \
 	LDFLAGS="-L${OUTPUT}/Libraries/${PLATFORM}" LIBS="-ldl" \

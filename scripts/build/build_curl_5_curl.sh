@@ -43,13 +43,13 @@ mkdir Headers/curl
 
 cd ../source/${PLATFORM}
 
-export ZLIB=`pwd`'/zlib/_build'
-export LIBSSH=`pwd`'/libssh/_build'
-export NGHTTP2=`pwd`'/nghttp2/_build'
+ZLIB=$(pwd)'/zlib/_build'
+LIBSSH=$(pwd)'/libssh/_build'
+NGHTTP2=$(pwd)'/nghttp2/_build'
 
-export OPENSSL=`pwd`'/openssl/_build'
-export OPENSSL_x86=`pwd`'/openssl/_build_x86_64'
-export OPENSSL_arm=`pwd`'/openssl/_build_arm64'
+OPENSSL=$(pwd)'/openssl/_build'
+OPENSSL_x86=$(pwd)'/openssl/_build_x86_64'
+OPENSSL_arm=$(pwd)'/openssl/_build_arm64'
 
 rm -rf curl
 mkdir curl
@@ -58,14 +58,14 @@ cd curl
 
 mkdir _build
 mkdir _build/lib
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
 if [[ $PLATFORM = 'macOS' ]]; then
 
 	mkdir _build_x86_64
-	export PREFIX_x86_64=`pwd`'/_build_x86_64'
+	PREFIX_x86_64=$(pwd)'/_build_x86_64'
 
 	CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/openssl" \
@@ -81,7 +81,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	make -s distclean
 
 	mkdir _build_arm64
-	export PREFIX_arm64=`pwd`'/_build_arm64'
+	PREFIX_arm64=$(pwd)'/_build_arm64'
 
 	CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/openssl" \
@@ -103,6 +103,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+  CC=clang CXX=clang++ \
 	./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
 	--without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 \
 	--with-zlib=${ZLIB} --with-openssl=${OPENSSL} --with-libssh2=${LIBSSH} \

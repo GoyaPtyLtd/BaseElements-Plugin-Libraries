@@ -41,7 +41,7 @@ mkdir Headers/libexslt
 
 cd ../source/${PLATFORM}
 
-export LIBXML=`pwd`'/libxml/_build'
+LIBXML=$(pwd)'/libxml/_build'
 
 rm -rf libxslt
 mkdir libxslt
@@ -49,7 +49,7 @@ tar -xf ../libxslt.tar.xz -C libxslt --strip-components=1
 cd libxslt
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
@@ -62,6 +62,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+  CC=clang CXX=clang++ \
 	CFLAGS=-fPIC \
 	./configure --disable-shared --without-python --without-crypto \
 	--with-libxml-prefix="${LIBXML}" \

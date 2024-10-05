@@ -49,8 +49,6 @@ mkdir Headers/Poco
 
 cd ../source/${PLATFORM}
 
-export OPENSSL=`pwd`'/openssl/_build'
-
 rm -rf poco
 mkdir poco
 tar -xf ../poco.tar.gz -C poco --strip-components=1
@@ -60,9 +58,9 @@ mkdir _build
 mkdir _build_x86_64
 mkdir _build_arm64
 
-export PREFIX=`pwd`'/_build'
-export PREFIX_x86_64=`pwd`'/_build_x86_64'
-export PREFIX_arm64=`pwd`'/_build_arm64'
+PREFIX=$(pwd)'/_build'
+PREFIX_x86_64=$(pwd)'/_build_x86_64'
+PREFIX_arm64=$(pwd)'/_build_arm64'
 
 # Build
 
@@ -101,6 +99,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 elif [[ $OS = 'Linux' ]]; then
 
 	./configure --cflags=-fPIC \
+	--config=Linux-clang \
 	--prefix="${PREFIX}" \
 	--no-sharedlibs --static --poquito --no-tests --no-samples \
 	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \

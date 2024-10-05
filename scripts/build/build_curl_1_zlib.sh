@@ -44,7 +44,7 @@ tar -xf ../zlib.tar.xz -C zlib --strip-components=1
 cd zlib
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
@@ -55,6 +55,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+    CC=clang CXX=clang++ \
 	CFLAGS="-fPIC" \
 	./configure --static --prefix="${PREFIX}"
 

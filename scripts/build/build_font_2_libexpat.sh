@@ -44,7 +44,7 @@ tar -xf ../expat.tar.xz -C libexpat --strip-components=1
 cd libexpat
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
@@ -55,6 +55,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+    CC=clang CXX=clang++ \
 	CFLAGS=-fPIC \
 	./configure --disable-shared --prefix="${PREFIX}"
 

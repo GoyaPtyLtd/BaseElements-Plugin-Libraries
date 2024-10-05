@@ -44,7 +44,7 @@ tar -xf ../libde265.tar.gz  -C libde265 --strip-components=1
 cd libde265
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
@@ -56,6 +56,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+  CC=clang CXX=clang++ \
 	cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
 	-DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSEG -DENABLE_DECODER=OFF ./
 

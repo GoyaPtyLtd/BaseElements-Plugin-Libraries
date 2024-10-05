@@ -44,7 +44,7 @@ tar -xf ../libopenjp2.tar.gz  -C libopenjp2 --strip-components=1
 cd libopenjp2
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
@@ -58,6 +58,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 elif [[ $OS = 'Linux' ]]; then
 
+  CC=clang CXX=clang++ \
 	CFLAGS="-fPIC" \
 	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
 	-DCMAKE_IGNORE_PATH=/usr/lib/x86_64-linux-gnu/ \

@@ -3,11 +3,11 @@ set -e
 
 echo "Starting $(basename "$0") Build"
 
-OS=$(uname -s)		# Linux|Darwin
-ARCH=$(uname -m)	# x86_64|aarch64|arm64
+OS=$(uname -s)    # Linux|Darwin
+ARCH=$(uname -m)  # x86_64|aarch64|arm64
 JOBS=1              # Number of parallel jobs
 if [[ $OS = 'Darwin' ]]; then
-		PLATFORM='macOS'
+    PLATFORM='macOS'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
     if [[ $ARCH = 'aarch64' ]]; then
         HOST='x86_64-apple-darwin'
@@ -23,8 +23,8 @@ elif [[ $OS = 'Linux' ]]; then
     fi
 fi
 if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
-	echo "!! Unknown OS/ARCH: $OS/$ARCH"
-	exit 1
+  echo "!! Unknown OS/ARCH: $OS/$ARCH"
+  exit 1
 fi
 
 SRCROOT=$(pwd)
@@ -48,25 +48,26 @@ tar -xf ../nghttp2.tar.xz -C nghttp2 --strip-components=1
 cd nghttp2
 
 mkdir _build
-export PREFIX=`pwd`'/_build'
+PREFIX=$(pwd)'/_build'
 
 # Build
 
 if [[ $PLATFORM = 'macOS' ]]; then
 
-	CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" \
-	./configure --enable-lib-only --enable-shared=no --enable-static \
-	--prefix="${PREFIX}" \
-	--host="${HOST}" \
+  CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" \
+  ./configure --enable-lib-only --enable-shared=no --enable-static \
+  --prefix="${PREFIX}" \
+  --host="${HOST}" \
 
-	make -j${JOBS}
+  make -j${JOBS}
 
 elif [[ $OS = 'Linux' ]]; then
 
-	./configure --enable-lib-only \
-	--prefix="${PREFIX}"
+  CC=clang CXX=clang++ \
+  ./configure --enable-lib-only --enable-shared=no --enable-static \
+  --prefix="${PREFIX}"
 
-	make -j${JOBS}
+  make -j${JOBS}
 
 fi
 

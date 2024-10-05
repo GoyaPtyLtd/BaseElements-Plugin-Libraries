@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-cd copy 
+cd copy
 
 ./copy_boost.sh
 ./copy_duktape.sh

@@ -58,7 +58,7 @@ PREFIX=$(pwd)/_build
 
 # Build
 
-./bootstrap.sh --with-libraries="atomic,chrono,date_time,exception,filesystem,program_options,regex,system,thread"
+./bootstrap.sh --with-toolset=clang --with-libraries="atomic,chrono,date_time,exception,filesystem,program_options,regex,system,thread"
 
 CFLAGS=()
 CXXFLAGS=()
@@ -73,7 +73,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
     LINKFLAGS+=(
         '-stdlib=libc++'
     )
-    
+
     mkdir _build_iOS
     mkdir _build_iOS_Sim
     PREFIX_iOS=$(pwd)/_build_iOS
@@ -82,9 +82,11 @@ if [[ $PLATFORM = 'macOS' ]]; then
 elif [[ $OS = 'Linux' ]]; then
     CFLAGS+=(
         -fPIC
+        '-stdlib=libc++'
     )
     CXXFLAGS+=(
         -fPIC
+        '-stdlib=libc++'
     )
 fi
 

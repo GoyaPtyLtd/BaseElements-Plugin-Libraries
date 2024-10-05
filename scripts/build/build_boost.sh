@@ -82,11 +82,9 @@ if [[ $PLATFORM = 'macOS' ]]; then
 elif [[ $OS = 'Linux' ]]; then
     CFLAGS+=(
         -fPIC
-        '-stdlib=libc++'
     )
     CXXFLAGS+=(
         -fPIC
-        '-stdlib=libc++'
     )
 fi
 

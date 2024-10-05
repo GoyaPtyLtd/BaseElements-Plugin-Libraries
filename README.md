@@ -81,6 +81,7 @@ Install development software :
 
     sudo apt install build-essential gperf cmake git git-lfs
     sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" llvm.sh 18
+    sudo apt install libc++-18-dev libc++1-18 libc++abi-18-dev libc++abi1-18
 
 Grab the repos from GitHub :
 

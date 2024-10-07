@@ -255,30 +255,31 @@ builtin_check_output() {
             break
         fi
     done
-    for targetname in "${FRAMEWORKS[@]}"; do
-        if [[ ! -e "${FRAMEWORKS_ROOT:?}/${targetname}" ]]; then
-            framework_result=1
-            break
-        fi
-    done
     for targetname in "${HEADERS[@]}"; do
         if [[ ! -e "${HEADERS_ROOT:?}/${targetname}" ]]; then
             header_result=1
             break
         fi
     done
+    for targetname in "${FRAMEWORKS[@]}"; do
+        if [[ ! -e "${FRAMEWORKS_ROOT:?}/${targetname}" ]]; then
+            framework_result=1
+            break
+        fi
+    done
 
     if [[ "${PLATFORM}" == 'macOS' ]]; then
-        # On macOS at least one of library_result or framework_result
+        # On macOS, at least:
+        #   library_result AND header_result
+        #   OR
+        #   framework_result
         # must be true for the package to be considered installed.
-        local library_or_framework_result=0
-        if [[ ${library_result} -ne 0 ]] && [[ ${framework_result} -ne 0 ]]; then
-            # Failed both library and framework checks.
-            library_or_framework_result=1
-        fi
-
-        if [[ ${library_or_framework_result} -ne 0 ]] || [[ ${header_result} -ne 0 ]]; then
-            return 1
+        if [[ ${library_result} -ne 0 ]] || [[ ${header_result} -ne 0 ]]; then
+            # library or header failed
+            if [[ ${framework_result} -ne 0 ]]; then
+                # framework failed
+                return 1
+            fi
         fi
     else
         if [[ ${library_result} -ne 0 ]] || [[ ${header_result} -ne 0 ]]; then

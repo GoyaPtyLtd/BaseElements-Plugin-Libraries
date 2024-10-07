@@ -13,10 +13,10 @@ LIBRARIES=(
     libFMWrapper.so
 )
 
-FRAMEWORKS=(                    # LIBRARIES or FRAMEWORKS on macOS.
-    FMWrapper.framework
-)
-
 HEADERS=(
     FMWrapper                   # top level directory is sufficient.
+)
+
+FRAMEWORKS=(                    # LIBRARIES+HEADERS or FRAMEWORKS on macOS.
+    FMWrapper.framework
 )

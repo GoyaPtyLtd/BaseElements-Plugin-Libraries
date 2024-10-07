@@ -272,7 +272,7 @@ builtin_check_output() {
         # On macOS at least one of library_result or framework_result
         # must be true for the package to be considered installed.
         local library_or_framework_result=0
-        if [[ ${library_result } -ne 0 ]] && [[ ${framework_result} -ne 0 ]]; then
+        if [[ ${library_result} -ne 0 ]] && [[ ${framework_result} -ne 0 ]]; then
             # Failed both library and framework checks.
             library_or_framework_result=1
         fi

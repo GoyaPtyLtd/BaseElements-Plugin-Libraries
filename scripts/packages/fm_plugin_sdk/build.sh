@@ -28,18 +28,18 @@ cd "${REALDIR}" || exit 1
 #
 # Sets global variables:
 #   PACKAGE_FILE            - Full path to downloaded package.
-#   PACKAGE_SOURCE_DIR      - Full path to where source will be unpacked.
 #
 # Returns 0 (true) if the file was downloaded, 1 if it already exists.
 #fetch() {
 #}
 
-# Unpack source package. Is only called when fetch() returns true.
+# Unpack source package. Only called when ${PACKAGE_SOURCE_DIR} is missing/empty.
 #
 # Uses global variables:
 #   PACKAGE_FILE            - from fetch()
-#   PACKAGE_SOURCE_DIR      - from fetch()
+#   PACKAGE_SOURCE_DIR
 unpack() {
+    print_ok "Unpacking."
     mkdir -p "${PACKAGE_SOURCE_DIR}"
     unzip -q "${PACKAGE_FILE}" -d "${PACKAGE_SOURCE_DIR}"
 }
@@ -50,13 +50,14 @@ unpack() {
 #   PACKAGE_SOURCE_DIR      - from fetch()
 #   OS
 #   PLATFORM
-#   FRAMEWORKS_DIR
-#   PACKAGE_LIBRARIES_DIR
+#   FRAMEWORKS_ROOT
+#   LIBRARIES_PLATFORM_ROOT
 #   HEADERS_ROOT
 build() {
+    print_ok "Installing."
     if [[ "${PLATFORM}" == 'macOS' ]]; then
 
-        rsync -qr "${PACKAGE_SOURCE_DIR}/PlugInSDK/Libraries/Mac/FMWrapper.framework" "${FRAMEWORKS_DIR}"
+        rsync -qr "${PACKAGE_SOURCE_DIR}/PlugInSDK/Libraries/Mac/FMWrapper.framework" "${FRAMEWORKS_ROOT}"
 
     elif [[ "${OS}" == 'Linux' ]]; then
 
@@ -103,7 +104,7 @@ build() {
             esac
         fi
 
-        rsync -qr "${PACKAGE_SOURCE_DIR}/${so_lib_path}/libFMWrapper.so" "${PACKAGE_LIBRARIES_DIR}"
+        rsync -qr "${PACKAGE_SOURCE_DIR}/${so_lib_path}/libFMWrapper.so" "${LIBRARIES_PLATFORM_ROOT}"
         rsync -qr "${PACKAGE_SOURCE_DIR}/PlugInSDK/Headers/FMWrapper" "${HEADERS_ROOT}"
     fi
 }
@@ -122,8 +123,8 @@ build() {
 #   FRAMEWORKS
 #   HEADERS
 #   LIBRARIES_DIR
-#   FRAMEWORKS_DIR
-#   HEADERS_DIR
+#   FRAMEWORKS_ROOT
+#   HEADERS_ROOT
 #clean_output() {
 #}
 
@@ -136,8 +137,8 @@ build() {
 #   FRAMEWORKS
 #   HEADERS
 #   LIBRARIES_DIR
-#   FRAMEWORKS_DIR
-#   HEADERS_DIR
+#   FRAMEWORKS_ROOT
+#   HEADERS_ROOT
 #
 # Returns 0 if all output exist, 1 if any are missing.
 #check_output() {

@@ -16,7 +16,6 @@
 #   PACKAGE_DOWNLOAD_DIR
 #   PACKAGE_FILE
 #   PACKAGE_SOURCE_DIR
-#   PACKAGE_LIBRARIES_DIR
 #   PACKAGE_ACTION
 #
 # There are equivalent functions:
@@ -34,7 +33,15 @@
 
 set -u      # Abort on undefined variable.
 
+# Initialise terminal colours
+COL_RED=$(tput setaf 1)
+COL_GREEN=$(tput setaf 2)
+COL_CLEAR=$(tput sgr0)
+
 # Main function executed when this file is sourced.
+#
+# Sets global variables:
+#   PACKAGE_SOURCE_DIR      - Full path to where source will be unpacked.
 build_functions_main() {
     # Identify and set the OS/ARCH/JOBS/PLATFORM variables.
     _identify_os_arch
@@ -46,6 +53,8 @@ build_functions_main() {
     _unset_package_variables
     source ./package
 
+    PACKAGE_SOURCE_DIR="${SOURCE_PLATFORM_ROOT}/${NAME}"
+
     # Ensure all build functions are defined.
     _ensure_build_functions
 
@@ -56,12 +65,14 @@ build_functions_main() {
     case "${PACKAGE_ACTION}" in
         all)
             deps_all
-            fetch && clean_source && unpack
-            build
+            fetch && clean_source
+            _package_source_missing && unpack
+            check_output || build
             ;;
         build)
-            fetch && clean_source && unpack
-            build
+            fetch && clean_source
+            _package_source_missing && unpack
+            check_output || build
             ;;
         clean)
             clean_source
@@ -73,7 +84,7 @@ build_functions_main() {
             clean_output
             ;;
         *)
-            echo "!! Unknown action: ${PACKAGE_ACTION}"
+            print_error "Unknown action: ${PACKAGE_ACTION}"
             exit 1
             ;;
     esac
@@ -97,6 +108,29 @@ get_platform() {
     echo "${PLATFORM}"
 }
 
+print_plain() {
+    if [[ ! -v NAME ]]; then NAME="unknown"; fi
+    printf "[${NAME}] %s\n" "$1"
+}
+
+print_ok() {
+    if [[ ! -v NAME ]]; then NAME="unknown"; fi
+    if [[ -t 1 ]]; then # We are in a terminal, use colours.
+        printf "[${NAME}] ${COL_GREEN}++${COL_CLEAR} %s\n" "$1"
+    else
+        printf "[${NAME}] ++ %s\n" "$1"
+    fi
+}
+
+print_error() {
+    if [[ ! -v NAME ]]; then NAME="unknown"; fi
+    if [[ -t 1 ]]; then # We are in a terminal, use colours.
+        printf "[${NAME}] ${COL_RED}--${COL_CLEAR} %s\n" "$1"
+    else
+        printf "[${NAME}] !! %s\n" "$1"
+    fi
+}
+
 # --- "builtin" functions ---
 
 # Fetch source package.
@@ -110,7 +144,6 @@ get_platform() {
 #
 # Sets global variables:
 #   PACKAGE_FILE            - Full path to downloaded package.
-#   PACKAGE_SOURCE_DIR      - Full path to where source will be unpacked.
 #
 # Returns 0 (true) if the file was downloaded, 1 if it already exists.
 builtin_fetch() {
@@ -118,49 +151,45 @@ builtin_fetch() {
     filename=$(basename "${SOURCE_URL}")
 
     PACKAGE_FILE="${PACKAGE_DOWNLOAD_DIR}/${filename}"
-    PACKAGE_SOURCE_DIR="${SOURCE_PLATFORM_ROOT}/${NAME}"
 
     # Check if the file already exists.
     if [[ -e "${PACKAGE_DOWNLOAD_DIR}/${filename}" ]]; then
         # Check the hash of the file.
-        if _check_file_hash "${PACKAGE_DOWNLOAD_DIR}/${filename}" "${SOURCE_HASH}"; then
+        if ! _check_file_hash "${PACKAGE_DOWNLOAD_DIR}/${filename}" "${SOURCE_HASH}"; then
             # Remove the file.
             rm -f "${PACKAGE_DOWNLOAD_DIR}/${filename}"
         else
-            echo "++ Using verified package: ${filename}"
+            print_ok "Using verified package: ${filename}"
             PACKAGE_FILE="${PACKAGE_DOWNLOAD_DIR}/${filename}"
             return 1
         fi
     fi
 
     # Download the file.
-    echo "++ Downloading package: ${filename}"
+    print_ok "Downloading package: ${filename}"
     wget -O "${PACKAGE_DOWNLOAD_DIR}/${filename}" "${SOURCE_URL}" -q --show-progress
     local res=$?
     if [[ $res -ne 0 ]]; then
-        echo "!! Failed to download ${filename}"
+        print_error "Failed to download ${filename}"
         exit 1
     fi
 
     # Check the hash of the file.
-    if _check_file_hash "${PACKAGE_DOWNLOAD_DIR}/${filename}" "${SOURCE_HASH}"; then
-        echo "!! Failed to verify hash of ${filename}"
+    if ! _check_file_hash "${PACKAGE_DOWNLOAD_DIR}/${filename}" "${SOURCE_HASH}"; then
+        print_error "Failed to verify hash of ${filename}"
         exit 1
     fi
 
     return 0
 }
 
-# Unpack source package.
+# Unpack source package. Is only called when ${PACKAGE_SOURCE_DIR} is missing.
 #
 # Uses global variables:
-#   PACKAGE_FILE
-#   SOURCE_PLATFORM_ROOT
-#
-# Sets global variables:
-#   PACKAGE_SOURCE_DIR
+#   PACKAGE_FILE            - from fetch()
+#   PACKAGE_SOURCE_DIR      - from fetch()
 builtin_unpack() {
-    echo "!! builtin_unpack() is not implemented"
+    print_error "builtin_unpack() is not implemented"
     exit 1
 }
 
@@ -172,10 +201,10 @@ builtin_unpack() {
 # Returns 0 (true) when done.
 builtin_clean_source() {
     if [[ ! -v PACKAGE_SOURCE_DIR ]] || [[ -z "${PACKAGE_SOURCE_DIR}" ]]; then
-        echo "!! Cannot clean source, PACKAGE_SOURCE_DIR is not set"
+        print_error "Cannot clean source, PACKAGE_SOURCE_DIR is not set"
         exit 1
     fi
-    echo "++ Cleaning package source."
+    print_ok "Cleaning package source."
     rm -rf "${PACKAGE_SOURCE_DIR}"
 
     return 0
@@ -187,18 +216,19 @@ builtin_clean_source() {
 #   LIBRARIES               - package variable
 #   FRAMEWORKS              - package variable
 #   HEADERS                 - package variable
-#   PACKAGE_LIBRARIES_DIR
-#   FRAMEWORKS_DIR
-#   HEADERS_DIR
+#   LIBRARIES_PLATFORM_ROOT
+#   FRAMEWORKS_ROOT
+#   HEADERS_ROOT
 builtin_clean_output() {
+    print_ok "Cleaning output files."
     for targetname in "${LIBRARIES[@]}"; do
-       rm -rf "${PACKAGE_LIBRARIES_DIR:?}/${targetname}"
+       rm -rf "${LIBRARIES_PLATFORM_ROOT:?}/${targetname}"
     done
     for targetname in "${FRAMEWORKS[@]}"; do
-       rm -rf "${FRAMEWORKS_DIR:?}/${targetname}"
+       rm -rf "${FRAMEWORKS_ROOT:?}/${targetname}"
     done
     for targetname in "${HEADERS[@]}"; do
-       rm -rf "${HEADERS_DIR:?}/${targetname}"
+       rm -rf "${HEADERS_ROOT:?}/${targetname}"
     done
 }
 
@@ -210,9 +240,9 @@ builtin_clean_output() {
 #   LIBRARIES               - package variable
 #   FRAMEWORKS              - package variable
 #   HEADERS                 - package variable
-#   PACKAGE_LIBRARIES_DIR
-#   FRAMEWORKS_DIR
-#   HEADERS_DIR
+#   LIBRARIES_PLATFORM_ROOT
+#   FRAMEWORKS_ROOT
+#   HEADERS_ROOT
 #
 # Returns 0 (true) if all output exist, 1 if any are missing.
 builtin_check_output() {
@@ -220,19 +250,19 @@ builtin_check_output() {
     local framework_result=0
     local header_result=0
     for targetname in "${LIBRARIES[@]}"; do
-        if [[ ! -e "${PACKAGE_LIBRARIES_DIR:?}/${targetname}" ]]; then
+        if [[ ! -e "${LIBRARIES_PLATFORM_ROOT:?}/${targetname}" ]]; then
             library_result=1
             break
         fi
     done
     for targetname in "${FRAMEWORKS[@]}"; do
-        if [[ ! -e "${FRAMEWORKS_DIR:?}/${targetname}" ]]; then
+        if [[ ! -e "${FRAMEWORKS_ROOT:?}/${targetname}" ]]; then
             framework_result=1
             break
         fi
     done
     for targetname in "${HEADERS[@]}"; do
-        if [[ ! -e "${HEADERS_DIR:?}/${targetname}" ]]; then
+        if [[ ! -e "${HEADERS_ROOT:?}/${targetname}" ]]; then
             header_result=1
             break
         fi
@@ -242,20 +272,21 @@ builtin_check_output() {
         # On macOS at least one of library_result or framework_result
         # must be true for the package to be considered installed.
         local library_or_framework_result=0
-        if [[ ! ${library_result } ]] && [[ ! ${framework_result} ]]; then
+        if [[ ${library_result } -ne 0 ]] && [[ ${framework_result} -ne 0 ]]; then
             # Failed both library and framework checks.
             library_or_framework_result=1
         fi
 
-        if [[ ! ${library_or_framework_result} ]] || [[ ! ${header_result} ]]; then
+        if [[ ${library_or_framework_result} -ne 0 ]] || [[ ${header_result} -ne 0 ]]; then
             return 1
         fi
     else
-        if [[ ! ${library_result} ]] || [[ ! ${header_result} ]]; then
+        if [[ ${library_result} -ne 0 ]] || [[ ${header_result} -ne 0 ]]; then
             return 1
         fi
     fi
 
+    print_ok "All output files exist."
     return 0    # All checks passed.
 }
 
@@ -323,7 +354,7 @@ _check_file_hash() {
     hash_value="${hash#*:}"
 
     if [[ ! -e "${file}" ]]; then
-        echo "!! File does not exist: ${file}"
+        print_error "!! File does not exist: ${file}"
         exit 1
     fi
 
@@ -344,7 +375,7 @@ _check_file_hash() {
             fi
             ;;
         *)
-            echo "!! Unknown hash type: ${hash_type}"
+            print_error "!! Unknown hash type: ${hash_type}"
             exit 1
             ;;
     esac
@@ -442,7 +473,7 @@ _ensure_build_functions() {
 
     # build() function is always required.
     if [[ $(type -t build) != function ]]; then
-        echo "!! build() function is required."
+        print_error "!! build() function is required."
         exit 1
     fi
 
@@ -452,6 +483,22 @@ _ensure_build_functions() {
     #    declare -f $func_name
     #done
     #exit 0
+}
+
+# Returns true (0) if the package source is missing.
+#
+# Uses global variables:
+#   PACKAGE_SOURCE_DIR
+_package_source_missing() {
+    if [[ ! -d "${PACKAGE_SOURCE_DIR}" ]]; then
+        # Directory does not exist.
+        return 0
+    fi
+    if [[ -z "$( ls -A "${PACKAGE_SOURCE_DIR}" )" ]]; then
+        # Directory is empty.
+        return 0
+    fi
+    return 1
 }
 
 # End of script, call main function.

@@ -9,8 +9,6 @@ DEPS=(                          # List of packages this is dependent upon.
 
 )
 
-#JOBS=1                         # Override parallel jobs for this package.
-
 LIBRARIES=(
     libFMWrapper.so
 )

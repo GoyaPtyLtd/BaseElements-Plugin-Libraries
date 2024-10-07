@@ -1,0 +1,458 @@
+#!/usr/bin/env bash
+
+# This file is not an executable, it is intended to be sourced by other scripts.
+# This file belongs as exactly "{project_root}/scripts/build-functions"
+#
+# Sourcing this file will set the following variables:
+#   OS
+#   ARCH
+#   JOBS
+#   PLATFORM
+#   PROJECT_ROOT
+#   SOURCE_PLATFORM_ROOT
+#   LIBRARIES_PLATFORM_ROOT
+#   FRAMEWORKS_ROOT
+#   HEADERS_ROOT
+#   PACKAGE_DOWNLOAD_DIR
+#   PACKAGE_FILE
+#   PACKAGE_SOURCE_DIR
+#   PACKAGE_LIBRARIES_DIR
+#   PACKAGE_ACTION
+#
+# There are equivalent functions:
+#   get_os
+#   get_arch
+#   get_jobs
+#   get_platform
+#
+
+# Enforce that this file is sourced, not run.
+(return 0 2>/dev/null) || {
+    echo "This file is not meant to be run directly."
+    exit 1
+}
+
+set -u      # Abort on undefined variable.
+
+# Main function executed when this file is sourced.
+build_functions_main() {
+    # Identify and set the OS/ARCH/JOBS/PLATFORM variables.
+    _identify_os_arch
+
+    # Identify common paths: PROJECT_ROOT, PACKAGE_DOWNLOAD_DIR, etc.
+    _identify_common_paths
+
+    # Source the package variables.
+    _unset_package_variables
+    source ./package
+
+    # Ensure all build functions are defined.
+    _ensure_build_functions
+
+    # Now parse any arguments passed to the script (may override variables).
+    _parse_args "$@"
+
+    # Perform package actions.
+    case "${PACKAGE_ACTION}" in
+        all)
+            deps_all
+            fetch && clean_source && unpack
+            build
+            ;;
+        build)
+            fetch && clean_source && unpack
+            build
+            ;;
+        clean)
+            clean_source
+            clean_output
+            ;;
+        clean_all)
+            deps_clean_all
+            clean_source
+            clean_output
+            ;;
+        *)
+            echo "!! Unknown action: ${PACKAGE_ACTION}"
+            exit 1
+            ;;
+    esac
+}
+
+# --- Helper functions ---
+
+get_os() {
+    echo "${OS}"
+}
+
+get_arch() {
+    echo "${ARCH}"
+}
+
+get_jobs() {
+    echo "${JOBS}"
+}
+
+get_platform() {
+    echo "${PLATFORM}"
+}
+
+# --- "builtin" functions ---
+
+# Fetch source package.
+#
+# Uses global variables:
+#   NAME                    - package variable
+#   SOURCE_URL              - package variable
+#   SOURCE_HASH             - package variable
+#   PACKAGE_DOWNLOAD_DIR
+#   SOURCE_PLATFORM_ROOT
+#
+# Sets global variables:
+#   PACKAGE_FILE            - Full path to downloaded package.
+#   PACKAGE_SOURCE_DIR      - Full path to where source will be unpacked.
+#
+# Returns 0 (true) if the file was downloaded, 1 if it already exists.
+builtin_fetch() {
+    local filename
+    filename=$(basename "${SOURCE_URL}")
+
+    PACKAGE_FILE="${PACKAGE_DOWNLOAD_DIR}/${filename}"
+    PACKAGE_SOURCE_DIR="${SOURCE_PLATFORM_ROOT}/${NAME}"
+
+    # Check if the file already exists.
+    if [[ -e "${PACKAGE_DOWNLOAD_DIR}/${filename}" ]]; then
+        # Check the hash of the file.
+        if _check_file_hash "${PACKAGE_DOWNLOAD_DIR}/${filename}" "${SOURCE_HASH}"; then
+            # Remove the file.
+            rm -f "${PACKAGE_DOWNLOAD_DIR}/${filename}"
+        else
+            echo "++ Using verified package: ${filename}"
+            PACKAGE_FILE="${PACKAGE_DOWNLOAD_DIR}/${filename}"
+            return 1
+        fi
+    fi
+
+    # Download the file.
+    echo "++ Downloading package: ${filename}"
+    wget -O "${PACKAGE_DOWNLOAD_DIR}/${filename}" "${SOURCE_URL}" -q --show-progress
+    local res=$?
+    if [[ $res -ne 0 ]]; then
+        echo "!! Failed to download ${filename}"
+        exit 1
+    fi
+
+    # Check the hash of the file.
+    if _check_file_hash "${PACKAGE_DOWNLOAD_DIR}/${filename}" "${SOURCE_HASH}"; then
+        echo "!! Failed to verify hash of ${filename}"
+        exit 1
+    fi
+
+    return 0
+}
+
+# Unpack source package.
+#
+# Uses global variables:
+#   PACKAGE_FILE
+#   SOURCE_PLATFORM_ROOT
+#
+# Sets global variables:
+#   PACKAGE_SOURCE_DIR
+builtin_unpack() {
+    echo "!! builtin_unpack() is not implemented"
+    exit 1
+}
+
+# Clean source package.
+#
+# Uses global variables:
+#   PACKAGE_SOURCE_DIR
+#
+# Returns 0 (true) when done.
+builtin_clean_source() {
+    if [[ ! -v PACKAGE_SOURCE_DIR ]] || [[ -z "${PACKAGE_SOURCE_DIR}" ]]; then
+        echo "!! Cannot clean source, PACKAGE_SOURCE_DIR is not set"
+        exit 1
+    fi
+    echo "++ Cleaning package source."
+    rm -rf "${PACKAGE_SOURCE_DIR}"
+
+    return 0
+}
+
+# Clean output files.
+#
+# Uses global variables:
+#   LIBRARIES               - package variable
+#   FRAMEWORKS              - package variable
+#   HEADERS                 - package variable
+#   PACKAGE_LIBRARIES_DIR
+#   FRAMEWORKS_DIR
+#   HEADERS_DIR
+builtin_clean_output() {
+    for targetname in "${LIBRARIES[@]}"; do
+       rm -rf "${PACKAGE_LIBRARIES_DIR:?}/${targetname}"
+    done
+    for targetname in "${FRAMEWORKS[@]}"; do
+       rm -rf "${FRAMEWORKS_DIR:?}/${targetname}"
+    done
+    for targetname in "${HEADERS[@]}"; do
+       rm -rf "${HEADERS_DIR:?}/${targetname}"
+    done
+}
+
+# Check output files / directories exist. Used to determine if the package
+# has been installed.
+#
+# Uses global variables:
+#   PLATFORM
+#   LIBRARIES               - package variable
+#   FRAMEWORKS              - package variable
+#   HEADERS                 - package variable
+#   PACKAGE_LIBRARIES_DIR
+#   FRAMEWORKS_DIR
+#   HEADERS_DIR
+#
+# Returns 0 (true) if all output exist, 1 if any are missing.
+builtin_check_output() {
+    local library_result=0
+    local framework_result=0
+    local header_result=0
+    for targetname in "${LIBRARIES[@]}"; do
+        if [[ ! -e "${PACKAGE_LIBRARIES_DIR:?}/${targetname}" ]]; then
+            library_result=1
+            break
+        fi
+    done
+    for targetname in "${FRAMEWORKS[@]}"; do
+        if [[ ! -e "${FRAMEWORKS_DIR:?}/${targetname}" ]]; then
+            framework_result=1
+            break
+        fi
+    done
+    for targetname in "${HEADERS[@]}"; do
+        if [[ ! -e "${HEADERS_DIR:?}/${targetname}" ]]; then
+            header_result=1
+            break
+        fi
+    done
+
+    if [[ "${PLATFORM}" == 'macOS' ]]; then
+        # On macOS at least one of library_result or framework_result
+        # must be true for the package to be considered installed.
+        local library_or_framework_result=0
+        if [[ ! ${library_result } ]] && [[ ! ${framework_result} ]]; then
+            # Failed both library and framework checks.
+            library_or_framework_result=1
+        fi
+
+        if [[ ! ${library_or_framework_result} ]] || [[ ! ${header_result} ]]; then
+            return 1
+        fi
+    else
+        if [[ ! ${library_result} ]] || [[ ! ${header_result} ]]; then
+            return 1
+        fi
+    fi
+
+    return 0    # All checks passed.
+}
+
+builtin_deps_all() {
+    :
+}
+
+builtin_deps_clean_all() {
+    :
+}
+
+# --- Internal functions ---
+
+_usage() {
+    echo ""
+    echo "Usage: build.sh [options]"
+    echo "  -h, --help      Show this help message."
+    echo "  -j n            Number of parallel jobs to use. Default: ${JOBS}"
+    echo ""
+    echo "  all             Default. Build this package, and dependencies."
+    echo "  build           Build only this package, without dependencies."
+    echo "  clean           Clean only this package source and output files."
+    echo "  clean_all       Clean this package, and dependencies."
+    echo ""
+}
+
+# Parse command line arguements. Show usage if needed.
+#
+# Sets global variables:
+#   PACKAGE_ACTION
+#   JOBS
+_parse_args() {
+    PACKAGE_ACTION='all'        # Default
+
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            -h|--help)
+                _usage
+                exit 0
+                ;;
+            -j)
+                JOBS="$2"
+                shift 2
+                ;;
+            all|build|clean_all|clean)
+                PACKAGE_ACTION="$1"
+                shift
+                ;;
+            *)
+                _usage
+                echo "!! Unknown argument: $1"
+                exit 1
+        esac
+    done
+}
+
+# Check if the given file matches the given hash.
+_check_file_hash() {
+    local file="$1"
+    local hash="$2"
+
+    local hash_type
+    local hash_value
+    hash_type="${hash%%:*}"
+    hash_value="${hash#*:}"
+
+    if [[ ! -e "${file}" ]]; then
+        echo "!! File does not exist: ${file}"
+        exit 1
+    fi
+
+    local calculated_hash
+    case "${hash_type}" in
+        SHA256)
+            if [[ "${PLATFORM}" == 'macOS' ]]; then
+                calculated_hash=$(shasum -a 256 "${file}" | awk '{print $1}')
+            else
+                calculated_hash=$(sha256sum "${file}" | awk '{print $1}')
+            fi
+            ;;
+        MD5)
+            if [[ "${PLATFORM}" == 'macOS' ]]; then
+                calculated_hash=$(md5 -q "${file}")
+            else
+                calculated_hash=$(md5sum "${file}" | awk '{print $1}')
+            fi
+            ;;
+        *)
+            echo "!! Unknown hash type: ${hash_type}"
+            exit 1
+            ;;
+    esac
+
+    if [[ "${calculated_hash}" == "${hash_value}" ]]; then
+        return 0
+    fi
+
+    return 1
+}
+
+# Sets global variables:
+#   OS
+#   ARCH
+#   JOBS
+#   PLATFORM
+_identify_os_arch() {
+    # Identify the OS and architecture.
+    OS=$(uname -s)		# Linux|Darwin
+    ARCH=$(uname -m)	# x86_64|aarch64|arm64
+    JOBS=1              # Number of parallel jobs
+    if [[ $OS = 'Darwin' ]]; then
+        PLATFORM='macOS'
+        JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+    elif [[ $OS = 'Linux' ]]; then
+        JOBS=$(($(nproc) + 1))
+        if [[ $ARCH = 'aarch64' ]]; then
+            PLATFORM='linuxARM'
+        elif [[ $ARCH = 'x86_64' ]]; then
+            PLATFORM='linux'
+        fi
+    fi
+    if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
+        echo "!! Unknown OS/ARCH: $OS/$ARCH"
+        exit 1
+    fi
+}
+
+# Sets global variables:
+#   PROJECT_ROOT
+#   PACKAGE_DOWNLOAD_DIR
+#   SOURCE_PLATFORM_ROOT
+#   LIBRARIES_PLATFORM_ROOT
+#   FRAMEWORKS_ROOT
+#   HEADERS_ROOT
+#
+# shellcheck disable=SC2034
+_identify_common_paths() {
+    PROJECT_ROOT="$(realpath "$(dirname "${BASH_SOURCE[0]}")/..")"
+    PACKAGE_DOWNLOAD_DIR="${PROJECT_ROOT}/source"
+    SOURCE_PLATFORM_ROOT="${PROJECT_ROOT}/source/${PLATFORM}"
+    LIBRARIES_PLATFORM_ROOT="${PROJECT_ROOT}/Output/Libraries/${PLATFORM}"
+    FRAMEWORKS_ROOT="${PROJECT_ROOT}/Output/Frameworks"
+    HEADERS_ROOT="${PROJECT_ROOT}/Output/Headers"
+}
+
+# Unset all known variables set by package file.
+_unset_package_variables() {
+    local var_names=(
+        NAME
+        VERSION
+        DESCRIPTION
+        SOURCE_URL
+        SOURCE_HASH
+        DEPS
+        LIBRARIES
+        FRAMEWORKS
+        HEADERS
+    )
+    for i in "${var_names[@]}"; do
+        unset "${i}"
+    done
+}
+
+# Ensure all build functions are defined.
+_ensure_build_functions() {
+    build_func_names=(
+        fetch
+        unpack
+        clean_source
+        clean_output
+        check_output
+        deps_all
+        deps_clean_all
+    )
+    for func_name in "${build_func_names[@]}"; do
+        if [[ $(type -t $func_name) != function ]]; then
+            unset $func_name
+            eval "function $func_name() {
+                builtin_${func_name} \"\$@\"
+                return \$?
+            }"
+        fi
+    done
+
+    # build() function is always required.
+    if [[ $(type -t build) != function ]]; then
+        echo "!! build() function is required."
+        exit 1
+    fi
+
+    # DEBUG - Show all our functions are correctly defined.
+    #echo "Check functions:"
+    #for func_name in "${build_func_names[@]}" "build"; do
+    #    declare -f $func_name
+    #done
+    #exit 0
+}
+
+# End of script, call main function.
+build_functions_main "$@"

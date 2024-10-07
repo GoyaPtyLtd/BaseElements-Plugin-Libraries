@@ -13,4 +13,5 @@ source/macOS/*
 source/win64/*
 source/*.tar.gz
 source/*.tar.xz
+source/*.zip
 .nova

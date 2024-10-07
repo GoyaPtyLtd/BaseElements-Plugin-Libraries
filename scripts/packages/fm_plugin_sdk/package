@@ -1,0 +1,24 @@
+NAME=fm_plugin_sdk
+VERSION=21.0.1.53
+DESCRIPTION="FileMaker Plugin SDK"
+
+SOURCE_URL=https://downloads.claris.com/DEVREL/sdk/fm_plugin_sdk_21.0.1.53.zip
+SOURCE_HASH=SHA256:422017d7952668addaa4e212e327eadc88ffbd2318abceae22382ce3458c38d5
+
+DEPS=(                          # List of packages this is dependent upon.
+
+)
+
+#JOBS=1                         # Override parallel jobs for this package.
+
+LIBRARIES=(
+    libFMWrapper.so
+)
+
+FRAMEWORKS=(                    # LIBRARIES or FRAMEWORKS on macOS.
+    FMWrapper.framework
+)
+
+HEADERS=(
+    FMWrapper                   # top level directory is sufficient.
+)

@@ -28,9 +28,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 cd ../../Output
-OUTPUT=$(pwd)
+OUTPUT=${PWD}
 
 # Remove old libraries and headers
 
@@ -43,14 +43,14 @@ mkdir Headers/ImageMagick-7
 
 cd ../source/${PLATFORM}
 
-PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$(pwd)'/zlib/_build/lib/pkgconfig'
-PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$(pwd)'/libpng/_build/lib/pkgconfig'
-PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$(pwd)'/libde265/_build/lib/pkgconfig'
-PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$(pwd)'/libheif/_build/lib/pkgconfig'
-PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$(pwd)'/fontconfig/_build/lib/pkgconfig'
-PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$(pwd)'/freetype/_build/lib/pkgconfig'
-PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$(pwd)'/libopenjp2/_build/lib/pkgconfig'
-PKG_CONFIG_PATH=$PKG_CONFIG_PATH:$(pwd)'/libturbojpeg/_build/lib/pkgconfig'
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${PWD}'/zlib/_build/lib/pkgconfig'
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${PWD}'/libpng/_build/lib/pkgconfig'
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${PWD}'/libde265/_build/lib/pkgconfig'
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${PWD}'/libheif/_build/lib/pkgconfig'
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${PWD}'/fontconfig/_build/lib/pkgconfig'
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${PWD}'/freetype/_build/lib/pkgconfig'
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${PWD}'/libopenjp2/_build/lib/pkgconfig'
+PKG_CONFIG_PATH=$PKG_CONFIG_PATH:${PWD}'/libturbojpeg/_build/lib/pkgconfig'
 export PKG_CONFIG_PATH
 
 rm -rf ImageMagick
@@ -59,14 +59,14 @@ tar -xf ../ImageMagick.tar.gz  -C ImageMagick --strip-components=1
 cd ImageMagick
 
 mkdir _build
-PREFIX=$(pwd)'/_build'
+PREFIX=${PWD}'/_build'
 
 # Build
 
 if [[ $PLATFORM = 'macOS' ]]; then
 
 	mkdir _build_arm64
-	PREFIX_arm64=$(pwd)'/_build_arm64'
+	PREFIX_arm64=${PWD}'/_build_arm64'
 
 	CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
 	CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
@@ -83,7 +83,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	make -s distclean
 
 	mkdir _build_x86_64
-	PREFIX_x86_64=$(pwd)'/_build_x86_64'
+	PREFIX_x86_64=${PWD}'/_build_x86_64'
 
 	CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
 	CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \

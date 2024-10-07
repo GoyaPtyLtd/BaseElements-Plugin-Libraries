@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 cd ../../source/${PLATFORM}
 
 rm -rf libturbojpeg

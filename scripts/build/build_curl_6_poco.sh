@@ -7,7 +7,7 @@ OS=$(uname -s)		# Linux|Darwin
 ARCH=$(uname -m)	# x86_64|aarch64|arm64
 JOBS=1              # Number of parallel jobs
 if [[ $OS = 'Darwin' ]]; then
-		PLATFORM='macOS'
+    PLATFORM='macOS'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
     if [[ $ARCH = 'aarch64' ]]; then
         HOST='arm64'
@@ -28,9 +28,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 cd ../../Output
-OUTPUT=$(pwd)
+OUTPUT=${PWD}
 
 # Remove old libraries
 
@@ -49,8 +49,6 @@ mkdir Headers/Poco
 
 cd ../source/${PLATFORM}
 
-export OPENSSL=`pwd`'/openssl/_build'
-
 rm -rf poco
 mkdir poco
 tar -xf ../poco.tar.gz -C poco --strip-components=1
@@ -60,9 +58,9 @@ mkdir _build
 mkdir _build_x86_64
 mkdir _build_arm64
 
-PREFIX=$(pwd)'/_build'
-PREFIX_x86_64=$(pwd)'/_build_x86_64'
-PREFIX_arm64=$(pwd)'/_build_arm64'
+PREFIX=${PWD}'/_build'
+PREFIX_x86_64=${PWD}'/_build_x86_64'
+PREFIX_arm64=${PWD}'/_build_arm64'
 
 # Build
 
@@ -73,13 +71,13 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	mkdir _build_iPhone
 	mkdir _build_iPhoneSim_x86
 	mkdir _build_iPhoneSim_arm
-	
-	export PREFIX_x86_64=`pwd`'/_build_x86_64'
-	export PREFIX_arm64=`pwd`'/_build_arm64'
-	export PREFIX_iPhone=`pwd`'/_build_iPhone'
-	export PREFIX_iPhoneSim_x86=`pwd`'/_build_iPhoneSim_x86'
-	export PREFIX_iPhoneSim_arm=`pwd`'/_build_iPhoneSim_arm'
-	
+
+	PREFIX_x86_64=${PWD}'/_build_x86_64'
+	PREFIX_arm64=${PWD}'/_build_arm64'
+	PREFIX_iPhone=${PWD}'/_build_iPhone'
+	PREFIX_iPhoneSim_x86=${PWD}'/_build_iPhoneSim_x86'
+	PREFIX_iPhoneSim_arm=${PWD}'/_build_iPhoneSim_arm'
+
 	#mac OS
 
 	./configure --cflags="-mmacosx-version-min=10.15" \
@@ -101,9 +99,9 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=${HOST}
 	make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=${HOST}
 	make -s distclean
-	
+
 	mkdir ${PREFIX}/lib
-	
+
 	cp -R _build_x86_64/include/Poco/* "${OUTPUT}/Headers/Poco"
 
 	lipo -create "${PREFIX_x86_64}/lib/libPocoCrypto.a" "${PREFIX_arm64}/lib/libPocoCrypto.a" -output "${PREFIX}/lib/libPocoCrypto.a"
@@ -114,9 +112,9 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	lipo -create "${PREFIX_x86_64}/lib/libPocoUtil.a" "${PREFIX_arm64}/lib/libPocoUtil.a" -output "${PREFIX}/lib/libPocoUtil.a"
 	lipo -create "${PREFIX_x86_64}/lib/libPocoZip.a" "${PREFIX_arm64}/lib/libPocoZip.a" -output "${PREFIX}/lib/libPocoZip.a"
 
-: '
+: <<END_COMMENT
 	#iOS
-	
+
 	./configure --cflags="-miphoneos-version-min=15.0" \
 	--prefix="${PREFIX_iPhone}" \
 	--no-sharedlibs --static --poquito --no-tests --no-samples \
@@ -126,7 +124,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	make -j${JOBS} POCO_CONFIG=iPhone-clang-libc++ IPHONEOS_DEPLOYMENT_TARGET=15.0
 	make install POCO_CONFIG=iPhone-clang-libc++ IPHONEOS_DEPLOYMENT_TARGET=15.0
 	make -s distclean
-	
+
 	cp _build_iPhone/lib/libPocoCrypto.a "${OUTPUT}/Libraries/iOS"
 	cp _build_iPhone/lib/libPocoFoundation.a "${OUTPUT}/Libraries/iOS"
 	cp _build_iPhone/lib/libPocoJSON.a "${OUTPUT}/Libraries/iOS"
@@ -136,7 +134,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	cp _build_iPhone/lib/libPocoZip.a "${OUTPUT}/Libraries/iOS"
 
 	#iOS Simulator
-	
+
 	./configure --cflags="-miphoneos-version-min=15.0" \
 	--prefix="${PREFIX_iPhoneSim_arm}" \
 	--no-sharedlibs --static --poquito --no-tests --no-samples \
@@ -156,7 +154,8 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	make -j${JOBS} POCO_CONFIG=iPhoneSimulator IPHONEOS_DEPLOYMENT_TARGET=15.0 POCO_HOST_OSARCH=x86_64
 	make install
 	make -s distclean
-'
+END_COMMENT
+
 
 elif [[ $OS = 'Linux' ]]; then
 

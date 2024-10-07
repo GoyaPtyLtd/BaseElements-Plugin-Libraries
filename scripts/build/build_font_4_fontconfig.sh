@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 cd ../../Output
-OUTPUT=$(pwd)
+OUTPUT=${PWD}
 
 # Remove old libraries
 
@@ -38,7 +38,7 @@ mkdir Headers/fontconfig
 
 cd ../source/${PLATFORM}
 
-LIBEXPAT=$(pwd)'/libexpat/_build'
+LIBEXPAT=${PWD}'/libexpat/_build'
 
 rm -rf fontconfig
 mkdir fontconfig
@@ -46,7 +46,7 @@ tar -xf ../fontconfig.tar.gz -C fontconfig --strip-components=1
 cd fontconfig
 
 mkdir _build
-PREFIX=$(pwd)'/_build'
+PREFIX=${PWD}'/_build'
 
 # Build macOS
 

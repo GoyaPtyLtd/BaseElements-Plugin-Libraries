@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 cd ../../Output
-OUTPUT=$(pwd)
+OUTPUT=${PWD}
 
 # Remove old libraries and headers
 
@@ -38,7 +38,7 @@ mkdir Headers/libxml
 
 cd ../source/${PLATFORM}
 
-ICONV=$(pwd)'/libiconv/_build'
+ICONV=${PWD}'/libiconv/_build'
 
 rm -rf libxml
 mkdir libxml
@@ -46,7 +46,7 @@ tar -xf ../libxml.tar.xz -C libxml --strip-components=1
 cd libxml
 
 mkdir _build
-PREFIX=$(pwd)'/_build'
+PREFIX=${PWD}'/_build'
 
 # Build
 

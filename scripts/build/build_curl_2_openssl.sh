@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 cd ../../Output
-OUTPUT=$(pwd)
+OUTPUT=${PWD}
 
 # Remove old libraries and headers
 
@@ -45,12 +45,12 @@ tar -xf ../openssl.tar.gz -C openssl --strip-components=1
 cd openssl
 
 mkdir _build
-PREFIX=$(pwd)'/_build'
+PREFIX=${PWD}'/_build'
 
 if [[ $PLATFORM = 'macOS' ]]; then
 
 	mkdir _build_x86_64
-	PREFIX_x86_64=$(pwd)'/_build_x86_64'
+	PREFIX_x86_64=${PWD}'/_build_x86_64'
 
 	CFLAGS="-mmacosx-version-min=10.15" \
 	./configure darwin64-x86_64-cc no-shared no-docs no-tests \
@@ -61,7 +61,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	make -s distclean
 
 	mkdir _build_arm64
-	PREFIX_arm64=$(pwd)'/_build_arm64'
+	PREFIX_arm64=${PWD}'/_build_arm64'
 
 	CFLAGS="-mmacosx-version-min=10.15" \
 	./configure darwin64-arm64-cc no-shared no-docs no-tests \

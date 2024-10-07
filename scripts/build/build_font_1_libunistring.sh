@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 cd ../../Output
-OUTPUT=$(pwd)
+OUTPUT=${PWD}
 
 # Remove old libraries and headers
 
@@ -44,7 +44,7 @@ tar -xf ../libunistring.tar.gz -C libunistring --strip-components=1
 cd libunistring
 
 mkdir _build
-PREFIX=$(pwd)'/_build'
+PREFIX=${PWD}'/_build'
 
 # Build
 

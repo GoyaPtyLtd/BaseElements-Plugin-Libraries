@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 cd ../../Output
-OUTPUT=$(pwd)
+OUTPUT=${PWD}
 
 # Remove old libraries and headers
 
@@ -41,7 +41,7 @@ mkdir Headers/libexslt
 
 cd ../source/${PLATFORM}
 
-LIBXML=$(pwd)'/libxml/_build'
+LIBXML=${PWD}'/libxml/_build'
 
 rm -rf libxslt
 mkdir libxslt
@@ -49,7 +49,7 @@ tar -xf ../libxslt.tar.xz -C libxslt --strip-components=1
 cd libxslt
 
 mkdir _build
-PREFIX=$(pwd)'/_build'
+PREFIX=${PWD}'/_build'
 
 # Build
 

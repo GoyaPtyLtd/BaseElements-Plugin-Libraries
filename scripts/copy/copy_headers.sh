@@ -1,10 +1,10 @@
 #!/bin/bash
 
 cd ../../..
-START=$(pwd)
+START=${PWD}
 
 cd BaseElements-Plugin-Libraries/Output/Headers || exit 1
-SRC=$(pwd)
+SRC=${PWD}
 
 DST="${START}/BaseElements-Plugin/Headers"
 

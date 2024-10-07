@@ -22,9 +22,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 	exit 1
 fi
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 cd ../../Output
-OUTPUT=$(pwd)
+OUTPUT=${PWD}
 
 # Remove old libraries and headers
 
@@ -54,7 +54,7 @@ tar -xf ../boost.tar.gz -C boost --strip-components=1
 cd boost
 
 mkdir _build
-PREFIX=$(pwd)/_build
+PREFIX=${PWD}/_build
 
 # Build
 
@@ -76,8 +76,8 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
     mkdir _build_iOS
     mkdir _build_iOS_Sim
-    PREFIX_iOS=$(pwd)/_build_iOS
-    PREFIX_iOS_Sim=$(pwd)/_build_iOS_Sim
+    PREFIX_iOS=${PWD}/_build_iOS
+    PREFIX_iOS_Sim=${PWD}/_build_iOS_Sim
 
 elif [[ $OS = 'Linux' ]]; then
     CFLAGS+=(

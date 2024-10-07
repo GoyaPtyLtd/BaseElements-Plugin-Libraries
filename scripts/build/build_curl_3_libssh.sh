@@ -28,9 +28,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 cd ../../Output
-OUTPUT=$(pwd)
+OUTPUT=${PWD}
 
 # Remove old libraries and headers
 
@@ -43,8 +43,8 @@ mkdir Headers/libssh2
 
 cd ../source/${PLATFORM}
 
-LIBZ=$(pwd)'/zlib/_build'
-OPENSSL=$(pwd)'/openssl/_build'
+LIBZ=${PWD}'/zlib/_build'
+OPENSSL=${PWD}'/openssl/_build'
 
 rm -rf libssh
 mkdir libssh
@@ -52,7 +52,7 @@ tar -xf ../libssh.tar.gz -C libssh --strip-components=1
 cd libssh
 
 mkdir _build
-PREFIX=$(pwd)'/_build'
+PREFIX=${PWD}'/_build'
 
 # Build
 

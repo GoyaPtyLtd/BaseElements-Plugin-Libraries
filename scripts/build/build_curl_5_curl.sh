@@ -28,9 +28,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 cd ../../Output
-OUTPUT=$(pwd)
+OUTPUT=${PWD}
 
 # Remove old libraries and headers
 
@@ -43,13 +43,13 @@ mkdir Headers/curl
 
 cd ../source/${PLATFORM}
 
-ZLIB=$(pwd)'/zlib/_build'
-LIBSSH=$(pwd)'/libssh/_build'
-NGHTTP2=$(pwd)'/nghttp2/_build'
+ZLIB=${PWD}'/zlib/_build'
+LIBSSH=${PWD}'/libssh/_build'
+NGHTTP2=${PWD}'/nghttp2/_build'
 
-OPENSSL=$(pwd)'/openssl/_build'
-OPENSSL_x86=$(pwd)'/openssl/_build_x86_64'
-OPENSSL_arm=$(pwd)'/openssl/_build_arm64'
+OPENSSL=${PWD}'/openssl/_build'
+OPENSSL_x86=${PWD}'/openssl/_build_x86_64'
+OPENSSL_arm=${PWD}'/openssl/_build_arm64'
 
 rm -rf curl
 mkdir curl
@@ -58,14 +58,14 @@ cd curl
 
 mkdir _build
 mkdir _build/lib
-PREFIX=$(pwd)'/_build'
+PREFIX=${PWD}'/_build'
 
 # Build
 
 if [[ $PLATFORM = 'macOS' ]]; then
 
 	mkdir _build_x86_64
-	PREFIX_x86_64=$(pwd)'/_build_x86_64'
+	PREFIX_x86_64=${PWD}'/_build_x86_64'
 
 	CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/openssl" \
@@ -81,7 +81,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	make -s distclean
 
 	mkdir _build_arm64
-	PREFIX_arm64=$(pwd)'/_build_arm64'
+	PREFIX_arm64=${PWD}'/_build_arm64'
 
 	CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
 	CPPFLAGS="-I${OUTPUT}/Headers -I${OUTPUT}/Headers/openssl" \

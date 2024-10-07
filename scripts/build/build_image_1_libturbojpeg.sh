@@ -23,9 +23,9 @@ if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
 fi
 
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 cd ../../Output
-OUTPUT=$(pwd)
+OUTPUT=${PWD}
 
 # Remove old libraries and headers
 
@@ -44,14 +44,14 @@ tar -xf ../libturbojpeg.tar.gz  -C libturbojpeg --strip-components=1
 cd libturbojpeg
 
 mkdir _build
-PREFIX=$(pwd)'/_build'
+PREFIX=${PWD}'/_build'
 
 # Build
 
 if [[ $PLATFORM = 'macOS' ]]; then
 
 	mkdir _build_arm64
-	PREFIX_arm64=$(pwd)'/_build_arm64'
+	PREFIX_arm64=${PWD}'/_build_arm64'
 
 	echo "set(CMAKE_SYSTEM_NAME Darwin)" > toolchain.cmake
 	echo "set(CMAKE_SYSTEM_PROCESSOR aarch64)" >> toolchain.cmake
@@ -66,7 +66,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	make install
 
 	mkdir _build_x86_64
-	PREFIX_x86_64=$(pwd)'/_build_x86_64'
+	PREFIX_x86_64=${PWD}'/_build_x86_64'
 
 	echo "set(CMAKE_SYSTEM_NAME Darwin)" > toolchain.cmake
 	echo "set(CMAKE_SYSTEM_PROCESSOR x86_64)" >> toolchain.cmake

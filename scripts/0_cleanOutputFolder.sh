@@ -8,7 +8,7 @@
 #
 #=======================================================================
 
-SRCROOT=$(pwd)
+SRCROOT=${PWD}
 
 OS=$(uname -s)		# Linux|Darwin
 ARCH=$(uname -m)	# x86_64|aarch64|arm64

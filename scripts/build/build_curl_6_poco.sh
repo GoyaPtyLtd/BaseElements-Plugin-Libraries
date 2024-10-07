@@ -10,9 +10,9 @@ if [[ $OS = 'Darwin' ]]; then
 		PLATFORM='macOS'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
     if [[ $ARCH = 'aarch64' ]]; then
-        HOST='x86_64'
+        HOST='arm64'
     elif [[ $ARCH = 'x86_64' ]]; then
-        HOST='aarch64'
+        HOST='x86_64'
     fi
 elif [[ $OS = 'Linux' ]]; then
     JOBS=$(($(nproc) + 1))
@@ -49,6 +49,8 @@ mkdir Headers/Poco
 
 cd ../source/${PLATFORM}
 
+export OPENSSL=`pwd`'/openssl/_build'
+
 rm -rf poco
 mkdir poco
 tar -xf ../poco.tar.gz -C poco --strip-components=1
@@ -66,6 +68,20 @@ PREFIX_arm64=$(pwd)'/_build_arm64'
 
 if [[ $PLATFORM = 'macOS' ]]; then
 
+	mkdir _build_x86_64
+	mkdir _build_arm64
+	mkdir _build_iPhone
+	mkdir _build_iPhoneSim_x86
+	mkdir _build_iPhoneSim_arm
+	
+	export PREFIX_x86_64=`pwd`'/_build_x86_64'
+	export PREFIX_arm64=`pwd`'/_build_arm64'
+	export PREFIX_iPhone=`pwd`'/_build_iPhone'
+	export PREFIX_iPhoneSim_x86=`pwd`'/_build_iPhoneSim_x86'
+	export PREFIX_iPhoneSim_arm=`pwd`'/_build_iPhoneSim_arm'
+	
+	#mac OS
+
 	./configure --cflags="-mmacosx-version-min=10.15" \
 	--prefix="${PREFIX_x86_64}" \
 	--no-sharedlibs --static --poquito --no-tests --no-samples \
@@ -73,7 +89,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
 	make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=${HOST}
-	make install
+	make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=${HOST}
 	make -s distclean
 
 	./configure --cflags="-mmacosx-version-min=10.15" \
@@ -83,10 +99,12 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
 
 	make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=${HOST}
-	make install
+	make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=${HOST}
 	make -s distclean
-
+	
 	mkdir ${PREFIX}/lib
+	
+	cp -R _build_x86_64/include/Poco/* "${OUTPUT}/Headers/Poco"
 
 	lipo -create "${PREFIX_x86_64}/lib/libPocoCrypto.a" "${PREFIX_arm64}/lib/libPocoCrypto.a" -output "${PREFIX}/lib/libPocoCrypto.a"
 	lipo -create "${PREFIX_x86_64}/lib/libPocoFoundation.a" "${PREFIX_arm64}/lib/libPocoFoundation.a" -output "${PREFIX}/lib/libPocoFoundation.a"
@@ -95,6 +113,50 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	lipo -create "${PREFIX_x86_64}/lib/libPocoXML.a" "${PREFIX_arm64}/lib/libPocoXML.a" -output "${PREFIX}/lib/libPocoXML.a"
 	lipo -create "${PREFIX_x86_64}/lib/libPocoUtil.a" "${PREFIX_arm64}/lib/libPocoUtil.a" -output "${PREFIX}/lib/libPocoUtil.a"
 	lipo -create "${PREFIX_x86_64}/lib/libPocoZip.a" "${PREFIX_arm64}/lib/libPocoZip.a" -output "${PREFIX}/lib/libPocoZip.a"
+
+: '
+	#iOS
+	
+	./configure --cflags="-miphoneos-version-min=15.0" \
+	--prefix="${PREFIX_iPhone}" \
+	--no-sharedlibs --static --poquito --no-tests --no-samples \
+	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
+	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/iOS"
+
+	make -j${JOBS} POCO_CONFIG=iPhone-clang-libc++ IPHONEOS_DEPLOYMENT_TARGET=15.0
+	make install POCO_CONFIG=iPhone-clang-libc++ IPHONEOS_DEPLOYMENT_TARGET=15.0
+	make -s distclean
+	
+	cp _build_iPhone/lib/libPocoCrypto.a "${OUTPUT}/Libraries/iOS"
+	cp _build_iPhone/lib/libPocoFoundation.a "${OUTPUT}/Libraries/iOS"
+	cp _build_iPhone/lib/libPocoJSON.a "${OUTPUT}/Libraries/iOS"
+	cp _build_iPhone/lib/libPocoNet.a "${OUTPUT}/Libraries/iOS"
+	cp _build_iPhone/lib/libPocoXML.a "${OUTPUT}/Libraries/iOS"
+	cp _build_iPhone/lib/libPocoUtil.a "${OUTPUT}/Libraries/iOS"
+	cp _build_iPhone/lib/libPocoZip.a "${OUTPUT}/Libraries/iOS"
+
+	#iOS Simulator
+	
+	./configure --cflags="-miphoneos-version-min=15.0" \
+	--prefix="${PREFIX_iPhoneSim_arm}" \
+	--no-sharedlibs --static --poquito --no-tests --no-samples \
+	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
+	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/iOS"
+
+	make -j${JOBS} POCO_CONFIG=iPhoneSimulator IPHONEOS_DEPLOYMENT_TARGET=15.0 POCO_HOST_OSARCH=arm64
+	make install
+	make -s distclean
+
+	./configure --cflags="-miphoneos-version-min=15.0" \
+	--prefix="${PREFIX_iPhoneSim_x86}" \
+	--no-sharedlibs --static --poquito --no-tests --no-samples \
+	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
+	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/iOS"
+
+	make -j${JOBS} POCO_CONFIG=iPhoneSimulator IPHONEOS_DEPLOYMENT_TARGET=15.0 POCO_HOST_OSARCH=x86_64
+	make install
+	make -s distclean
+'
 
 elif [[ $OS = 'Linux' ]]; then
 
@@ -112,11 +174,7 @@ fi
 
 # Copy the header and library files.
 
-if [[ $PLATFORM = 'macOS' ]]; then
-	cp -R _build_x86_64/include/Poco/* "${OUTPUT}/Headers/Poco"
-else
-	cp -R _build/include/Poco/* "${OUTPUT}/Headers/Poco"
-fi
+cp -R _build/include/Poco/* "${OUTPUT}/Headers/Poco"
 
 cp _build/lib/libPocoCrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
 cp _build/lib/libPocoFoundation.a "${OUTPUT}/Libraries/${PLATFORM}"

@@ -17,6 +17,7 @@
 #   PACKAGE_FILE
 #   PACKAGE_SOURCE_DIR
 #   PACKAGE_ACTION
+#   BUILD_LOG
 #
 # There are equivalent functions:
 #   get_os
@@ -54,6 +55,7 @@ build_functions_main() {
     source ./package
 
     PACKAGE_SOURCE_DIR="${SOURCE_PLATFORM_ROOT}/${NAME}"
+    BUILD_LOG="${SOURCE_PLATFORM_ROOT}/${NAME}.log"
 
     # Ensure all build functions are defined.
     _ensure_build_functions
@@ -110,7 +112,7 @@ get_platform() {
 
 print_plain() {
     if [[ ! -v NAME ]]; then NAME="unknown"; fi
-    printf "[${NAME}] %s\n" "$1"
+    printf "[${NAME}]    %s\n" "$1"
 }
 
 print_ok() {
@@ -129,6 +131,69 @@ print_error() {
     else
         printf "[${NAME}] !! %s\n" "$1"
     fi
+}
+
+# Pretty print a time in seconds.
+pretty_time() {
+    local S=$1
+    local H=$((S/3600))
+    local M=$((S/60%60))
+    local S=$((S%60))
+    (( $H > 0)) && printf '%d hours ' $H
+    (( $M > 0)) && printf '%d minutes ' $M
+    (( $H > 0 || $M > 0)) && printf 'and '
+    printf '%d seconds' $S
+}
+
+# Wait on supplied child process to complete, giving a progress indicator.
+#
+# Returns the exit code of the child process.
+wait_progress() {
+    local pid="$1"
+
+    local start_time
+    start_time=$(date +%s)
+
+    if [[ -t 1 ]]; then
+        # We are in a terminal, we can animate progress
+        local throbber='-\|/'
+        local i=0
+        while kill -0 $pid 2>/dev/null; do
+            i=$(( (i+1) % ${#throbber} ))
+            printf "\r[${NAME}] %s " "${throbber:$i:1}"
+            sleep 0.5
+        done
+        printf "\r"
+    else
+        # We are not in a terminal, use plain output.
+        # Output 60 dots, 5 seconds apart on a line =~ 5 mins
+        # Newline every 60 dots with a prefix of the approx mins
+        local dots=0
+        local approx_mins=0
+        printf "[0]"
+        while kill -0 $pid 2>/dev/null; do
+            dots=$(( (dots+1) % 60 ))
+            if [[ $dots -eq 0 ]]; then
+                approx_mins=$(( approx_mins+5 ))
+                printf "\n[%s]" "${approx_mins}"
+            fi
+            printf "."
+            sleep 5
+        done
+        printf "\n"
+    fi
+
+    wait "$pid"
+    local rc=$?
+
+    local stop_time
+    stop_time=$(date +%s)
+
+    local str_time
+    str_time=$(pretty_time $((stop_time - start_time)))
+    print_plain "Elapsed time: $str_time"
+
+    return $rc
 }
 
 # --- "builtin" functions ---
@@ -206,6 +271,7 @@ builtin_clean_source() {
     fi
     print_ok "Cleaning package source."
     rm -rf "${PACKAGE_SOURCE_DIR}"
+    rm -rf "${BUILD_LOG}"
 
     return 0
 }

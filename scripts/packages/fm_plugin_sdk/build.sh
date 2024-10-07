@@ -53,7 +53,24 @@ unpack() {
 #   FRAMEWORKS_ROOT
 #   LIBRARIES_PLATFORM_ROOT
 #   HEADERS_ROOT
+#   BUILD_LOG
 build() {
+    print_ok "Build Task test."
+    (
+        echo "I am the build process ...."
+        sleep 5;
+        echo "... build process done."
+
+        exit 0
+    ) >> "${BUILD_LOG}" 2>&1 &
+    wait_progress $!
+    return_code=$?
+    if [[ $return_code -eq 0 ]]; then
+        print_ok "Build Task test done, rc: $return_code"
+    else
+        print_error "Build Task test failed, rc: $return_code"
+    fi
+
     print_ok "Installing."
     if [[ "${PLATFORM}" == 'macOS' ]]; then
 
@@ -69,11 +86,11 @@ build() {
             os_id="$(. /etc/os-release && echo "$ID")"
             version_id="$(. /etc/os-release && echo "$VERSION_ID")"
         else
-            echo "!! No /etc/os-release, can't continue building."
+            print_error "No /etc/os-release, can't continue building."
             exit 1
         fi
         if [[ "$os_id" != "ubuntu" ]]; then
-            echo "!! Not ubuntu according to /etc/os-release, can't continue building."
+            print_error "Not ubuntu according to /etc/os-release, can't continue building."
             exit 1
         fi
         case "${version_id}" in
@@ -84,7 +101,7 @@ build() {
                 so_lib_path="${so_lib_path}/U22"
                 ;;
             *)
-                echo "!! Unsupported Ubuntu version: ${VERSION_ID}"
+                print_error "Unsupported Ubuntu version: ${VERSION_ID}"
                 exit 1
                 ;;
         esac
@@ -98,7 +115,7 @@ build() {
                     so_lib_path="${so_lib_path}/arm64"
                     ;;
                 *)
-                    echo "!! Unsupported architecture: ${ARCH}"
+                    print_error "Unsupported architecture: ${ARCH}"
                     exit 1
                     ;;
             esac

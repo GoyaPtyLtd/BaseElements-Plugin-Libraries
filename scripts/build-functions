@@ -3,7 +3,7 @@
 # scripts/build-functions
 #   - is not an executable, it is intended to be sourced by other scripts.
 #   - belongs as exactly "{project_root}/scripts/build-functions".
-#   - must remain compatible with bash 3.2.57 (macOS).
+#   - must remain compatible with minimum bash version 3.2.57 (macOS).
 #
 # Sourcing this file will set the following variables:
 #   OS                          - Operating system. Linux or Darwin.
@@ -73,7 +73,7 @@ build_functions_main() {
             clean_source
             clean_output
             ;;
-        clean_all)
+        clean-all)
             deps_clean_all
             clean_source
             clean_output
@@ -365,7 +365,7 @@ _usage() {
     echo "  all             Default. Build this package, and dependencies."
     echo "  build           Build only this package, without dependencies."
     echo "  clean           Clean only this package source and output files."
-    echo "  clean_all       Clean this package, and dependencies."
+    echo "  clean-all       Clean this package, and dependencies."
     echo ""
 }
 
@@ -387,7 +387,7 @@ _parse_args() {
                 JOBS="$2"
                 shift 2
                 ;;
-            all|build|clean_all|clean)
+            all|build|clean-all|clean)
                 PACKAGE_ACTION="$1"
                 shift
                 ;;

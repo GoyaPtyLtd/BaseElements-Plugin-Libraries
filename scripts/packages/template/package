@@ -1,0 +1,17 @@
+# Short, single-line description of the package.
+DESCRIPTION="Template"
+
+# Colon-separated list of packages this one is dependent upon.
+DEPENDENCIES=
+
+SOURCE_URL=
+SOURCE_HASH=
+
+HEADERS=(                       # Package header sub-directory is sufficient.
+)
+
+LIBRARIES=(                     # Each individual library built by this package.
+)
+
+FRAMEWORKS=(                    # LIBRARIES+HEADERS or FRAMEWORKS on macOS.
+)

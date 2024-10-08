@@ -1,0 +1,18 @@
+# Short, single-line description of the package.
+DESCRIPTION="All - virtual package"
+
+DEPENDENCIES=(                  # List of packages this one is dependent upon.
+    fm_plugin_sdk
+)
+
+SOURCE_URL=
+SOURCE_HASH=
+
+HEADERS=(                       # Each header sub-directory from this package.
+)
+
+LIBRARIES=(                     # Each individual library built by this package.
+)
+
+FRAMEWORKS=(                    # LIBRARIES+HEADERS or FRAMEWORKS on macOS.
+)

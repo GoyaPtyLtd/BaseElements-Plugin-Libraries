@@ -3,13 +3,16 @@
 # scripts/build-functions
 #   - is not an executable, it is intended to be sourced by other scripts.
 #   - belongs as exactly "{project_root}/scripts/build-functions".
-#   - must remain compatible with minimum bash version 3.2.57 (macOS).
 #
 # Sourcing this file will set the following variables:
-#   OS                          - Operating system. Linux or Darwin.
-#   ARCH                        - Architecture. x86_64, aarch64, or arm64.
+#   OS                          - Operating system.
+#                                 May be: Linux or Darwin
+#   ARCH                        - Architecture.
+#                                 May be: x86_64, aarch64, or arm64
+#                                 (aarch64 only on Linux, arm64 only on macOS.)
 #   JOBS                        - Number of parallel jobs.
-#   PLATFORM                    - Platform. linux, linuxARM, or macOS.
+#   PLATFORM                    - Platform calculated from OS+ARCH.
+#                                 May be: linux, linuxARM, or macOS
 #
 #   PROJECT_ROOT                - The root of the project.
 #   SOURCE_PLATFORM_ROOT        - Source directory for this platform.
@@ -24,6 +27,10 @@
 #   PACKAGE_FILE                - Full path to downloaded package. Set by fetch()
 #   PACKAGE_ACTION              - Action specified on command line when called.
 
+# Environment variables that may be set:
+DEBUG=${DEBUG:-0} # Prefix DEBUG=1 to script to enable debug output.
+FORCE_COLOUR=${FORCE_COLOUR:-0} # Prefix FORCE_COLOUR=1 to script to force colour output.
+
 # Enforce that this file is sourced, not run.
 (return 0 2>/dev/null) || {
     echo "This file is not meant to be run directly."
@@ -35,7 +42,9 @@ set -u      # Abort on undefined variables.
 # Initialise terminal colours
 COL_RED=$(tput setaf 1)
 COL_GREEN=$(tput setaf 2)
-COL_CLEAR=$(tput sgr0)
+COL_YELLOW=$(tput setaf 3)
+# COL_CLEAR=$(tput sgr0)    # This does not play well with less -R
+COL_CLEAR=$'\e[0m'
 
 # Main function executed when this file is sourced.
 #
@@ -45,6 +54,9 @@ build_functions_main() {
 
     # Identify common paths: PROJECT_ROOT, SOURCE_PLATFORM_ROOT, etc.
     _identify_common_paths
+
+    print_debug "Debug enabled."
+    print_debug "OS: ${OS} ARCH: ${ARCH} PLATFORM: ${PLATFORM}"
 
     # Source the package variables.
     _unset_package_variables
@@ -56,8 +68,13 @@ build_functions_main() {
     # Now parse any arguments passed to the script (may override variables).
     _parse_args "$@"
 
+    print_debug "JOBS: ${JOBS}"
+
     # Perform package actions.
     case "${PACKAGE_ACTION}" in
+        info)
+            _display_package_info
+            ;;
         all)
             deps_all
             fetch && clean_source
@@ -70,12 +87,12 @@ build_functions_main() {
             check_output || build
             ;;
         clean)
-            clean_source
+            _package_source_missing || clean_source
             clean_output
             ;;
         clean-all)
             deps_clean_all
-            clean_source
+            _package_source_missing || clean_source
             clean_output
             ;;
         *)
@@ -83,6 +100,8 @@ build_functions_main() {
             exit 1
             ;;
     esac
+
+    print_debug "Reached end of script."
 }
 
 # --- Helper functions ---
@@ -91,19 +110,18 @@ build_functions_main() {
 #
 # $1 - Message to print.
 print_plain() {
-    if [[ ! -v PACKAGE_NAME ]]; then PACKAGE_NAME="unknown"; fi
-    printf "[${PACKAGE_NAME}]    %s\n" "$1"
+    _print "  " "$1"
 }
 
 # Print a formatted message to stdout. Uses green to signify success.
 #
 # $1 - Message to print.
 print_ok() {
-    if [[ ! -v PACKAGE_NAME ]]; then PACKAGE_NAME="unknown"; fi
-    if [[ -t 1 ]]; then # We are in a terminal, use colours.
-        printf "[${PACKAGE_NAME}] ${COL_GREEN}++${COL_CLEAR} %s\n" "$1"
+    if [[ $FORCE_COLOUR -eq 1 ]] || [[ -t 1 ]]; then
+        # We are in a terminal, use colours.
+        _print "${COL_GREEN}++${COL_CLEAR}" "$1"
     else
-        printf "[${PACKAGE_NAME}] ++ %s\n" "$1"
+        _print "++" "$1"
     fi
 }
 
@@ -111,11 +129,25 @@ print_ok() {
 #
 # $1 - Message to print.
 print_error() {
-    if [[ ! -v PACKAGE_NAME ]]; then PACKAGE_NAME="unknown"; fi
-    if [[ -t 1 ]]; then # We are in a terminal, use colours.
-        printf "[${PACKAGE_NAME}] ${COL_RED}--${COL_CLEAR} %s\n" "$1"
+    if [[ $FORCE_COLOUR -eq 1 ]] || [[ -t 1 ]]; then
+        # We are in a terminal, use colours.
+        _print "${COL_RED}--${COL_CLEAR}" "$1"
     else
-        printf "[${PACKAGE_NAME}] !! %s\n" "$1"
+        _print "!!" "$1"
+    fi
+}
+
+print_debug() {
+    if [[ $DEBUG -eq 0 ]]; then
+        # No output, DEBUG is disabled.
+        return
+    fi
+    if [[ ! -v PACKAGE_NAME ]]; then PACKAGE_NAME="-----"; fi
+    if [[ $FORCE_COLOUR -eq 1 ]] || [[ -t 1 ]]; then
+        # We are in a terminal, use colours.
+        printf "[${PACKAGE_NAME}] ${COL_YELLOW}**${COL_CLEAR} %s\n" "$1"
+    else
+        printf "[${PACKAGE_NAME}] ** %s\n" "$1"
     fi
 }
 
@@ -188,17 +220,24 @@ wait_progress() {
 # Fetch source package.
 #
 # Uses global variables:
-#   PACKAGE_NAME                    - package variable
 #   SOURCE_URL              - package variable
 #   SOURCE_HASH             - package variable
+#   PACKAGE_NAME
 #   PACKAGE_DOWNLOAD_DIR
 #   SOURCE_PLATFORM_ROOT
 #
 # Sets global variables:
 #   PACKAGE_FILE            - Full path to downloaded package.
+#   BUILTIN_FETCH_NONE      - only defined if builtin function did nothing.
 #
 # Returns 0 (true) if the file was downloaded, 1 if it already exists.
 builtin_fetch() {
+    if [[ -z "${SOURCE_URL}" ]]; then
+        BUILTIN_FETCH_NONE=1
+        print_debug "builtin_fetch(): SOURCE_URL is not set"
+        return 1    # Return 1 to indicate we did not download.
+    fi
+
     local filename
     filename=$(basename "${SOURCE_URL}")
 
@@ -235,16 +274,33 @@ builtin_fetch() {
     return 0
 }
 
-# Unpack source package. Is only called when ${PACKAGE_SOURCE_DIR} is missing.
+# Unpack source package. Only called when ${PACKAGE_SOURCE_DIR} is missing.
 #
 # Uses global variables:
 #   PACKAGE_FILE            - from fetch()
+#   BUILTIN_UNPACK_NONE     - only defined if builtin function did nothing.
 builtin_unpack() {
-    :
+    if [[ ! -v PACKAGE_FILE ]] || [[ -z "${PACKAGE_FILE}" ]]; then
+        BUILTIN_UNPACK_NONE=1
+        print_debug "builtin_unpack(): PACKAGE_FILE is unset/empty."
+        return
+    fi
 }
 
+# Build source package.
+#
+# This is not expected to be called except for virtual packages, as we don't
+# know how to build any package ourselves.
+#
+# Sets global variables:
+#   VIRTUAL_PACKAGE         - only defined if we are a virtual package.
 builtin_build() {
-    :
+    if [[ -v BUILTIN_FETCH_NONE ]] && [[ -v BUILTIN_UNPACK_NONE ]]; then
+        # and since the user did not define a build() function, then this is a
+        # special case, this is a virtual package.
+        VIRTUAL_PACKAGE=1
+        print_debug "builtin_build(): determined we are a virtual package."
+    fi
 }
 
 # Clean source package.
@@ -268,23 +324,37 @@ builtin_clean_source() {
 # Clean output files.
 #
 # Uses global variables:
+#   HEADERS                 - package variable
 #   LIBRARIES               - package variable
 #   FRAMEWORKS              - package variable
-#   HEADERS                 - package variable
+#   HEADERS_ROOT
 #   LIBRARIES_PLATFORM_ROOT
 #   FRAMEWORKS_ROOT
-#   HEADERS_ROOT
 builtin_clean_output() {
-    print_ok "Cleaning output files."
+    local did_something=0
+    for targetname in "${HEADERS[@]}"; do
+        if [[ -e "${HEADERS_ROOT:?}/${targetname}" ]]; then
+            rm -rf "${HEADERS_ROOT:?}/${targetname}"
+            did_something=1
+        fi
+    done
     for targetname in "${LIBRARIES[@]}"; do
-       rm -rf "${LIBRARIES_PLATFORM_ROOT:?}/${targetname}"
+        if [[ -e "${LIBRARIES_PLATFORM_ROOT:?}/${targetname}" ]]; then
+            rm -rf "${LIBRARIES_PLATFORM_ROOT:?}/${targetname}"
+            did_something=1
+        fi
     done
     for targetname in "${FRAMEWORKS[@]}"; do
-       rm -rf "${FRAMEWORKS_ROOT:?}/${targetname}"
+        if [[ -e "${FRAMEWORKS_ROOT:?}/${targetname}" ]]; then
+            rm -rf "${FRAMEWORKS_ROOT:?}/${targetname}"
+            did_something=1
+        fi
     done
-    for targetname in "${HEADERS[@]}"; do
-       rm -rf "${HEADERS_ROOT:?}/${targetname}"
-    done
+    if [[ $did_something -eq 1 ]]; then
+        print_ok "Cleaned output files."
+    else
+        print_debug "builtin_clean_output(): nothing to clean."
+    fi
 }
 
 # Check output files / directories exist. Used to determine if the package
@@ -301,6 +371,10 @@ builtin_clean_output() {
 #
 # Returns 0 (true) if all output exist, 1 if any are missing.
 builtin_check_output() {
+    if [[ ${#LIBRARIES[@]} -eq 0 ]] && [[ ${#HEADERS[@]} -eq 0 ]] && [[ ${#FRAMEWORKS[@]} -eq 0 ]]; then
+        print_debug "builtin_check_output(): HEADERS, LIBRARIES and FRAMEWORKS are empty."
+        return 1  # Return 1 so build is still triggered.
+    fi
     local library_result=0
     local framework_result=0
     local header_result=0
@@ -346,27 +420,134 @@ builtin_check_output() {
     return 0    # All checks passed.
 }
 
+# Build all listed dependencies, and then this package.
+#
 builtin_deps_all() {
-    :
+    _ensure_not_visited
+
+    _call_dependencies "all"
+
+    # Ok to continue to build this package.
 }
 
+# Clean all listed dependencies, and then this package.
+#
 builtin_deps_clean_all() {
-    :
+    _ensure_not_visited
+
+    _call_dependencies "clean-all"
+
+    # Ok to continue to clean this package.
 }
 
 # --- Internal functions ---
 
+# Ensure we have not already been visited as part of a dependency chain.
+# This is used to prevent infinite loops.
+_ensure_not_visited() {
+    # Check if we have already been visited.
+    if [[ -v PACKAGES_VISITED ]]; then
+        print_debug "_ensure_not_visited(): PACKAGES_VISITED: ${PACKAGES_VISITED}"
+        declare -a PACKAGES_VISITED_ARRAY
+        IFS=':' read -ra PACKAGES_VISITED_ARRAY <<< "${PACKAGES_VISITED}"
+        local visited
+        for visited in "${PACKAGES_VISITED_ARRAY[@]}"; do
+            if [[ -z "${visited}" ]]; then
+                continue
+            fi
+            if [[ "${visited}" == "${PACKAGE_NAME}" ]]; then
+                print_debug "_ensure_not_visited(): We were already visited, exiting early."
+                exit 0  # Nothing further to do, return success.
+            fi
+        done
+    fi
+
+    # Add this package name to the list of visited packages so far.
+    if [[ -v PACKAGES_VISITED ]]; then
+        PACKAGES_VISITED="${PACKAGES_VISITED}:${PACKAGE_NAME}"
+    else
+        PACKAGES_VISITED="${PACKAGE_NAME}"
+    fi
+    export PACKAGES_VISITED
+}
+
+# Call all dependencies with the given action.
+#
+# $1 - Action.
+_call_dependencies() {
+    print_debug "_call_dependencies(): DEPENDENCIES: ${DEPENDENCIES[*]}"
+
+    # Find each dependency and call their build.sh script
+    local dependency
+    local dep_result
+    for dependency in "${DEPENDENCIES[@]}"; do
+        if [[ -z "${dependency}" ]]; then
+            continue
+        fi
+        if [[ ! -d "../${dependency}" ]]; then
+            print_error "Cannot find required dependency: $dependency"
+            exit 1
+        fi
+        print_debug "_call_dependencies(): Calling: \"$dependency/build.sh\" $1"
+        ../"${dependency}/build.sh" "$1"
+        dep_result=$?
+        if [[ $dep_result -ne 0 ]]; then
+            print_error "Failed to build dependency: $dependency"
+            exit 1
+        fi
+    done
+}
+
+
+# Print's a formatted message to stdout.
+#
+# In format of: "[$PACKAGE_NAME] $1 $2"
+#
+# If this is the first printed output (non debug output), then a title line
+# is printed first.
+#
+# Sets global variables:
+#   HAVE_PRINTED_TITLE          - only defined if we have printed a title.
+#
+# $1 - Indicator - Two characters, possibly with colours.
+# $2 - Message to print.
+_print() {
+    if [[ ! -v PACKAGE_NAME ]]; then
+        DESCRIPTION="-----";
+        PACKAGE_NAME="-----";
+    fi
+
+    if [[ ! -v HAVE_PRINTED_TITLE ]]; then
+        # Print a title line.
+        printf "\n[ %s (%s) ]\n\n" "${DESCRIPTION}" "${PACKAGE_NAME}"
+        HAVE_PRINTED_TITLE=1
+    fi
+
+    printf "[%s] %s %s\n" "${PACKAGE_NAME}" "$1" "$2"
+}
+
 _usage() {
     echo ""
-    echo "Usage: build.sh [options]"
-    echo "  -h, --help      Show this help message."
-    echo "  -j n            Number of parallel jobs to use. Default: ${JOBS}"
+    echo "[ $DESCRIPTION ($PACKAGE_NAME) ]"
     echo ""
-    echo "  all             Default. Build this package, and dependencies."
-    echo "  build           Build only this package, without dependencies."
-    echo "  clean           Clean only this package source and output files."
-    echo "  clean-all       Clean this package, and dependencies."
+    echo "Usage: build.sh [options] [action]"
+    echo "  options:"
+    echo "    -h, --help      Show this help message."
+    echo "    -j n            Number of parallel jobs to use. Default on this host: ${JOBS}"
     echo ""
+    echo "  actions:"
+    echo "    info            Show package information."
+    echo "    all             Default. Build dependencies, and then this package."
+    echo "    build           Build only this package, without dependencies."
+    echo "    clean           Clean only this package source and output files."
+    echo "    clean-all       Clean dependencies, and then this package."
+    echo ""
+}
+
+_display_package_info() {
+    print_plain "Package name: ${PACKAGE_NAME}"
+    print_plain "Description: ${DESCRIPTION}"
+    print_plain "Dependencies: ${DEPENDENCIES[*]}"
 }
 
 # Parse command line arguements. Show usage if needed.
@@ -387,7 +568,7 @@ _parse_args() {
                 JOBS="$2"
                 shift 2
                 ;;
-            all|build|clean-all|clean)
+            info|all|build|clean-all|clean)
                 PACKAGE_ACTION="$1"
                 shift
                 ;;
@@ -397,6 +578,8 @@ _parse_args() {
                 exit 1
         esac
     done
+
+    print_debug "PACKAGE_ACTION: ${PACKAGE_ACTION}"
 }
 
 # Check if the given file matches the given hash.
@@ -409,8 +592,8 @@ _check_file_hash() {
     hash_type="${hash%%:*}"
     hash_value="${hash#*:}"
 
-    if [[ ! -e "${file}" ]]; then
-        print_error "!! File does not exist: ${file}"
+    if [[ ! -f "${file}" ]]; then
+        print_error "File does not exist: ${file}"
         exit 1
     fi
 
@@ -431,7 +614,7 @@ _check_file_hash() {
             fi
             ;;
         *)
-            print_error "!! Unknown hash type: ${hash_type}"
+            print_error "Unknown hash type: ${hash_type}"
             exit 1
             ;;
     esac
@@ -548,10 +731,12 @@ _ensure_build_functions() {
 _package_source_missing() {
     if [[ ! -d "${PACKAGE_SOURCE_DIR}" ]]; then
         # Directory does not exist.
+        print_debug "_package_source_missing(): Directory does not exist: ${PACKAGE_SOURCE_DIR}"
         return 0
     fi
     if [[ -z "$( ls -A "${PACKAGE_SOURCE_DIR}" )" ]]; then
         # Directory is empty.
+        print_debug "_package_source_missing(): Directory is empty: ${PACKAGE_SOURCE_DIR}"
         return 0
     fi
     return 1

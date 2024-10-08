@@ -1,5 +1,5 @@
 # Short, single-line description of the package.
-DESCRIPTION="All - virtual package"
+DESCRIPTION="Virtual package for build all"
 
 DEPENDENCIES=(                  # List of packages this one is dependent upon.
     fm_plugin_sdk

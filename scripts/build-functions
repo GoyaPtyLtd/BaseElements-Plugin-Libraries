@@ -49,6 +49,9 @@ COL_CLEAR=$'\e[0m'
 # Main function executed when this file is sourced.
 #
 build_functions_main() {
+    local start_time
+    start_time=$(date +%s)
+
     # Identify and set the OS/ARCH/JOBS/PLATFORM variables.
     _identify_os_arch
 
@@ -101,6 +104,17 @@ build_functions_main() {
             ;;
     esac
 
+    local stop_time
+    stop_time=$(date +%s)
+
+    local str_time
+    str_time=$(pretty_time $((stop_time - start_time)))
+    if [[ -v VIRTUAL_PACKAGE ]]; then
+        print_ok "Virtual package elapsed time: $str_time"
+    else
+        print_ok "Package elapsed time: $str_time"
+    fi
+
     print_debug "Reached end of script."
 }
 
@@ -131,7 +145,7 @@ print_ok() {
 print_error() {
     if [[ $FORCE_COLOUR -eq 1 ]] || [[ -t 1 ]]; then
         # We are in a terminal, use colours.
-        _print "${COL_RED}--${COL_CLEAR}" "$1"
+        _print "${COL_RED}!!${COL_CLEAR}" "$1"
     else
         _print "!!" "$1"
     fi
@@ -145,7 +159,7 @@ print_debug() {
     if [[ ! -v PACKAGE_NAME ]]; then PACKAGE_NAME="-----"; fi
     if [[ $FORCE_COLOUR -eq 1 ]] || [[ -t 1 ]]; then
         # We are in a terminal, use colours.
-        printf "[${PACKAGE_NAME}] ${COL_YELLOW}**${COL_CLEAR} %s\n" "$1"
+        printf "[${COL_YELLOW}${PACKAGE_NAME}${COL_CLEAR}] ${COL_YELLOW}**${COL_CLEAR} %s\n" "$1"
     else
         printf "[${PACKAGE_NAME}] ** %s\n" "$1"
     fi
@@ -179,7 +193,7 @@ wait_progress() {
         local i=0
         while kill -0 $pid 2>/dev/null; do
             i=$(( (i+1) % ${#throbber} ))
-            printf "\r[${PACKAGE_NAME}] %s " "${throbber:$i:1}"
+            printf "\r[${COL_YELLOW}%s${COL_CLEAR}] %s " "${PACKAGE_NAME}" "${throbber:$i:1}"
             sleep 0.5
         done
         printf "\r"
@@ -519,11 +533,16 @@ _print() {
 
     if [[ ! -v HAVE_PRINTED_TITLE ]]; then
         # Print a title line.
-        printf "\n[ %s (%s) ]\n\n" "${DESCRIPTION}" "${PACKAGE_NAME}"
+        printf "\n  ==== %s [%s] ====\n" "${DESCRIPTION}" "${PACKAGE_NAME}"
         HAVE_PRINTED_TITLE=1
     fi
 
-    printf "[%s] %s %s\n" "${PACKAGE_NAME}" "$1" "$2"
+    if [[ $FORCE_COLOUR -eq 1 ]] || [[ -t 1 ]]; then
+        # We are in a terminal, use colours.
+        printf "[${COL_YELLOW}%s${COL_CLEAR}] %s %s\n" "${PACKAGE_NAME}" "$1" "$2"
+    else
+        printf "[%s] %s %s\n" "${PACKAGE_NAME}" "$1" "$2"
+    fi
 }
 
 _usage() {

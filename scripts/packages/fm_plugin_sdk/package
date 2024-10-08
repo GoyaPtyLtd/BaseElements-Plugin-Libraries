@@ -1,20 +1,18 @@
-NAME=fm_plugin_sdk
-VERSION=21.0.1.53
+# Short, single-line description of the package.
 DESCRIPTION="FileMaker Plugin SDK"
+
+# Colon-separated list of packages this one is dependent upon.
+DEPENDENCIES=
 
 SOURCE_URL=https://downloads.claris.com/DEVREL/sdk/fm_plugin_sdk_21.0.1.53.zip
 SOURCE_HASH=SHA256:422017d7952668addaa4e212e327eadc88ffbd2318abceae22382ce3458c38d5
 
-DEPS=(                          # List of packages this is dependent upon.
-
+HEADERS=(                       # Package header sub-directory is sufficient.
+    FMWrapper
 )
 
-LIBRARIES=(
+LIBRARIES=(                     # Each individual library built by this package.
     libFMWrapper.so
-)
-
-HEADERS=(
-    FMWrapper                   # top level directory is sufficient.
 )
 
 FRAMEWORKS=(                    # LIBRARIES+HEADERS or FRAMEWORKS on macOS.

@@ -1,30 +1,28 @@
 #!/usr/bin/env bash
 
-# This file is not an executable, it is intended to be sourced by other scripts.
-# This file belongs as exactly "{project_root}/scripts/build-functions"
+# scripts/build-functions
+#   - is not an executable, it is intended to be sourced by other scripts.
+#   - belongs as exactly "{project_root}/scripts/build-functions".
+#   - must remain compatible with bash 3.2.57 (macOS).
 #
 # Sourcing this file will set the following variables:
-#   OS
-#   ARCH
-#   JOBS
-#   PLATFORM
-#   PROJECT_ROOT
-#   SOURCE_PLATFORM_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
-#   HEADERS_ROOT
-#   PACKAGE_DOWNLOAD_DIR
-#   PACKAGE_FILE
-#   PACKAGE_SOURCE_DIR
-#   PACKAGE_ACTION
-#   BUILD_LOG
+#   OS                          - Operating system. Linux or Darwin.
+#   ARCH                        - Architecture. x86_64, aarch64, or arm64.
+#   JOBS                        - Number of parallel jobs.
+#   PLATFORM                    - Platform. linux, linuxARM, or macOS.
 #
-# There are equivalent functions:
-#   get_os
-#   get_arch
-#   get_jobs
-#   get_platform
+#   PROJECT_ROOT                - The root of the project.
+#   SOURCE_PLATFORM_ROOT        - Source directory for this platform.
+#   HEADERS_ROOT                - Output directory for headers.
+#   LIBRARIES_PLATFORM_ROOT     - Output directory for libraries for this platform.
+#   FRAMEWORKS_ROOT             - Output directory for frameworks (macOS only).
+#   PACKAGE_NAME                - Dirname of the package.
+#   PACKAGE_DOWNLOAD_DIR        - Location to download package source to.
+#   PACKAGE_SOURCE_DIR          - Location to unpack source to (includes PACKAGE_NAME).
+#   BUILD_LOG                   - Filename to append build log to.
 #
+#   PACKAGE_FILE                - Full path to downloaded package. Set by fetch()
+#   PACKAGE_ACTION              - Action specified on command line when called.
 
 # Enforce that this file is sourced, not run.
 (return 0 2>/dev/null) || {
@@ -32,7 +30,7 @@
     exit 1
 }
 
-set -u      # Abort on undefined variable.
+set -u      # Abort on undefined variables.
 
 # Initialise terminal colours
 COL_RED=$(tput setaf 1)
@@ -41,21 +39,16 @@ COL_CLEAR=$(tput sgr0)
 
 # Main function executed when this file is sourced.
 #
-# Sets global variables:
-#   PACKAGE_SOURCE_DIR      - Full path to where source will be unpacked.
 build_functions_main() {
     # Identify and set the OS/ARCH/JOBS/PLATFORM variables.
     _identify_os_arch
 
-    # Identify common paths: PROJECT_ROOT, PACKAGE_DOWNLOAD_DIR, etc.
+    # Identify common paths: PROJECT_ROOT, SOURCE_PLATFORM_ROOT, etc.
     _identify_common_paths
 
     # Source the package variables.
     _unset_package_variables
     source ./package
-
-    PACKAGE_SOURCE_DIR="${SOURCE_PLATFORM_ROOT}/${NAME}"
-    BUILD_LOG="${SOURCE_PLATFORM_ROOT}/${NAME}.log"
 
     # Ensure all build functions are defined.
     _ensure_build_functions
@@ -94,58 +87,52 @@ build_functions_main() {
 
 # --- Helper functions ---
 
-get_os() {
-    echo "${OS}"
-}
-
-get_arch() {
-    echo "${ARCH}"
-}
-
-get_jobs() {
-    echo "${JOBS}"
-}
-
-get_platform() {
-    echo "${PLATFORM}"
-}
-
+# Print a formatted message to stdout. No colours.
+#
+# $1 - Message to print.
 print_plain() {
-    if [[ ! -v NAME ]]; then NAME="unknown"; fi
-    printf "[${NAME}]    %s\n" "$1"
+    if [[ ! -v PACKAGE_NAME ]]; then PACKAGE_NAME="unknown"; fi
+    printf "[${PACKAGE_NAME}]    %s\n" "$1"
 }
 
+# Print a formatted message to stdout. Uses green to signify success.
+#
+# $1 - Message to print.
 print_ok() {
-    if [[ ! -v NAME ]]; then NAME="unknown"; fi
+    if [[ ! -v PACKAGE_NAME ]]; then PACKAGE_NAME="unknown"; fi
     if [[ -t 1 ]]; then # We are in a terminal, use colours.
-        printf "[${NAME}] ${COL_GREEN}++${COL_CLEAR} %s\n" "$1"
+        printf "[${PACKAGE_NAME}] ${COL_GREEN}++${COL_CLEAR} %s\n" "$1"
     else
-        printf "[${NAME}] ++ %s\n" "$1"
+        printf "[${PACKAGE_NAME}] ++ %s\n" "$1"
     fi
 }
 
+# Print a formatted message to stdout. Uses red to signify an error.
+#
+# $1 - Message to print.
 print_error() {
-    if [[ ! -v NAME ]]; then NAME="unknown"; fi
+    if [[ ! -v PACKAGE_NAME ]]; then PACKAGE_NAME="unknown"; fi
     if [[ -t 1 ]]; then # We are in a terminal, use colours.
-        printf "[${NAME}] ${COL_RED}--${COL_CLEAR} %s\n" "$1"
+        printf "[${PACKAGE_NAME}] ${COL_RED}--${COL_CLEAR} %s\n" "$1"
     else
-        printf "[${NAME}] !! %s\n" "$1"
+        printf "[${PACKAGE_NAME}] !! %s\n" "$1"
     fi
 }
 
-# Pretty print a time in seconds.
+# Pretty print a time in seconds, in the format H:MM:SS.
+#
+# $1 - Time in seconds.
 pretty_time() {
     local S=$1
     local H=$((S/3600))
     local M=$((S/60%60))
     local S=$((S%60))
-    (( $H > 0)) && printf '%d hours ' $H
-    (( $M > 0)) && printf '%d minutes ' $M
-    (( $H > 0 || $M > 0)) && printf 'and '
-    printf '%d seconds' $S
+    printf '%01d:%02d:%02d' $H $M $S
 }
 
 # Wait on supplied child process to complete, giving a progress indicator.
+#
+# $1 - PID of child process.
 #
 # Returns the exit code of the child process.
 wait_progress() {
@@ -160,7 +147,7 @@ wait_progress() {
         local i=0
         while kill -0 $pid 2>/dev/null; do
             i=$(( (i+1) % ${#throbber} ))
-            printf "\r[${NAME}] %s " "${throbber:$i:1}"
+            printf "\r[${PACKAGE_NAME}] %s " "${throbber:$i:1}"
             sleep 0.5
         done
         printf "\r"
@@ -201,7 +188,7 @@ wait_progress() {
 # Fetch source package.
 #
 # Uses global variables:
-#   NAME                    - package variable
+#   PACKAGE_NAME                    - package variable
 #   SOURCE_URL              - package variable
 #   SOURCE_HASH             - package variable
 #   PACKAGE_DOWNLOAD_DIR
@@ -215,6 +202,7 @@ builtin_fetch() {
     local filename
     filename=$(basename "${SOURCE_URL}")
 
+    # shellcheck disable=SC2034
     PACKAGE_FILE="${PACKAGE_DOWNLOAD_DIR}/${filename}"
 
     # Check if the file already exists.
@@ -225,7 +213,6 @@ builtin_fetch() {
             rm -f "${PACKAGE_DOWNLOAD_DIR}/${filename}"
         else
             print_ok "Using verified package: ${filename}"
-            PACKAGE_FILE="${PACKAGE_DOWNLOAD_DIR}/${filename}"
             return 1
         fi
     fi
@@ -252,10 +239,12 @@ builtin_fetch() {
 #
 # Uses global variables:
 #   PACKAGE_FILE            - from fetch()
-#   PACKAGE_SOURCE_DIR      - from fetch()
 builtin_unpack() {
-    print_error "builtin_unpack() is not implemented"
-    exit 1
+    :
+}
+
+builtin_build() {
+    :
 }
 
 # Clean source package.
@@ -482,32 +471,35 @@ _identify_os_arch() {
 }
 
 # Sets global variables:
-#   PROJECT_ROOT
-#   PACKAGE_DOWNLOAD_DIR
-#   SOURCE_PLATFORM_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
-#   HEADERS_ROOT
+#   PROJECT_ROOT                - derived from this sourced script's location
+#   SOURCE_PLATFORM_ROOT        - calculated from PROJECT_ROOT + PLATFORM
+#   HEADERS_ROOT                - derived from PROJECT_ROOT
+#   LIBRARIES_PLATFORM_ROOT     - calculated from PROJECT_ROOT + PLATFORM
+#   FRAMEWORKS_ROOT             - derived from PROJECT_ROOT
+#   PACKAGE_NAME                - derived from sourcing script's location
+#   PACKAGE_DOWNLOAD_DIR        - calculated from PROJECT_ROOT
+#   PACKAGE_SOURCE_DIR          - calculated from SOURCE_PLATFORM_ROOT + PACKAGE_NAME
+#   BUILD_LOG                   - calculated from SOURCE_PLATFORM_ROOT + PACKAGE_NAME
 #
-# shellcheck disable=SC2034
 _identify_common_paths() {
     PROJECT_ROOT="$(realpath "$(dirname "${BASH_SOURCE[0]}")/..")"
-    PACKAGE_DOWNLOAD_DIR="${PROJECT_ROOT}/source"
     SOURCE_PLATFORM_ROOT="${PROJECT_ROOT}/source/${PLATFORM}"
+    HEADERS_ROOT="${PROJECT_ROOT}/Output/Headers"
     LIBRARIES_PLATFORM_ROOT="${PROJECT_ROOT}/Output/Libraries/${PLATFORM}"
     FRAMEWORKS_ROOT="${PROJECT_ROOT}/Output/Frameworks"
-    HEADERS_ROOT="${PROJECT_ROOT}/Output/Headers"
+    PACKAGE_NAME="$(basename "$(dirname "$(realpath "$0")")")"
+    PACKAGE_DOWNLOAD_DIR="${PROJECT_ROOT}/source"
+    PACKAGE_SOURCE_DIR="${SOURCE_PLATFORM_ROOT}/${PACKAGE_NAME}"
+    BUILD_LOG="${SOURCE_PLATFORM_ROOT}/${PACKAGE_NAME}.log"
 }
 
 # Unset all known variables set by package file.
 _unset_package_variables() {
     local var_names=(
-        NAME
-        VERSION
         DESCRIPTION
+        DEPENDENCIES
         SOURCE_URL
         SOURCE_HASH
-        DEPS
         LIBRARIES
         FRAMEWORKS
         HEADERS
@@ -522,6 +514,7 @@ _ensure_build_functions() {
     build_func_names=(
         fetch
         unpack
+        build
         clean_source
         clean_output
         check_output
@@ -531,18 +524,14 @@ _ensure_build_functions() {
     for func_name in "${build_func_names[@]}"; do
         if [[ $(type -t $func_name) != function ]]; then
             unset $func_name
-            eval "function $func_name() {
-                builtin_${func_name} \"\$@\"
-                return \$?
-            }"
+            eval "
+                function $func_name() {
+                    builtin_${func_name} \"\$@\"
+                    return \$?
+                }
+            "
         fi
     done
-
-    # build() function is always required.
-    if [[ $(type -t build) != function ]]; then
-        print_error "!! build() function is required."
-        exit 1
-    fi
 
     # DEBUG - Show all our functions are correctly defined.
     #echo "Check functions:"

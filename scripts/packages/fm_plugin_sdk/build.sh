@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # --- BOILERPLATE ---
-# Put us in this script's directory.
+# Determine this script's directory.
 REALDIR=$(dirname "$(realpath "$0")")
 cd "${REALDIR}" || exit 1
 # --- BOILERPLATE ---
@@ -20,7 +20,7 @@ cd "${REALDIR}" || exit 1
 # Fetch source package.
 #
 # Uses global variables:
-#   NAME                    - package variable
+#   PACKAGE_NAME            - from package dirname
 #   SOURCE_URL              - package variable
 #   SOURCE_HASH             - package variable
 #   PACKAGE_DOWNLOAD_DIR
@@ -162,6 +162,6 @@ build() {
 #}
 
 # --- BOILERPLATE ---
-# Source this script after functions are defined.
+# Source this after required functions are defined.
 source ../../build-functions
 # --- BOILERPLATE ---

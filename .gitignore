@@ -8,6 +8,8 @@ Output/Libraries/linuxARM/*
 Output/Libraries/macOS/*
 Output/Libraries/win64/*
 !Output/Libraries/*/README.md
+Output/Frameworks/*
+!Output/Frameworks/README.md
 source/iOS/*
 source/linux/*
 source/linuxARM/*

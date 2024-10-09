@@ -505,46 +505,44 @@ builtin_check_output() {
         print_debug "builtin_check_output(): HEADERS, LIBRARIES and FRAMEWORKS are empty."
         return 1  # Return 1 so build is still triggered.
     fi
-    local library_result=0
-    local framework_result=0
-    local header_result=0
-    for targetname in "${LIBRARIES[@]}"; do
-        if [[ ! -e "${LIBRARIES_PLATFORM_ROOT:?}/${targetname}" ]]; then
-            library_result=1
+    local header_fail=0
+    local library_fail=0
+    local framework_fail=0
+    for targetname in "${HEADERS[@]}"; do
+        if [[ ! -e "${HEADERS_ROOT:?}/${targetname}" ]]; then
+            header_fail=1
             break
         fi
     done
-    for targetname in "${HEADERS[@]}"; do
-        if [[ ! -e "${HEADERS_ROOT:?}/${targetname}" ]]; then
-            header_result=1
+    for targetname in "${LIBRARIES[@]}"; do
+        if [[ ! -e "${LIBRARIES_PLATFORM_ROOT:?}/${targetname}" ]]; then
+            library_fail=1
             break
         fi
     done
     for targetname in "${FRAMEWORKS[@]}"; do
         if [[ ! -e "${FRAMEWORKS_ROOT:?}/${targetname}" ]]; then
-            framework_result=1
+            framework_fail=1
             break
         fi
     done
 
-    if [[ "${PLATFORM}" == 'macOS' ]]; then
-        # On macOS, at least:
-        #   library_result AND header_result
-        #   OR
-        #   framework_result
-        # must be true for the package to be considered installed.
-        if [[ ${library_result} -ne 0 ]] || [[ ${header_result} -ne 0 ]]; then
-            # library or header failed
-            if [[ ${framework_result} -ne 0 ]]; then
-                # framework failed
-                return 1
-            fi
-        fi
-    else
-        if [[ ${library_result} -ne 0 ]] || [[ ${header_result} -ne 0 ]]; then
+    if [[ "${PLATFORM}" == 'macOS' ]] && [[ ${#FRAMEWORKS[@]} -gt 0 ]]; then
+        if [[ ${framework_fail} -eq 1 ]]; then
+            # FRAMEWORKS failed
             return 1
+        else
+            # FRAMEWORKS passed
+            print_ok "All framework files exist."
+            return 0
         fi
     fi
+
+    if [[ ${header_fail} -eq 1 ]] || [[ ${library_fail} -eq 1 ]]; then
+        # HEADERS or LIBRARIES failed
+        return 1
+    fi
+
 
     print_ok "All output files exist."
     return 0    # All checks passed.

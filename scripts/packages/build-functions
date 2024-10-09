@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
-# scripts/build-functions
+# scripts/packages/build-functions
 #   - is not an executable, it is intended to be sourced by other scripts.
-#   - belongs as exactly "{project_root}/scripts/build-functions".
+#   - belongs as exactly "{project_root}/scripts/packages/build-functions".
 #
 # Sourcing this file will set the following variables:
 #   OS                          - Operating system.
@@ -114,6 +114,54 @@ build_functions_main() {
 }
 
 # --- Helper functions ---
+
+# Fetch and verify a file with the provided URL, hash, and destination directory.
+#
+# Note that downloaded file path is always:
+#   "${PACKAGE_DOWNLOAD_DIR}/$(basename "$URL")"
+#
+# Uses global variables:
+#   PACKAGE_DOWNLOAD_DIR
+#
+# $1 - URL to fetch.
+# $2 - Hash to verify.
+# $3 - Destination directory.
+#
+# Returns 0 (true) if the file was downloaded, 1 otherwise.
+fetch_and_verify_file() {
+    local filename
+    filename=$(basename "$1")
+
+    # Check if the file already exists.
+    if [[ -e "${PACKAGE_DOWNLOAD_DIR}/${filename}" ]]; then
+        # Check the hash of the file.
+        if ! _check_file_hash "${PACKAGE_DOWNLOAD_DIR}/${filename}" "$2"; then
+            # Remove the file.
+            rm -f "${PACKAGE_DOWNLOAD_DIR}/${filename}"
+        else
+            print_ok "Existing file verified: ${filename}"
+            return 1
+        fi
+    fi
+
+    # Download the file.
+    print_ok "Downloading file: ${filename}"
+    wget -O "${PACKAGE_DOWNLOAD_DIR}/${filename}" "$1" -q --show-progress
+    local res=$?
+    if [[ $res -ne 0 ]]; then
+        print_error "Failed to download: ${1}"
+        exit 1
+    fi
+
+    # Check the hash of the file.
+    if ! _check_file_hash "${PACKAGE_DOWNLOAD_DIR}/${filename}" "$2"; then
+        print_error "Download failed verification: ${PACKAGE_DOWNLOAD_DIR}/${filename}"
+        exit 1
+    fi
+
+    print_ok "Download file verified: ${filename}"
+    return 0
+}
 
 # Print a formatted message to stdout. No colours.
 #
@@ -231,7 +279,7 @@ wait_progress() {
 start_timer() {
     local timer_name=$1
 
-    # Watch very carefully ... there is nothing up my sleeves ...
+    # Watch very carefully . . . there is nothing up my sleeves . . .
     declare -g "$timer_name"="$(date +%s)"  # Start time in seconds since epoch
     # Hey presto! We have declared a global variable from a function argument!
 }
@@ -244,7 +292,7 @@ start_timer() {
 stop_timer() {
     local timer_name=$1
 
-    # This is where we put the rabbit back into the hat ...
+    # This is where we put the rabbit back into the hat . . .
     local start_time=${!timer_name}
 
     local stop_time
@@ -284,13 +332,12 @@ stop_timer_error() {
 #   SOURCE_HASH             - package variable
 #   PACKAGE_NAME
 #   PACKAGE_DOWNLOAD_DIR
-#   SOURCE_PLATFORM_ROOT
 #
 # Sets global variables:
 #   PACKAGE_FILE            - Full path to downloaded package.
 #   BUILTIN_FETCH_NONE      - only defined if builtin function did nothing.
 #
-# Returns 0 (true) if the file was downloaded, 1 if it already exists.
+# Returns 0 (true) if the file was downloaded, 1 otherwise.
 builtin_fetch() {
     if [[ -z "${SOURCE_URL}" ]]; then
         BUILTIN_FETCH_NONE=1
@@ -298,40 +345,10 @@ builtin_fetch() {
         return 1    # Return 1 to indicate we did not download.
     fi
 
-    local filename
-    filename=$(basename "${SOURCE_URL}")
+    PACKAGE_FILE="${PACKAGE_DOWNLOAD_DIR}/$(basename "${SOURCE_URL}")"
 
-    # shellcheck disable=SC2034
-    PACKAGE_FILE="${PACKAGE_DOWNLOAD_DIR}/${filename}"
-
-    # Check if the file already exists.
-    if [[ -e "${PACKAGE_DOWNLOAD_DIR}/${filename}" ]]; then
-        # Check the hash of the file.
-        if ! _check_file_hash "${PACKAGE_DOWNLOAD_DIR}/${filename}" "${SOURCE_HASH}"; then
-            # Remove the file.
-            rm -f "${PACKAGE_DOWNLOAD_DIR}/${filename}"
-        else
-            print_ok "Using verified package: ${filename}"
-            return 1
-        fi
-    fi
-
-    # Download the file.
-    print_ok "Downloading package: ${filename}"
-    wget -O "${PACKAGE_DOWNLOAD_DIR}/${filename}" "${SOURCE_URL}" -q --show-progress
-    local res=$?
-    if [[ $res -ne 0 ]]; then
-        print_error "Failed to download ${filename}"
-        exit 1
-    fi
-
-    # Check the hash of the file.
-    if ! _check_file_hash "${PACKAGE_DOWNLOAD_DIR}/${filename}" "${SOURCE_HASH}"; then
-        print_error "Failed to verify hash of ${filename}"
-        exit 1
-    fi
-
-    return 0
+    fetch_and_verify_file "${SOURCE_URL}" "${SOURCE_HASH}" "${PACKAGE_DOWNLOAD_DIR}"
+    return $?
 }
 
 # Unpack source package. Only called when ${PACKAGE_SOURCE_DIR} is missing.
@@ -777,7 +794,7 @@ _identify_os_arch() {
 #   BUILD_LOG                   - calculated from SOURCE_PLATFORM_ROOT + PACKAGE_NAME
 #
 _identify_common_paths() {
-    PROJECT_ROOT="$(realpath "$(dirname "${BASH_SOURCE[0]}")/..")"
+    PROJECT_ROOT="$(realpath "$(dirname "${BASH_SOURCE[0]}")/../..")"
     SOURCE_PLATFORM_ROOT="${PROJECT_ROOT}/source/${PLATFORM}"
     HEADERS_ROOT="${PROJECT_ROOT}/Output/Headers"
     LIBRARIES_PLATFORM_ROOT="${PROJECT_ROOT}/Output/Libraries/${PLATFORM}"

@@ -6,38 +6,11 @@ REALDIR=$(dirname "$(realpath "$0")")
 cd "${REALDIR}" || exit 1
 # --- BOILERPLATE ---
 
-# Required functions:
-#   build()
-# Optional functions if builtin_* is insufficient:
-#   fetch()
-#   unpack()
-#   build()
-#   clean_source()
-#   clean_output()
-#   check_output()
-
-
-# Fetch source package.
-#
-# Uses global variables:
-#   PACKAGE_NAME            - from package dirname
-#   SOURCE_URL              - package variable
-#   SOURCE_HASH             - package variable
-#   PACKAGE_DOWNLOAD_DIR
-#   SOURCE_PLATFORM_ROOT
-#
-# Sets global variables:
-#   PACKAGE_FILE            - Full path to downloaded package.
-#
-# Returns 0 (true) if the file was downloaded, 1 if it already exists.
-#fetch() {
-#}
-
 # Unpack source package. Only called when ${PACKAGE_SOURCE_DIR} is missing/empty.
 #
 # Uses global variables:
 #   PACKAGE_FILE            - from fetch()
-#   PACKAGE_SOURCE_DIR
+#   PACKAGE_SOURCE_DIR   PACKAGE_SOURCE_DIR
 unpack() {
     print_ok "Unpacking."
     mkdir -p "${PACKAGE_SOURCE_DIR}"
@@ -46,31 +19,20 @@ unpack() {
 
 # Build package.
 #
+# Almost every package will need to define a build() function.
+#
+# Only a virtual package does not define a build() function. It is just used
+# as a way to group DEPENDENCIES in the "package" file.
+#
 # Uses global variables:
 #   PACKAGE_SOURCE_DIR      - from fetch()
 #   OS
 #   PLATFORM
-#   FRAMEWORKS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
 #   HEADERS_ROOT
+#   LIBRARIES_PLATFORM_ROOT
+#   FRAMEWORKS_ROOT
 #   BUILD_LOG
 build() {
-    print_ok "Build Task test."
-    (
-        echo "I am the build process ...."
-        sleep 5;
-        echo "... build process done."
-
-        exit 0
-    ) >> "${BUILD_LOG}" 2>&1 &
-    wait_progress $!
-    return_code=$?
-    if [[ $return_code -eq 0 ]]; then
-        print_ok "Build Task test done, rc: $return_code"
-    else
-        print_error "Build Task test failed, rc: $return_code"
-    fi
-
     print_ok "Installing."
     if [[ "${PLATFORM}" == 'macOS' ]]; then
 
@@ -126,42 +88,7 @@ build() {
     fi
 }
 
-# Clean source package.
-#
-# Uses global variables:
-#   PACKAGE_SOURCE_DIR
-#clean_source() {
-#}
-
-# Clean output files.
-#
-# Uses global variables:
-#   LIBRARIES
-#   FRAMEWORKS
-#   HEADERS
-#   LIBRARIES_DIR
-#   FRAMEWORKS_ROOT
-#   HEADERS_ROOT
-#clean_output() {
-#}
-
-# Check output files / directories exist. Used to determine if the package
-# has been installed.
-#
-# Uses global variables:
-#   PLATFORM
-#   LIBRARIES
-#   FRAMEWORKS
-#   HEADERS
-#   LIBRARIES_DIR
-#   FRAMEWORKS_ROOT
-#   HEADERS_ROOT
-#
-# Returns 0 if all output exist, 1 if any are missing.
-#check_output() {
-#}
-
 # --- BOILERPLATE ---
 # Source this after required functions are defined.
-source ../../build-functions
+source ../build-functions
 # --- BOILERPLATE ---

@@ -1,13 +1,13 @@
 # Short, single-line description of the package.
 DESCRIPTION="FileMaker Plugin SDK"
 
-# Colon-separated list of packages this one is dependent upon.
-DEPENDENCIES=
+DEPENDENCIES=(                  # List of packages this one is dependent upon.
+)
 
 SOURCE_URL=https://downloads.claris.com/DEVREL/sdk/fm_plugin_sdk_21.0.1.53.zip
 SOURCE_HASH=SHA256:422017d7952668addaa4e212e327eadc88ffbd2318abceae22382ce3458c38d5
 
-HEADERS=(                       # Package header sub-directory is sufficient.
+HEADERS=(                       # Each header sub-directory from this package.
     FMWrapper
 )
 

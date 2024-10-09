@@ -1,13 +1,13 @@
 # Short, single-line description of the package.
-DESCRIPTION="Template"
+DESCRIPTION="Template only - please edit me"
 
-# Colon-separated list of packages this one is dependent upon.
-DEPENDENCIES=
+DEPENDENCIES=(                  # List of packages this one is dependent upon.
+)
 
 SOURCE_URL=
 SOURCE_HASH=
 
-HEADERS=(                       # Package header sub-directory is sufficient.
+HEADERS=(                       # Each header sub-directory from this package.
 )
 
 LIBRARIES=(                     # Each individual library built by this package.

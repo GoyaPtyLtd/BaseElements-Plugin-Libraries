@@ -86,30 +86,50 @@ cd "${REALDIR}" || exit 1
 #   FRAMEWORKS_ROOT
 #   BUILD_LOG
 build() {
+    cd "$PACKAGE_SOURCE_DIR" || exit 1
+
+    rm -rf _build
+    mkdir -p _build
+    local PREFIX=${PWD}'/_build'
+
+    # Build
+
     rm -rf "${BUILD_LOG}"
-
-    print_ok "Build Task Test."
-    echo "------ Build Task Test ------" >> "${BUILD_LOG}"
+    print_ok "Building ..."
     (
-        echo "I am the build process ...."
-        sleep 5;
-        echo "... build process done."
 
-        exit 0
+        if [[ $PLATFORM = 'macOS' ]]; then
+
+            CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+            ./configure --static --prefix="${PREFIX}"
+
+        elif [[ $OS = 'Linux' ]]; then
+
+            CC=clang CXX=clang++ \
+            CFLAGS="-fPIC" \
+            ./configure --static --prefix="${PREFIX}"
+
+        fi
+
+        make -j${JOBS}
+        make install
+
     ) >> "${BUILD_LOG}" 2>&1 &
     wait_progress $!
     return_code=$?
+
     if [[ $return_code -ne 0 ]]; then
-        # The build failed, we must exit with a non-zero exit code, and not
-        # continue so a user may see the error, inspect the log, and state
-        # of the build.
-        print_error "Build Task Test failed. Return code: $return_code"
+        print_error "Build failed. Return code: $return_code"
         exit 1
     fi
 
-    print_ok "Build Task Test complete."
+    print_ok "Build complete."
 
-    # Finish any other install / copy tasks here.
+
+    # Copy the header and library files.
+
+    cp -R _build/include/* "${HEADERS_ROOT}/"
+    cp _build/lib/libz.a "${LIBRARIES_PLATFORM_ROOT}/"
 }
 
 # Clean source package.

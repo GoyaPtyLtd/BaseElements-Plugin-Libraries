@@ -1,18 +1,21 @@
 # Short, single-line description of the package.
-DESCRIPTION="Virtual package for build all"
+DESCRIPTION="Client-side URL transfer library"
 
 DEPENDENCIES=(                  # List of packages this one is dependent upon.
-    curl
-    fm_plugin_sdk
+  zlib
+  openssl
+  libssh2
 )
 
-SOURCE_URL=
-SOURCE_HASH=
+SOURCE_URL=https://curl.se/download/curl-8.6.0.tar.gz
+SOURCE_HASH=SHA256:9c6db808160015f30f3c656c0dec125feb9dc00753596bf858a272b5dd8dc398
 
 HEADERS=(                       # Each header sub-directory from this package.
+  curl
 )
 
 LIBRARIES=(                     # Each individual library built by this package.
+  libcurl.a
 )
 
 FRAMEWORKS=(                    # LIBRARIES+HEADERS or FRAMEWORKS on macOS.

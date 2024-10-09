@@ -1,9 +1,7 @@
 # Short, single-line description of the package.
-DESCRIPTION="Virtual package for build all"
+DESCRIPTION="Template only - please edit me"
 
 DEPENDENCIES=(                  # List of packages this one is dependent upon.
-    curl
-    fm_plugin_sdk
 )
 
 SOURCE_URL=

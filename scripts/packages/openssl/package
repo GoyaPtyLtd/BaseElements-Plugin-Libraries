@@ -1,18 +1,19 @@
 # Short, single-line description of the package.
-DESCRIPTION="Virtual package for build all"
+DESCRIPTION="Secure sockets library"
 
 DEPENDENCIES=(                  # List of packages this one is dependent upon.
-    curl
-    fm_plugin_sdk
 )
 
-SOURCE_URL=
-SOURCE_HASH=
+SOURCE_URL=https://www.openssl.org/source/openssl-3.2.1.tar.gz
+SOURCE_HASH=SHA256:83c7329fe52c850677d75e5d0b0ca245309b97e8ecbcfdc1dfdc4ab9fac35b39
 
 HEADERS=(                       # Each header sub-directory from this package.
+  openssl
 )
 
 LIBRARIES=(                     # Each individual library built by this package.
+  libcrypto.a
+  libssl.a
 )
 
 FRAMEWORKS=(                    # LIBRARIES+HEADERS or FRAMEWORKS on macOS.

@@ -11,6 +11,7 @@
 #                                 May be: x86_64, aarch64, or arm64
 #                                 (aarch64 only on Linux, arm64 only on macOS.)
 #   JOBS                        - Number of parallel jobs.
+#   HOST                        - Host triplet for cross-compilation.
 #   PLATFORM                    - Platform calculated from OS+ARCH.
 #                                 May be: linux, linuxARM, or macOS
 #
@@ -61,11 +62,6 @@ build_functions_main() {
 
     print_debug "Debug enabled."
     print_debug "OS: ${OS} ARCH: ${ARCH} PLATFORM: ${PLATFORM}"
-
-    # Remove any existing build log.
-    if [[ -r "${BUILD_LOG}" ]]; then
-        rm -f "${BUILD_LOG}"
-    fi
 
     # Source the package variables.
     _unset_package_variables
@@ -820,6 +816,7 @@ _check_file_hash() {
 #   OS
 #   ARCH
 #   JOBS
+#   HOST
 #   PLATFORM
 _identify_os_arch() {
     # Identify the OS and architecture.
@@ -829,6 +826,11 @@ _identify_os_arch() {
     if [[ $OS = 'Darwin' ]]; then
         PLATFORM='macOS'
         JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+        if [[ $ARCH = 'aarch64' ]]; then
+            HOST='x86_64-apple-darwin'
+        elif [[ $ARCH = 'x86_64' ]]; then
+            HOST='aarch64-apple-darwin'
+        fi
     elif [[ $OS = 'Linux' ]]; then
         JOBS=$(($(nproc) + 1))
         if [[ $ARCH = 'aarch64' ]]; then

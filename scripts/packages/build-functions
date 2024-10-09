@@ -362,6 +362,67 @@ builtin_unpack() {
         print_debug "builtin_unpack(): PACKAGE_FILE is unset/empty."
         return
     fi
+
+    local mime_type
+    mime_type=$(file --mime-type --brief "${PACKAGE_FILE}")
+
+    local filename
+    filename=$(basename "${PACKAGE_FILE}")
+
+    local file_type="unknown"
+
+    case "${mime_type}" in
+        "application/x-tar")
+            file_type="tar"
+            ;;
+        "application/gzip"|"application/x-gzip"|"application/x-xz")
+            # Check if the filename looks like a tar file.
+            # Most packages now use .tar. in the name, not so many use
+            # custom extensions like .tgz (tbz2, txz, tzst, !!)
+            if [[ "${filename}" == *.tar.* ]] || [[ "${filename}" == *.tgz ]]; then
+                file_type="tar"
+            else
+                print_error "Cannot identify compressed archive for: ${filename}"
+                exit 1
+            fi
+            ;;
+        "application/zip")
+            file_type="zip"
+            ;;
+        *)
+            print_error "Cannot unpack unknown mime type (${mime_type}) for: ${filename}"
+            exit 1
+            ;;
+    esac
+
+    case "${file_type}" in
+        "tar")
+            print_ok "Unpacking tar: ${filename}"
+            mkdir -p "${PACKAGE_SOURCE_DIR}" || {
+                print_error "Failed to create package source dir: ${PACKAGE_SOURCE_DIR}";
+                exit 1
+            }
+            tar -xf "${PACKAGE_FILE}" -C "${PACKAGE_SOURCE_DIR}" --strip-components=1 || {
+                print_error "Failed to unpack tar: ${filename}"
+                exit 1
+            }
+            ;;
+
+        "zip")
+            print_ok "Unpacking zip: ${filename}"
+            mkdir -p "${PACKAGE_SOURCE_DIR}" || {
+                print_error "Failed to create package source dir: ${PACKAGE_SOURCE_DIR}";
+                exit 1
+            }
+            unzip -q "${PACKAGE_FILE}" -d "${PACKAGE_SOURCE_DIR}" || {
+                print_error "Failed to unpack zip: ${filename}"
+                exit 1
+            }
+            ;;
+
+        *)
+            ;;
+    esac
 }
 
 # Build source package.
@@ -435,12 +496,12 @@ builtin_clean_output() {
 #
 # Uses global variables:
 #   PLATFORM
+#   HEADERS                 - package variable
 #   LIBRARIES               - package variable
 #   FRAMEWORKS              - package variable
-#   HEADERS                 - package variable
+#   HEADERS_ROOT
 #   LIBRARIES_PLATFORM_ROOT
 #   FRAMEWORKS_ROOT
-#   HEADERS_ROOT
 #
 # Returns 0 (true) if all output exist, 1 if any are missing.
 builtin_check_output() {

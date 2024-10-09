@@ -6,17 +6,6 @@ REALDIR=$(dirname "$(realpath "$0")")
 cd "${REALDIR}" || exit 1
 # --- BOILERPLATE ---
 
-# Unpack source package. Only called when ${PACKAGE_SOURCE_DIR} is missing/empty.
-#
-# Uses global variables:
-#   PACKAGE_FILE            - from fetch()
-#   PACKAGE_SOURCE_DIR   PACKAGE_SOURCE_DIR
-unpack() {
-    print_ok "Unpacking."
-    mkdir -p "${PACKAGE_SOURCE_DIR}"
-    unzip -q "${PACKAGE_FILE}" -d "${PACKAGE_SOURCE_DIR}"
-}
-
 # Build package.
 #
 # Almost every package will need to define a build() function.

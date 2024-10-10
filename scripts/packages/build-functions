@@ -22,9 +22,10 @@
 #                                   ubuntu22_04-aarch64     (Ubuntu 22.04 on aarch64)
 #                                   ubuntu22_04-x86_64      (Ubuntu 22.04 on x86_64)
 #
+#   PLATFORM_ROOT               - Root directory for this platform.
+#   PLATFORM_SRC                - Source directory for this platform.
 #   PLATFORM_INCLUDE            - Include directory for this platform.
 #   PLATFORM_LIBS               - Library directory for this platform.
-#   PLATFORM_SRC                - Source directory for this platform.
 #   PLATFORM_FRAMEWORKS         - Framework directory for this platform (mac ecosystem only).
 #   PACKAGE_NAME                - Dirname of the package.
 #   PACKAGE_DOWNLOAD            - Download directory for this package.
@@ -887,6 +888,7 @@ _identify_os_arch() {
 
 # Sets global variables:
 #   PROJECT_ROOT                - derived from this sourced script's location
+#   PLATFORM_ROOT
 #   PLATFORM_SRC
 #   PLATFORM_INCLUDE
 #   PLATFORM_LIBS
@@ -898,10 +900,11 @@ _identify_os_arch() {
 #
 _identify_common_paths() {
     PROJECT_ROOT="$(realpath "$(dirname "${BASH_SOURCE[0]}")/../..")"
-    PLATFORM_SRC="${PROJECT_ROOT}/Output/Platforms/${PLATFORM}/src"
-    PLATFORM_INCLUDE="${PROJECT_ROOT}/Output/Platforms/${PLATFORM}/include"
-    PLATFORM_LIBS="${PROJECT_ROOT}/Output/Platforms/${PLATFORM}/lib"
-    PLATFORM_FRAMEWORKS="${PROJECT_ROOT}/Output/Platforms/frameworks"
+    PLATFORM_ROOT="${PROJECT_ROOT}/Output/Platforms/${PLATFORM}"
+    PLATFORM_SRC="${PLATFORM_ROOT}/src"
+    PLATFORM_INCLUDE="${PLATFORM_ROOT}/include"
+    PLATFORM_LIBS="${PLATFORM_ROOT}/lib"
+    PLATFORM_FRAMEWORKS="${PLATFORM_ROOT}/frameworks"
     PACKAGE_NAME="$(basename "$(dirname "$(realpath "$0")")")"
     PACKAGE_DOWNLOAD="${PROJECT_ROOT}/downloads"
     PACKAGE_SRC="${PLATFORM_SRC}/${PACKAGE_NAME}"

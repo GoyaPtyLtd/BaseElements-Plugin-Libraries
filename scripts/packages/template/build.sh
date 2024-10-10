@@ -86,7 +86,7 @@ cd "${REALDIR}" || exit 1
 #   FRAMEWORKS_ROOT
 #   BUILD_LOG
 build() {
-    rm -rf "${BUILD_LOG}"
+    rm -f "${BUILD_LOG}"
 
     print_ok "Build Task Test."
     echo "------ Build Task Test ------" >> "${BUILD_LOG}"

@@ -1,16 +1,11 @@
 # Short, single-line description of the package.
-DESCRIPTION="Virtual package for build all"
+DESCRIPTION="Embeddable javascript engine"
 
 DEPENDENCIES=(                  # List of packages this one is dependent upon.
-    jq
-    duktape
-    curl
-    poco
-    fm_plugin_sdk
 )
 
-SOURCE_URL=
-SOURCE_HASH=
+SOURCE_URL=https://duktape.org/duktape-2.7.0.tar.xz
+SOURCE_HASH=SHA256:90f8d2fa8b5567c6899830ddef2c03f3c27960b11aca222fa17aa7ac613c2890
 
 HEADERS=(                       # Each header sub-directory from this package.
 )

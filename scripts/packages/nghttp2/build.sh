@@ -15,16 +15,16 @@ cd "${REALDIR}" || exit 1
 # as a way to group DEPENDENCIES in the "package" file.
 #
 # Uses global variables:
-#   PACKAGE_SOURCE_DIR      - from fetch()
+#   PACKAGE_SRC      - from fetch()
 #   OS
 #   PLATFORM
 #   HOST
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #   BUILD_LOG
 build() {
-    cd "${PACKAGE_SOURCE_DIR}" || exit 1
+    cd "${PACKAGE_SRC}" || exit 1
 
     rm -rf _build
     mkdir _build
@@ -66,9 +66,9 @@ build() {
 
     # Copy the header and library files.
 
-    cp -R _build/include/* "${HEADERS_ROOT}"
+    cp -R _build/include/* "${PLATFORM_INCLUDE}"
 
-    cp _build/lib/libnghttp2.a "${LIBRARIES_PLATFORM_ROOT}"
+    cp _build/lib/libnghttp2.a "${PLATFORM_LIBS}"
 }
 
 

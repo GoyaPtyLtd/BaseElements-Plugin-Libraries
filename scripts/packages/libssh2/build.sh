@@ -14,16 +14,16 @@ cd "${REALDIR}" || exit 1
 # as a way to group DEPENDENCIES in the "package" file.
 #
 # Uses global variables:
-#   PACKAGE_SOURCE_DIR      - from fetch()
+#   PACKAGE_SRC      - from fetch()
 #   OS
 #   PLATFORM
 #   HOST
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #   BUILD_LOG
 build() {
-    cd "${PACKAGE_SOURCE_DIR}" || exit 1
+    cd "${PACKAGE_SRC}" || exit 1
 
     rm -rf _build
     mkdir _build
@@ -36,8 +36,8 @@ build() {
         if [[ $PLATFORM = 'macOS' ]]; then
 
             CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" \
-            CPPFLAGS="-I${HEADERS_ROOT}" \
-            LDFLAGS="-L${LIBRARIES_PLATFORM_ROOT}" LIBS="-ldl" \
+            CPPFLAGS="-I${PLATFORM_INCLUDE}" \
+            LDFLAGS="-L${PLATFORM_LIBS}" LIBS="-ldl" \
             ./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
             --with-libz \
             --with-crypto=openssl \
@@ -48,8 +48,8 @@ build() {
 
             CC=clang CXX=clang++ \
             CFLAGS=-fPIC \
-            CPPFLAGS="-I${HEADERS_ROOT}" \
-            LDFLAGS="-L${LIBRARIES_PLATFORM_ROOT}" LIBS="-ldl" \
+            CPPFLAGS="-I${PLATFORM_INCLUDE}" \
+            LDFLAGS="-L${PLATFORM_LIBS}" LIBS="-ldl" \
             ./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
             --with-libz \
             --with-crypto=openssl \
@@ -74,8 +74,8 @@ build() {
 
     # Copy the header and library files.
 
-    cp -R _build/include/* "${HEADERS_ROOT}"
-    cp _build/lib/libssh2.a "${LIBRARIES_PLATFORM_ROOT}"
+    cp -R _build/include/* "${PLATFORM_INCLUDE}"
+    cp _build/lib/libssh2.a "${PLATFORM_LIBS}"
 }
 
 # --- BOILERPLATE ---

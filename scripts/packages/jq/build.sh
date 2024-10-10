@@ -14,19 +14,19 @@ cd "${REALDIR}" || exit 1
 # as a way to group DEPENDENCIES in the "package" file.
 #
 # Uses global variables:
-#   PACKAGE_SOURCE_DIR      - from fetch()
+#   PACKAGE_SRC      - from fetch()
 #   OS
 #   PLATFORM
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #   BUILD_LOG
 build() {
-    cd "${PACKAGE_SOURCE_DIR}" || exit 1
+    cd "${PACKAGE_SRC}" || exit 1
 
     rm -rf _build
     mkdir _build
-    PREFIX=${PWD}'/_build'
+    local PREFIX=${PWD}'/_build'
 
     # Build
     rm -f "${BUILD_LOG}"
@@ -67,10 +67,10 @@ build() {
     # BEJSON.cpp wants JQ_VERSION defined, so we have to special-case
     # the header file, as "version.h" just isn't generic enough to live
     # in the "include" root.
-    cp src/version.h "${HEADERS_ROOT}/jq_version.h"
-    cp -R _build/include/* "${HEADERS_ROOT}/"
+    cp src/version.h "${PLATFORM_INCLUDE}/jq_version.h"
+    cp -R _build/include/* "${PLATFORM_INCLUDE}/"
 
-    cp _build/lib/libjq.a "${LIBRARIES_PLATFORM_ROOT}/"
+    cp _build/lib/libjq.a "${PLATFORM_LIBS}/"
 
 }
 

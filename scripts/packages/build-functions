@@ -10,19 +10,24 @@
 #   ARCH                        - Architecture.
 #                                 May be: x86_64, aarch64, or arm64
 #                                 (aarch64 only on Linux, arm64 only on macOS.)
-#   JOBS                        - Number of parallel jobs.
+#   JOBS                        - Number of parallel jobs, default to CPUs + 1.
 #   HOST                        - Host triplet for cross-compilation.
-#   PLATFORM                    - Platform calculated from OS+ARCH.
-#                                 May be: linux, linuxARM, or macOS
+#   PLATFORM                    - This is the target platform we are building for.
+#                                 Defaults to host platform like:
+#                                   macos-x86_64_aarch64    (macOS on x86_64 and aarch64)
+#                                   ubuntu20_04-x86_64      (Ubuntu 20.04 on x86_64)
+#                                   ubuntu22_04-aarch64     (Ubuntu 22.04 on aarch64)
+#                                   ubuntu22_04-x86_64      (Ubuntu 22.04 on x86_64)
 #
-#   PROJECT_ROOT                - The root of the project.
-#   SOURCE_PLATFORM_ROOT        - Source directory for this platform.
-#   HEADERS_ROOT                - Output directory for headers.
-#   LIBRARIES_PLATFORM_ROOT     - Output directory for libraries for this platform.
-#   FRAMEWORKS_ROOT             - Output directory for frameworks (macOS only).
+#   PROJECT_ROOT                - The root directory of BaseElements-Libraries.
+#   PLATFORM_INCLUDE            - Include directory for this platform.
+#   PLATFORM_LIBS               - Library directory for this platform.
+#   PLATFORM_SRC                - Source directory for this platform.
+#   PLATFORM_FRAMEWORKS         - Framework directory for this platform (mac ecosystem only).
 #   PACKAGE_NAME                - Dirname of the package.
-#   PACKAGE_DOWNLOAD_DIR        - Location to download package source to.
-#   PACKAGE_SOURCE_DIR          - Location to unpack source to (includes PACKAGE_NAME).
+#   PACKAGE_DOWNLOAD            - Download directory for this package.
+#   PACKAGE_SRC                 - Source directory where this package is unpacked.
+#                                 ( simply ${PLATFORM_SRC}/${PACKAGE_NAME} )
 #   BUILD_LOG                   - Filename to append build log to.
 #
 #   PACKAGE_FILE                - Full path to downloaded package. Set by fetch()
@@ -57,7 +62,7 @@ build_functions_main() {
     # Identify and set the OS/ARCH/JOBS/PLATFORM variables.
     _identify_os_arch
 
-    # Identify common paths: PROJECT_ROOT, SOURCE_PLATFORM_ROOT, etc.
+    # Identify common paths: PROJECT_ROOT, PLATFORM_SRC, etc.
     _identify_common_paths
 
     print_debug "Debug enabled."
@@ -114,10 +119,10 @@ build_functions_main() {
 # Fetch and verify a file with the provided URL, hash, and destination directory.
 #
 # Note that downloaded file path is always:
-#   "${PACKAGE_DOWNLOAD_DIR}/$(basename "$URL")"
+#   "${PACKAGE_DOWNLOAD}/$(basename "$URL")"
 #
 # Uses global variables:
-#   PACKAGE_DOWNLOAD_DIR
+#   PACKAGE_DOWNLOAD
 #
 # $1 - URL to fetch.
 # $2 - Hash to verify.
@@ -128,12 +133,18 @@ fetch_and_verify_file() {
     local filename
     filename=$(basename "$1")
 
+    # Ensure download directory exists.
+    mkdir -p "${PACKAGE_DOWNLOAD}" || {
+        print_error "Failed to create package download dir: ${PACKAGE_DOWNLOAD}"
+        exit 1
+    }
+
     # Check if the file already exists.
-    if [[ -e "${PACKAGE_DOWNLOAD_DIR}/${filename}" ]]; then
+    if [[ -e "${PACKAGE_DOWNLOAD}/${filename}" ]]; then
         # Check the hash of the file.
-        if ! _check_file_hash "${PACKAGE_DOWNLOAD_DIR}/${filename}" "$2"; then
+        if ! _check_file_hash "${PACKAGE_DOWNLOAD}/${filename}" "$2"; then
             # Remove the file.
-            rm -f "${PACKAGE_DOWNLOAD_DIR}/${filename}"
+            rm -f "${PACKAGE_DOWNLOAD}/${filename}"
         else
             print_ok "Existing file verified: ${filename}"
             return 1
@@ -142,7 +153,7 @@ fetch_and_verify_file() {
 
     # Download the file.
     print_ok "Downloading file: ${filename}"
-    wget -O "${PACKAGE_DOWNLOAD_DIR}/${filename}" "$1" -q --show-progress
+    wget -O "${PACKAGE_DOWNLOAD}/${filename}" "$1" -q --show-progress
     local res=$?
     if [[ $res -ne 0 ]]; then
         print_error "Failed to download: ${1}"
@@ -150,8 +161,8 @@ fetch_and_verify_file() {
     fi
 
     # Check the hash of the file.
-    if ! _check_file_hash "${PACKAGE_DOWNLOAD_DIR}/${filename}" "$2"; then
-        print_error "Download failed verification: ${PACKAGE_DOWNLOAD_DIR}/${filename}"
+    if ! _check_file_hash "${PACKAGE_DOWNLOAD}/${filename}" "$2"; then
+        print_error "Download failed verification: ${PACKAGE_DOWNLOAD}/${filename}"
         exit 1
     fi
 
@@ -326,8 +337,7 @@ stop_timer_error() {
 # Uses global variables:
 #   SOURCE_URL              - package variable
 #   SOURCE_HASH             - package variable
-#   PACKAGE_NAME
-#   PACKAGE_DOWNLOAD_DIR
+#   PACKAGE_DOWNLOAD
 #
 # Sets global variables:
 #   PACKAGE_FILE            - Full path to downloaded package.
@@ -341,16 +351,17 @@ builtin_fetch() {
         return 1    # Return 1 to indicate we did not download.
     fi
 
-    PACKAGE_FILE="${PACKAGE_DOWNLOAD_DIR}/$(basename "${SOURCE_URL}")"
+    PACKAGE_FILE="${PACKAGE_DOWNLOAD}/$(basename "${SOURCE_URL}")"
 
-    fetch_and_verify_file "${SOURCE_URL}" "${SOURCE_HASH}" "${PACKAGE_DOWNLOAD_DIR}"
+    fetch_and_verify_file "${SOURCE_URL}" "${SOURCE_HASH}" "${PACKAGE_DOWNLOAD}"
     return $?
 }
 
-# Unpack source package. Only called when ${PACKAGE_SOURCE_DIR} is missing.
+# Unpack source package. Only called when ${PACKAGE_SRC} is missing.
 #
 # Uses global variables:
 #   PACKAGE_FILE            - from fetch()
+#   PACKAGE_SRC
 #   BUILTIN_UNPACK_NONE     - only defined if builtin function did nothing.
 builtin_unpack() {
     if [[ ! -v PACKAGE_FILE ]] || [[ -z "${PACKAGE_FILE}" ]]; then
@@ -394,11 +405,11 @@ builtin_unpack() {
     case "${file_type}" in
         "tar")
             print_ok "Unpacking tar: ${filename}"
-            mkdir -p "${PACKAGE_SOURCE_DIR}" || {
-                print_error "Failed to create package source dir: ${PACKAGE_SOURCE_DIR}";
+            mkdir -p "${PACKAGE_SRC}" || {
+                print_error "Failed to create package source dir: ${PACKAGE_SRC}";
                 exit 1
             }
-            tar -xf "${PACKAGE_FILE}" -C "${PACKAGE_SOURCE_DIR}" --strip-components=1 || {
+            tar -xf "${PACKAGE_FILE}" -C "${PACKAGE_SRC}" --strip-components=1 || {
                 print_error "Failed to unpack tar: ${filename}"
                 exit 1
             }
@@ -406,11 +417,11 @@ builtin_unpack() {
 
         "zip")
             print_ok "Unpacking zip: ${filename}"
-            mkdir -p "${PACKAGE_SOURCE_DIR}" || {
-                print_error "Failed to create package source dir: ${PACKAGE_SOURCE_DIR}";
+            mkdir -p "${PACKAGE_SRC}" || {
+                print_error "Failed to create package source dir: ${PACKAGE_SRC}";
                 exit 1
             }
-            unzip -q "${PACKAGE_FILE}" -d "${PACKAGE_SOURCE_DIR}" || {
+            unzip -q "${PACKAGE_FILE}" -d "${PACKAGE_SRC}" || {
                 print_error "Failed to unpack zip: ${filename}"
                 exit 1
             }
@@ -436,16 +447,16 @@ builtin_build() {
 # Clean source package.
 #
 # Uses global variables:
-#   PACKAGE_SOURCE_DIR
+#   PACKAGE_SRC
 #
 # Returns 0 (true) when done.
 builtin_clean_source() {
-    if [[ ! -v PACKAGE_SOURCE_DIR ]] || [[ -z "${PACKAGE_SOURCE_DIR}" ]]; then
-        print_error "Cannot clean source, PACKAGE_SOURCE_DIR is not set"
+    if [[ ! -v PACKAGE_SRC ]] || [[ -z "${PACKAGE_SRC}" ]]; then
+        print_error "Cannot clean source, PACKAGE_SRC is not set"
         exit 1
     fi
     print_ok "Cleaning package source."
-    rm -rf "${PACKAGE_SOURCE_DIR}"
+    rm -rf "${PACKAGE_SRC}"
     rm -f "${BUILD_LOG}"
 
     return 0
@@ -457,26 +468,26 @@ builtin_clean_source() {
 #   HEADERS                 - package variable
 #   LIBRARIES               - package variable
 #   FRAMEWORKS              - package variable
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 builtin_clean_output() {
     local did_something=0
     for targetname in "${HEADERS[@]}"; do
-        if [[ -e "${HEADERS_ROOT:?}/${targetname}" ]]; then
-            rm -rf "${HEADERS_ROOT:?}/${targetname}"
+        if [[ -e "${PLATFORM_INCLUDE:?}/${targetname}" ]]; then
+            rm -rf "${PLATFORM_INCLUDE:?}/${targetname}"
             did_something=1
         fi
     done
     for targetname in "${LIBRARIES[@]}"; do
-        if [[ -e "${LIBRARIES_PLATFORM_ROOT:?}/${targetname}" ]]; then
-            rm -rf "${LIBRARIES_PLATFORM_ROOT:?}/${targetname}"
+        if [[ -e "${PLATFORM_LIBS:?}/${targetname}" ]]; then
+            rm -rf "${PLATFORM_LIBS:?}/${targetname}"
             did_something=1
         fi
     done
     for targetname in "${FRAMEWORKS[@]}"; do
-        if [[ -e "${FRAMEWORKS_ROOT:?}/${targetname}" ]]; then
-            rm -rf "${FRAMEWORKS_ROOT:?}/${targetname}"
+        if [[ -e "${PLATFORM_FRAMEWORKS:?}/${targetname}" ]]; then
+            rm -rf "${PLATFORM_FRAMEWORKS:?}/${targetname}"
             did_something=1
         fi
     done
@@ -495,9 +506,9 @@ builtin_clean_output() {
 #   HEADERS                 - package variable
 #   LIBRARIES               - package variable
 #   FRAMEWORKS              - package variable
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #
 # Returns 0 (true) if all output exist, 1 if any are missing.
 builtin_check_output() {
@@ -509,25 +520,25 @@ builtin_check_output() {
     local library_fail=0
     local framework_fail=0
     for targetname in "${HEADERS[@]}"; do
-        if [[ ! -e "${HEADERS_ROOT:?}/${targetname}" ]]; then
+        if [[ ! -e "${PLATFORM_INCLUDE:?}/${targetname}" ]]; then
             header_fail=1
             break
         fi
     done
     for targetname in "${LIBRARIES[@]}"; do
-        if [[ ! -e "${LIBRARIES_PLATFORM_ROOT:?}/${targetname}" ]]; then
+        if [[ ! -e "${PLATFORM_LIBS:?}/${targetname}" ]]; then
             library_fail=1
             break
         fi
     done
     for targetname in "${FRAMEWORKS[@]}"; do
-        if [[ ! -e "${FRAMEWORKS_ROOT:?}/${targetname}" ]]; then
+        if [[ ! -e "${PLATFORM_FRAMEWORKS:?}/${targetname}" ]]; then
             framework_fail=1
             break
         fi
     done
 
-    if [[ "${PLATFORM}" == 'macOS' ]] && [[ ${#FRAMEWORKS[@]} -gt 0 ]]; then
+    if [[ "${PLATFORM}" =~ /^macos/ ]] && [[ ${#FRAMEWORKS[@]} -gt 0 ]]; then
         if [[ ${framework_fail} -eq 1 ]]; then
             # FRAMEWORKS failed
             return 1
@@ -734,7 +745,7 @@ _display_package_info() {
     print_plain "Dependencies: ${DEPENDENCIES[*]}"
 }
 
-# Parse command line arguements. Show usage if needed.
+# Parse command line arguments. Show usage if needed.
 #
 # Sets global variables:
 #   PACKAGE_ACTION
@@ -784,14 +795,14 @@ _check_file_hash() {
     local calculated_hash
     case "${hash_type}" in
         SHA256)
-            if [[ "${PLATFORM}" == 'macOS' ]]; then
+            if [[ "${OS}" == 'Darwin' ]]; then
                 calculated_hash=$(shasum -a 256 "${file}" | awk '{print $1}')
             else
                 calculated_hash=$(sha256sum "${file}" | awk '{print $1}')
             fi
             ;;
         MD5)
-            if [[ "${PLATFORM}" == 'macOS' ]]; then
+            if [[ "${OS}" == 'Darwin' ]]; then
                 calculated_hash=$(md5 -q "${file}")
             else
                 calculated_hash=$(md5sum "${file}" | awk '{print $1}')
@@ -821,23 +832,52 @@ _identify_os_arch() {
     OS=$(uname -s)		# Linux|Darwin
     ARCH=$(uname -m)	# x86_64|aarch64|arm64
     JOBS=1              # Number of parallel jobs
-    if [[ $OS = 'Darwin' ]]; then
-        PLATFORM='macOS'
+    PLATFORM='unknown'
+    if [[ $OS == 'Darwin' ]]; then
+        PLATFORM='macos-arm64_x86_64'
         JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
-        if [[ $ARCH = 'aarch64' ]]; then
+        if [[ $ARCH == 'aarch64' ]]; then
             HOST='x86_64-apple-darwin'
-        elif [[ $ARCH = 'x86_64' ]]; then
+        elif [[ $ARCH == 'x86_64' ]]; then
             HOST='aarch64-apple-darwin'
         fi
-    elif [[ $OS = 'Linux' ]]; then
+    elif [[ $OS == 'Linux' ]]; then
         JOBS=$(($(nproc) + 1))
-        if [[ $ARCH = 'aarch64' ]]; then
-            PLATFORM='linuxARM'
-        elif [[ $ARCH = 'x86_64' ]]; then
-            PLATFORM='linux'
+
+        local os_id="unknown"
+        local version_id="unknown"
+        local ubuntu_version="unknown"
+
+        if [[ -r /etc/os-release ]]; then
+            os_id="$(. /etc/os-release && echo "$ID")"
+            version_id="$(. /etc/os-release && echo "$VERSION_ID")"
+        else
+            echo "!! This Linux has no /etc/os-release, can't continue."
+            exit 1
+        fi
+        if [[ "$os_id" != "ubuntu" ]]; then
+            echo "!! This Linux is not ubuntu according to /etc/os-release, can't continue."
+            exit 1
+        fi
+        case "${version_id}" in
+            "20.04")
+                ubuntu_version="ubuntu20_04"
+                ;;
+            "22.04")
+                ubuntu_version="ubuntu22_04"
+                ;;
+            *)
+                print_error "Unsupported Ubuntu version: ${VERSION_ID}"
+                exit 1
+                ;;
+        esac
+        if [[ $ARCH == 'aarch64' ]]; then
+            PLATFORM="${ubuntu_version}-aarch64"
+        elif [[ $ARCH == 'x86_64' ]]; then
+            PLATFORM="${ubuntu_version}-x86_64"
         fi
     fi
-    if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
+    if [[ "${PLATFORM}" =~ /^unknown/ ]]; then
         echo "!! Unknown OS/ARCH: $OS/$ARCH"
         exit 1
     fi
@@ -845,25 +885,25 @@ _identify_os_arch() {
 
 # Sets global variables:
 #   PROJECT_ROOT                - derived from this sourced script's location
-#   SOURCE_PLATFORM_ROOT        - calculated from PROJECT_ROOT + PLATFORM
-#   HEADERS_ROOT                - derived from PROJECT_ROOT
-#   LIBRARIES_PLATFORM_ROOT     - calculated from PROJECT_ROOT + PLATFORM
-#   FRAMEWORKS_ROOT             - derived from PROJECT_ROOT
+#   PLATFORM_SRC
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #   PACKAGE_NAME                - derived from sourcing script's location
-#   PACKAGE_DOWNLOAD_DIR        - calculated from PROJECT_ROOT
-#   PACKAGE_SOURCE_DIR          - calculated from SOURCE_PLATFORM_ROOT + PACKAGE_NAME
-#   BUILD_LOG                   - calculated from SOURCE_PLATFORM_ROOT + PACKAGE_NAME
+#   PACKAGE_DOWNLOAD
+#   PACKAGE_SRC                 - calculated from PLATFORM_SRC + PACKAGE_NAME
+#   BUILD_LOG                   - calculated from PLATFORM_SRC + PACKAGE_NAME
 #
 _identify_common_paths() {
     PROJECT_ROOT="$(realpath "$(dirname "${BASH_SOURCE[0]}")/../..")"
-    SOURCE_PLATFORM_ROOT="${PROJECT_ROOT}/source/${PLATFORM}"
-    HEADERS_ROOT="${PROJECT_ROOT}/Output/Headers"
-    LIBRARIES_PLATFORM_ROOT="${PROJECT_ROOT}/Output/Libraries/${PLATFORM}"
-    FRAMEWORKS_ROOT="${PROJECT_ROOT}/Output/Frameworks"
+    PLATFORM_SRC="${PROJECT_ROOT}/Output/Platforms/${PLATFORM}/src"
+    PLATFORM_INCLUDE="${PROJECT_ROOT}/Output/Platforms/${PLATFORM}/include"
+    PLATFORM_LIBS="${PROJECT_ROOT}/Output/Platforms/${PLATFORM}/lib"
+    PLATFORM_FRAMEWORKS="${PROJECT_ROOT}/Output/Platforms/frameworks"
     PACKAGE_NAME="$(basename "$(dirname "$(realpath "$0")")")"
-    PACKAGE_DOWNLOAD_DIR="${PROJECT_ROOT}/source"
-    PACKAGE_SOURCE_DIR="${SOURCE_PLATFORM_ROOT}/${PACKAGE_NAME}"
-    BUILD_LOG="${SOURCE_PLATFORM_ROOT}/${PACKAGE_NAME}.log"
+    PACKAGE_DOWNLOAD="${PROJECT_ROOT}/downloads"
+    PACKAGE_SRC="${PLATFORM_SRC}/${PACKAGE_NAME}"
+    BUILD_LOG="${PLATFORM_SRC}/${PACKAGE_NAME}.log"
 }
 
 # Unset all known variables set by package file.
@@ -873,9 +913,9 @@ _unset_package_variables() {
         DEPENDENCIES
         SOURCE_URL
         SOURCE_HASH
+        HEADERS
         LIBRARIES
         FRAMEWORKS
-        HEADERS
     )
     for i in "${var_names[@]}"; do
         unset "${i}"
@@ -917,16 +957,16 @@ _ensure_build_functions() {
 # Returns true (0) if the package source is missing.
 #
 # Uses global variables:
-#   PACKAGE_SOURCE_DIR
+#   PACKAGE_SRC
 _package_source_missing() {
-    if [[ ! -d "${PACKAGE_SOURCE_DIR}" ]]; then
+    if [[ ! -d "${PACKAGE_SRC}" ]]; then
         # Directory does not exist.
-        print_debug "_package_source_missing(): Directory does not exist: ${PACKAGE_SOURCE_DIR}"
+        print_debug "_package_source_missing(): Directory does not exist: ${PACKAGE_SRC}"
         return 0
     fi
-    if [[ -z "$( ls -A "${PACKAGE_SOURCE_DIR}" )" ]]; then
+    if [[ -z "$( ls -A "${PACKAGE_SRC}" )" ]]; then
         # Directory is empty.
-        print_debug "_package_source_missing(): Directory is empty: ${PACKAGE_SOURCE_DIR}"
+        print_debug "_package_source_missing(): Directory is empty: ${PACKAGE_SRC}"
         return 0
     fi
     return 1

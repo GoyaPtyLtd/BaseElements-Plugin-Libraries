@@ -14,66 +14,47 @@ cd "${REALDIR}" || exit 1
 # as a way to group DEPENDENCIES in the "package" file.
 #
 # Uses global variables:
-#   PACKAGE_SOURCE_DIR      - from fetch()
+#   PACKAGE_SRC      - from fetch()
 #   OS
 #   PLATFORM
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #   BUILD_LOG
 build() {
     print_ok "Installing."
     if [[ "${PLATFORM}" == 'macOS' ]]; then
 
-        rsync -qr "${PACKAGE_SOURCE_DIR}/PlugInSDK/Libraries/Mac/FMWrapper.framework" "${FRAMEWORKS_ROOT}"
+        rsync -qr "${PACKAGE_SRC}/PlugInSDK/Libraries/Mac/FMWrapper.framework" "${PLATFORM_FRAMEWORKS}"
 
-    elif [[ "${OS}" == 'Linux' ]]; then
+    elif [[ "${PLATFORM}" =~ ^ubuntu ]]; then
 
-        local os_id="unknown"
-        local version_id="unknown"
-        local so_lib_path="/PlugInSDK/Libraries/Linux"
+        # Extract ubuntu version and arch from PLATFORM: e.g. ubuntu22_04-aarch64
+        local plat_os plat_arch
+        plat_os="${PLATFORM%%-*}"               # ubuntu22_04
+        plat_arch="${PLATFORM##*-}"             # aarch64
+        local plat_os_version plat_os_major
+        plat_os_version="${plat_os#ubuntu}"     # 22_04
+        plat_os_major="${plat_os_version%%_*}"  # 22
 
-        if [[ -r /etc/os-release ]]; then
-            os_id="$(. /etc/os-release && echo "$ID")"
-            version_id="$(. /etc/os-release && echo "$VERSION_ID")"
-        else
-            print_error "No /etc/os-release, can't continue building."
-            exit 1
-        fi
-        if [[ "$os_id" != "ubuntu" ]]; then
-            print_error "Not ubuntu according to /etc/os-release, can't continue building."
-            exit 1
-        fi
-        case "${version_id}" in
-            "20.04")
-                so_lib_path="${so_lib_path}/U20"
+        local fm_sdk_arch
+        case "${plat_arch}" in
+            "x86_64")
+                fm_sdk_arch="x64"
                 ;;
-            "22.04")
-                so_lib_path="${so_lib_path}/U22"
+            "aarch64")
+                fm_sdk_arch="arm64"
                 ;;
             *)
-                print_error "Unsupported Ubuntu version: ${VERSION_ID}"
+                echo "Unknown architecture: ${plat_arch}"
                 exit 1
                 ;;
         esac
-        if [[ "${version_id}" != "20.04" ]]; then
-            # Only Ubuntu 22.04 (and above) have a 64-bit ARM architecture.
-            case "${ARCH}" in
-                "x86_64")
-                    so_lib_path="${so_lib_path}/x64"
-                    ;;
-                "aarch64")
-                    so_lib_path="${so_lib_path}/arm64"
-                    ;;
-                *)
-                    print_error "Unsupported architecture: ${ARCH}"
-                    exit 1
-                    ;;
-            esac
-        fi
 
-        rsync -qr "${PACKAGE_SOURCE_DIR}/${so_lib_path}/libFMWrapper.so" "${LIBRARIES_PLATFORM_ROOT}"
-        rsync -qr "${PACKAGE_SOURCE_DIR}/PlugInSDK/Headers/FMWrapper" "${HEADERS_ROOT}"
+        local fm_sdk_so_lib_path="U${plat_os_major}/${fm_sdk_arch}"  # U22/arm64
+
+        rsync -qr "${PACKAGE_SRC}/PlugInSDK/Libraries/Linux/${fm_sdk_so_lib_path}/libFMWrapper.so" "${PLATFORM_LIBS}"
+        rsync -qr "${PACKAGE_SRC}/PlugInSDK/Headers/FMWrapper" "${PLATFORM_INCLUDE}"
     fi
 }
 

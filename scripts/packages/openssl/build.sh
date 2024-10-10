@@ -14,15 +14,15 @@ cd "${REALDIR}" || exit 1
 # as a way to group DEPENDENCIES in the "package" file.
 #
 # Uses global variables:
-#   PACKAGE_SOURCE_DIR      - from fetch()
+#   PACKAGE_SRC      - from fetch()
 #   OS
 #   PLATFORM
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #   BUILD_LOG
 build() {
-    cd "${PACKAGE_SOURCE_DIR}" || exit 1
+    cd "${PACKAGE_SRC}" || exit 1
 
     rm -rf _build
     mkdir -p _build
@@ -85,13 +85,13 @@ build() {
     # Copy the header and library files.
 
     if [[ $PLATFORM = 'macOS' ]]; then
-        cp -R _build_x86_64/include/* "${HEADERS_ROOT}/"
+        cp -R _build_x86_64/include/* "${PLATFORM_INCLUDE}/"
     else
-        cp -R _build/include/* "${HEADERS_ROOT}/"
+        cp -R _build/include/* "${PLATFORM_INCLUDE}/"
     fi
 
-    cp _build/lib/libcrypto.a "${LIBRARIES_PLATFORM_ROOT}"
-    cp _build/lib/libssl.a "${LIBRARIES_PLATFORM_ROOT}"
+    cp _build/lib/libcrypto.a "${PLATFORM_LIBS}"
+    cp _build/lib/libssl.a "${PLATFORM_LIBS}"
 }
 
 

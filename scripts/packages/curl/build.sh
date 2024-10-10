@@ -15,15 +15,15 @@ cd "${REALDIR}" || exit 1
 # as a way to group DEPENDENCIES in the "package" file.
 #
 # Uses global variables:
-#   PACKAGE_SOURCE_DIR      - from fetch()
+#   PACKAGE_SRC      - from fetch()
 #   OS
 #   PLATFORM
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #   BUILD_LOG
 build() {
-    cd "${PACKAGE_SOURCE_DIR}" || exit 1
+    cd "${PACKAGE_SRC}" || exit 1
 
     rm -rf _build*
     mkdir _build
@@ -40,8 +40,8 @@ build() {
             local PREFIX_x86_64=${PWD}'/_build_x86_64'
 
             CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
-            CPPFLAGS="-I${HEADERS_ROOT}" \
-            LDFLAGS="-L${LIBRARIES_PLATFORM_ROOT}" LIBS="-ldl" \
+            CPPFLAGS="-I${PLATFORM_INCLUDE}" \
+            LDFLAGS="-L${PLATFORM_LIBS}" LIBS="-ldl" \
             ./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
             --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2  \
             --with-zlib --with-openssl --with-libssh2 --with-nghttp \
@@ -56,8 +56,8 @@ build() {
             local PREFIX_arm64=${PWD}'/_build_arm64'
 
             CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
-            CPPFLAGS="-I${HEADERS_ROOT}" \
-            LDFLAGS="-L${LIBRARIES_PLATFORM_ROOT}" LIBS="-ldl" \
+            CPPFLAGS="-I${PLATFORM_INCLUDE}" \
+            LDFLAGS="-L${PLATFORM_LIBS}" LIBS="-ldl" \
             ./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
             --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2  \
             --with-zlib --with-openssl --with-libssh2 --with-nghttp \
@@ -76,8 +76,8 @@ build() {
         elif [[ $OS = 'Linux' ]]; then
 
             CC=clang CXX=clang++ \
-            CPPFLAGS="-I${HEADERS_ROOT}" \
-            LDFLAGS="-L${LIBRARIES_PLATFORM_ROOT}" LIBS="-ldl" \
+            CPPFLAGS="-I${PLATFORM_INCLUDE}" \
+            LDFLAGS="-L${PLATFORM_LIBS}" LIBS="-ldl" \
             ./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
             --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 \
             --with-zlib --with-openssl --with-libssh2 --with-nghttp \
@@ -100,12 +100,12 @@ build() {
     # Copy the header and library files.
 
     if [[ $PLATFORM = 'macOS' ]]; then
-        cp -R _build_x86_64/include/* "${HEADERS_ROOT}"
+        cp -R _build_x86_64/include/* "${PLATFORM_INCLUDE}"
     else
-        cp -R _build/include/* "${HEADERS_ROOT}"
+        cp -R _build/include/* "${PLATFORM_INCLUDE}"
     fi
 
-    cp _build/lib/libcurl.a "${LIBRARIES_PLATFORM_ROOT}"
+    cp _build/lib/libcurl.a "${PLATFORM_LIBS}"
 
 }
 

@@ -15,22 +15,22 @@ cd "${REALDIR}" || exit 1
 # as a way to group DEPENDENCIES in the "package" file.
 #
 # Uses global variables:
-#   PACKAGE_SOURCE_DIR      - from fetch()
+#   PACKAGE_SRC      - from fetch()
 #   OS
 #   PLATFORM
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #   BUILD_LOG
 build() {
-    cd "${PACKAGE_SOURCE_DIR}" || exit 1
+    cd "${PACKAGE_SRC}" || exit 1
 
 
     # This is all a bit of a kludge, I would hope we can build this as a
     # static library instead - GAV
 
     print_ok "Installing duktape source files."
-    cp -R src "${HEADERS_ROOT}/../Source/duktape/"
+    cp -R src "${PLATFORM_INCLUDE}/../Source/duktape/"
 }
 
 # Clean output files.
@@ -39,9 +39,9 @@ build() {
 #   HEADERS                 - package variable
 #   LIBRARIES               - package variable
 #   FRAMEWORKS              - package variable
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 clean_output() {
     # The builtin version of this function will clean out whatever is
     # listed in the HEADERS, LIBRARIES and FRAMEWORKS variables in the
@@ -52,7 +52,7 @@ clean_output() {
     builtin_clean_output
 
     # Now do any custom output clean up.
-    rm -rf "${HEADERS_ROOT}/../Source/duktape/src"
+    rm -rf "${PLATFORM_INCLUDE}/../Source/duktape/src"
 }
 
 # Check output files / directories exist. Used to determine if the package
@@ -63,9 +63,9 @@ clean_output() {
 #   HEADERS                 - package variable
 #   LIBRARIES               - package variable
 #   FRAMEWORKS              - package variable
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #
 # Returns 0 (true) if all output exist, 1 if any are missing.
 check_output() {
@@ -93,13 +93,13 @@ check_output() {
         duktape.h
     )
 
-    if [[ ! -d "${HEADERS_ROOT}/../Source/duktape/src" ]]; then
+    if [[ ! -d "${PLATFORM_INCLUDE}/../Source/duktape/src" ]]; then
         return 1
     fi
 
     local checkfile
     for checkfile in "${duktape_sources[@]}"; do
-        if [[ ! -f "${HEADERS_ROOT}/../Source/duktape/src/${checkfile}" ]]; then
+        if [[ ! -f "${PLATFORM_INCLUDE}/../Source/duktape/src/${checkfile}" ]]; then
             return 1
         fi
     done

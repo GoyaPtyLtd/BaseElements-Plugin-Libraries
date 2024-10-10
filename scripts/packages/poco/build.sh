@@ -14,15 +14,15 @@ cd "${REALDIR}" || exit 1
 # as a way to group DEPENDENCIES in the "package" file.
 #
 # Uses global variables:
-#   PACKAGE_SOURCE_DIR      - from fetch()
+#   PACKAGE_SRC      - from fetch()
 #   OS
 #   PLATFORM
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #   BUILD_LOG
 build() {
-    cd  "${PACKAGE_SOURCE_DIR}" || exit 1
+    cd  "${PACKAGE_SRC}" || exit 1
 
     rm -rf _build*
     mkdir _build
@@ -51,7 +51,7 @@ build() {
             --prefix="${PREFIX_x86_64}" \
             --no-sharedlibs --static --poquito --no-tests --no-samples \
             --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
-            --include-path="${HEADERS_ROOT}" --library-path="$LIBRARIES_PLATFORM_ROOT"
+            --include-path="${PLATFORM_INCLUDE}" --library-path="$PLATFORM_LIBS"
 
             make -j"${JOBS}" POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH="${HOST}"
             make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH="${HOST}"
@@ -61,7 +61,7 @@ build() {
             --prefix="${PREFIX_arm64}" \
             --no-sharedlibs --static --poquito --no-tests --no-samples \
             --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
-            --include-path="${HEADERS_ROOT}" --library-path="${LIBRARIES_PLATFORM_ROOT}"
+            --include-path="${PLATFORM_INCLUDE}" --library-path="${PLATFORM_LIBS}"
 
             make -j"${JOBS}" POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH="${HOST}"
             make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH="${HOST}"
@@ -69,7 +69,7 @@ build() {
 
             mkdir "${PREFIX}/lib"
 
-            cp -R _build_x86_64/include/* "${HEADERS_ROOT}"
+            cp -R _build_x86_64/include/* "${PLATFORM_INCLUDE}"
 
             pushd "${PREFIX_x86_64}/lib" > /dev/null || exit 1  # cd "${PREFIX_x86_64}/lib"
             local libname
@@ -85,7 +85,7 @@ build() {
             --prefix="${PREFIX_iPhone}" \
             --no-sharedlibs --static --poquito --no-tests --no-samples \
             --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
-            --include-path="${HEADERS_ROOT}" --library-path="${LIBRARIES_PLATFORM_ROOT}"
+            --include-path="${PLATFORM_INCLUDE}" --library-path="${PLATFORM_LIBS}"
 
             make -j${JOBS} POCO_CONFIG=iPhone-clang-libc++ IPHONEOS_DEPLOYMENT_TARGET=15.0
             make install POCO_CONFIG=iPhone-clang-libc++ IPHONEOS_DEPLOYMENT_TARGET=15.0
@@ -105,7 +105,7 @@ build() {
             --prefix="${PREFIX_iPhoneSim_arm}" \
             --no-sharedlibs --static --poquito --no-tests --no-samples \
             --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
-            --include-path="${HEADERS_ROOT}" --library-path="${LIBRARIES_PLATFORM_ROOT}"
+            --include-path="${PLATFORM_INCLUDE}" --library-path="${PLATFORM_LIBS}"
 
             make -j${JOBS} POCO_CONFIG=iPhoneSimulator IPHONEOS_DEPLOYMENT_TARGET=15.0 POCO_HOST_OSARCH=arm64
             make install
@@ -115,7 +115,7 @@ build() {
             --prefix="${PREFIX_iPhoneSim_x86}" \
             --no-sharedlibs --static --poquito --no-tests --no-samples \
             --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
-            --include-path="${HEADERS_ROOT}" --library-path="${LIBRARIES_PLATFORM_ROOT}"
+            --include-path="${PLATFORM_INCLUDE}" --library-path="${PLATFORM_LIBS}"
 
             make -j"${JOBS}" POCO_CONFIG=iPhoneSimulator IPHONEOS_DEPLOYMENT_TARGET=15.0 POCO_HOST_OSARCH=x86_64
             make install
@@ -130,7 +130,7 @@ END_COMMENT
             --prefix="${PREFIX}" \
             --no-sharedlibs --static --poquito --no-tests --no-samples \
             --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
-            --include-path="${HEADERS_ROOT}" --library-path="${LIBRARIES_PLATFORM_ROOT}"
+            --include-path="${PLATFORM_INCLUDE}" --library-path="${PLATFORM_LIBS}"
 
             make -j"${JOBS}"
             make install
@@ -148,10 +148,10 @@ END_COMMENT
 
     # Copy the header and library files.
 
-    cp -R _build/include/* "${HEADERS_ROOT}/"
+    cp -R _build/include/* "${PLATFORM_INCLUDE}/"
 
     pushd _build/lib > /dev/null || exit 1  # cd "${PREFIX}/lib"
-    cp "${LIBRARIES[@]}" "${LIBRARIES_PLATFORM_ROOT}"
+    cp "${LIBRARIES[@]}" "${PLATFORM_LIBS}"
     popd > /dev/null || exit 1              # return to original directory
 
 }

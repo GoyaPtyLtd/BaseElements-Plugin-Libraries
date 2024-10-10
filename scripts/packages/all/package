@@ -3,6 +3,7 @@ DESCRIPTION="Virtual package for build all"
 
 DEPENDENCIES=(                  # List of packages this one is dependent upon.
     curl
+    poco
     fm_plugin_sdk
 )
 

@@ -29,8 +29,7 @@ build() {
     local PREFIX=${PWD}'/_build'
 
     # Build
-
-    rm -rf "${BUILD_LOG}"
+    rm -f "${BUILD_LOG}"
     print_ok "Building ..."
     (
 

@@ -33,14 +33,14 @@ build() {
     print_ok "Building ..."
 
     (
-        if [[ $PLATFORM = 'macOS' ]]; then
+        if [[ $PLATFORM =~ ^macos ]]; then
 
             CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
             ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
             --enable-all-static --enable-pthread-tls --without-oniguruma \
             --prefix="${PREFIX}"
 
-        elif [[ $OS = 'Linux' ]]; then
+        elif [[ $PLATFORM =~ ^ubuntu ]]; then
 
             CC=clang CXX=clang++ CFLAGS="-fPIC" \
             ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \

@@ -5,11 +5,14 @@
 #   - belongs as exactly "{project_root}/scripts/packages/build-functions".
 #
 # Sourcing this file will set the following variables:
-#   OS                          - Operating system.
+#   PROJECT_ROOT                - The root directory of BaseElements-Libraries.
+#   OS                          - Host Operating system. Should not be used
+#                                   in build scripts. You probably need
+#                                   PLATFORM instead!
 #                                 May be: Linux or Darwin
-#   ARCH                        - Architecture.
-#                                 May be: x86_64, aarch64, or arm64
-#                                 (aarch64 only on Linux, arm64 only on macOS.)
+#   ARCH                        - Host Architecture.
+#                                   May be: x86_64, aarch64, or arm64
+#                                   (aarch64 only on Linux, arm64 only on macOS.)
 #   JOBS                        - Number of parallel jobs, default to CPUs + 1.
 #   HOST                        - Host triplet for cross-compilation.
 #   PLATFORM                    - This is the target platform we are building for.
@@ -19,7 +22,6 @@
 #                                   ubuntu22_04-aarch64     (Ubuntu 22.04 on aarch64)
 #                                   ubuntu22_04-x86_64      (Ubuntu 22.04 on x86_64)
 #
-#   PROJECT_ROOT                - The root directory of BaseElements-Libraries.
 #   PLATFORM_INCLUDE            - Include directory for this platform.
 #   PLATFORM_LIBS               - Library directory for this platform.
 #   PLATFORM_SRC                - Source directory for this platform.
@@ -538,7 +540,7 @@ builtin_check_output() {
         fi
     done
 
-    if [[ "${PLATFORM}" =~ /^macos/ ]] && [[ ${#FRAMEWORKS[@]} -gt 0 ]]; then
+    if [[ "${PLATFORM}" =~ ^macos ]] && [[ ${#FRAMEWORKS[@]} -gt 0 ]]; then
         if [[ ${framework_fail} -eq 1 ]]; then
             # FRAMEWORKS failed
             return 1
@@ -877,7 +879,7 @@ _identify_os_arch() {
             PLATFORM="${ubuntu_version}-x86_64"
         fi
     fi
-    if [[ "${PLATFORM}" =~ /^unknown/ ]]; then
+    if [[ "${PLATFORM}" =~ ^unknown ]]; then
         echo "!! Unknown OS/ARCH: $OS/$ARCH"
         exit 1
     fi

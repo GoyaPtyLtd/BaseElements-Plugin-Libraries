@@ -79,7 +79,6 @@ cd "${REALDIR}" || exit 1
 #
 # Uses global variables:
 #   PACKAGE_SRC             - from fetch()
-#   OS
 #   PLATFORM
 #   PLATFORM_INCLUDE
 #   PLATFORM_LIBS

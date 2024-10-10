@@ -16,7 +16,6 @@ cd "${REALDIR}" || exit 1
 #
 # Uses global variables:
 #   PACKAGE_SRC      - from fetch()
-#   OS
 #   PLATFORM
 #   PLATFORM_INCLUDE
 #   PLATFORM_LIBS
@@ -34,7 +33,7 @@ build() {
     rm -rf "${BUILD_LOG}"
     print_ok "Building ..."
     (
-        if [[ $PLATFORM = 'macOS' ]]; then
+        if [[ $PLATFORM =~ ^macos ]]; then
 
             mkdir _build_x86_64
             local PREFIX_x86_64=${PWD}'/_build_x86_64'
@@ -73,7 +72,7 @@ build() {
             # TODO this had  --without-libpsl --without-brotli --without-zstd added to it for compatibility with latest curl.  It would be good to at least add the libpsl but I don't know about the others
             # TODO also investigate libidn which is also in podofo
 
-        elif [[ $OS = 'Linux' ]]; then
+        elif [[ $PLATFORM =~ ^ubuntu ]]; then
 
             CC=clang CXX=clang++ \
             CPPFLAGS="-I${PLATFORM_INCLUDE}" \
@@ -99,7 +98,7 @@ build() {
 
     # Copy the header and library files.
 
-    if [[ $PLATFORM = 'macOS' ]]; then
+    if [[ $PLATFORM =~ ^macos ]]; then
         cp -R _build_x86_64/include/* "${PLATFORM_INCLUDE}"
     else
         cp -R _build/include/* "${PLATFORM_INCLUDE}"

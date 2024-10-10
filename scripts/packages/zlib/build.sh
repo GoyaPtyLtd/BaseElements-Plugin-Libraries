@@ -15,7 +15,6 @@ cd "${REALDIR}" || exit 1
 #
 # Uses global variables:
 #   PACKAGE_SRC      - from fetch()
-#   OS
 #   PLATFORM
 #   PLATFORM_INCLUDE
 #   PLATFORM_LIBS
@@ -33,12 +32,12 @@ build() {
     print_ok "Building ..."
     (
 
-        if [[ $PLATFORM = 'macOS' ]]; then
+        if [[ $PLATFORM =~ ^macos ]]; then
 
             CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
             ./configure --static --prefix="${PREFIX}"
 
-        elif [[ $OS = 'Linux' ]]; then
+        elif [[ $PLATFORM =~ ^ubuntu ]]; then
 
             CC=clang CXX=clang++ \
             CFLAGS="-fPIC" \

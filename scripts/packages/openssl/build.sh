@@ -15,7 +15,6 @@ cd "${REALDIR}" || exit 1
 #
 # Uses global variables:
 #   PACKAGE_SRC      - from fetch()
-#   OS
 #   PLATFORM
 #   PLATFORM_INCLUDE
 #   PLATFORM_LIBS
@@ -32,7 +31,7 @@ build() {
     rm -rf "${BUILD_LOG}"
     print_ok "Building ..."
     (
-        if [[ $PLATFORM = 'macOS' ]]; then
+        if [[ $PLATFORM =~ ^macos ]]; then
 
             mkdir _build_x86_64
             local PREFIX_x86_64=${PWD}'/_build_x86_64'
@@ -61,7 +60,7 @@ build() {
             lipo -create "${PREFIX_x86_64}/lib/libcrypto.a" "${PREFIX_arm64}/lib/libcrypto.a" -output "${PREFIX}/lib/libcrypto.a"
             lipo -create "${PREFIX_x86_64}/lib/libssl.a" "${PREFIX_arm64}/lib/libssl.a" -output "${PREFIX}/lib/libssl.a"
 
-        elif [[ $OS = 'Linux' ]]; then
+        elif [[ $PLATFORM =~ ^ubuntu ]]; then
 
             CC=clang CXX=clang++ \
             ./Configure linux-generic64 no-shared no-docs no-tests \
@@ -84,7 +83,7 @@ build() {
 
     # Copy the header and library files.
 
-    if [[ $PLATFORM = 'macOS' ]]; then
+    if [[ $PLATFORM =~ ^macos ]]; then
         cp -R _build_x86_64/include/* "${PLATFORM_INCLUDE}/"
     else
         cp -R _build/include/* "${PLATFORM_INCLUDE}/"

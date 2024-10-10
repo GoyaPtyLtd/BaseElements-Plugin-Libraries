@@ -16,7 +16,6 @@ cd "${REALDIR}" || exit 1
 #
 # Uses global variables:
 #   PACKAGE_SRC      - from fetch()
-#   OS
 #   PLATFORM
 #   PLATFORM_INCLUDE
 #   PLATFORM_LIBS
@@ -30,7 +29,7 @@ build() {
     # static library instead - GAV
 
     print_ok "Installing duktape source files."
-    cp -R src "${PLATFORM_INCLUDE}/../Source/duktape/"
+    rsync -rq src/* "${PLATFORM_INCLUDE}/duktape/"
 }
 
 # Clean output files.
@@ -52,7 +51,7 @@ clean_output() {
     builtin_clean_output
 
     # Now do any custom output clean up.
-    rm -rf "${PLATFORM_INCLUDE}/../Source/duktape/src"
+    rm -rf "${PLATFORM_INCLUDE}/duktape"
 }
 
 # Check output files / directories exist. Used to determine if the package
@@ -69,23 +68,6 @@ clean_output() {
 #
 # Returns 0 (true) if all output exist, 1 if any are missing.
 check_output() {
-    # The builtin version of this function will check for the existence of
-    # whatever is listed in the HEADERS, LIBRARIES and FRAMEWORKS variables
-    # in the "package" file. If more than this is needed to determine if the
-    # package has been installed, then this is the place to do that.
-
-    # Call builtin version of this function.
-    builtin_check_output
-    local builtin_result=$?
-
-    if [[ $builtin_result -ne 0 ]]; then
-        # No point going further if the builtin version of this function
-        # says output is missing.
-        return 1
-    fi
-
-    # Now do any custom output check. Return 0 if all output exists, 1 if any
-    # are missing.
 
     declare -a duktape_sources=(
         duk_config.h
@@ -93,13 +75,13 @@ check_output() {
         duktape.h
     )
 
-    if [[ ! -d "${PLATFORM_INCLUDE}/../Source/duktape/src" ]]; then
+    if [[ ! -d "${PLATFORM_INCLUDE}/duktape" ]]; then
         return 1
     fi
 
     local checkfile
     for checkfile in "${duktape_sources[@]}"; do
-        if [[ ! -f "${PLATFORM_INCLUDE}/../Source/duktape/src/${checkfile}" ]]; then
+        if [[ ! -f "${PLATFORM_INCLUDE}/duktape/${checkfile}" ]]; then
             return 1
         fi
     done

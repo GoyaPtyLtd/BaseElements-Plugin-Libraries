@@ -15,7 +15,6 @@ cd "${REALDIR}" || exit 1
 #
 # Uses global variables:
 #   PACKAGE_SRC      - from fetch()
-#   OS
 #   PLATFORM
 #   PLATFORM_INCLUDE
 #   PLATFORM_LIBS
@@ -23,7 +22,7 @@ cd "${REALDIR}" || exit 1
 #   BUILD_LOG
 build() {
     print_ok "Installing."
-    if [[ "${PLATFORM}" == 'macOS' ]]; then
+    if [[ "${PLATFORM}" =~ ^macos ]]; then
 
         rsync -qr "${PACKAGE_SRC}/PlugInSDK/Libraries/Mac/FMWrapper.framework" "${PLATFORM_FRAMEWORKS}"
 

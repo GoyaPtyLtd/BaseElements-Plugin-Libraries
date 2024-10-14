@@ -99,7 +99,7 @@ if [[ $PLATFORM = 'macOS' ]]; then
 	mkdir ${PREFIX}/lib
 
 	#just so the generic copy below will work on any platform
-		mkdir _build/include/Poco
+	mkdir -p _build/include/Poco
 	cp -R _build_x86_64/include/Poco/* _build/include/Poco/
 
 	lipo -create "${PREFIX_x86_64}/lib/libPocoCrypto.a" "${PREFIX_arm64}/lib/libPocoCrypto.a" -output "${PREFIX}/lib/libPocoCrypto.a"

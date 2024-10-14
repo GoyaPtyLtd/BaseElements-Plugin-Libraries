@@ -21,37 +21,38 @@ cd "${REALDIR}" || exit 1
 #   PLATFORM_FRAMEWORKS
 #   BUILD_LOG
 build() {
-    cd "$PACKAGE_SRC" || exit 1
+    cd "${PACKAGE_SRC}" || exit 1
 
     rm -rf _build
-    mkdir -p _build
+    mkdir _build
     local PREFIX=${PWD}'/_build'
 
     # Build
     rm -f "${BUILD_LOG}"
     print_ok "Building ..."
     (
-
         if [[ $PLATFORM =~ ^macos ]]; then
 
             CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-            ./configure --static --prefix="${PREFIX}"
+            ./configure --enable-static --enable-shared=NO \
+            --with-libiconv-prefix="${PLATFORM_ROOT}" \
+            --prefix="${PREFIX}"
 
         elif [[ $PLATFORM =~ ^ubuntu ]]; then
 
             CC=clang CXX=clang++ \
             CFLAGS="-fPIC" \
-            ./configure --static --prefix="${PREFIX}"
+            ./configure --enable-static --enable-shared=NO \
+            --with-libiconv-prefix="${PLATFORM_ROOT}" \
+            --prefix="${PREFIX}"
 
         fi
 
         make -j${JOBS}
         make install
-
     ) >> "${BUILD_LOG}" 2>&1 &
     wait_progress $!
     return_code=$?
-
     if [[ $return_code -ne 0 ]]; then
         print_error "Build failed. Return code: $return_code"
         exit 1
@@ -63,9 +64,9 @@ build() {
     # Copy the header and library files.
 
     cp -R _build/include/* "${PLATFORM_INCLUDE}/"
-    cp _build/lib/libz.a "${PLATFORM_LIBS}/"
-}
+    cp _build/lib/libunistring.a "${PLATFORM_LIBS}/"
 
+}
 
 # --- BOILERPLATE ---
 # Source this after required functions are defined.

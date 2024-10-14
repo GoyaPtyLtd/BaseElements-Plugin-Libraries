@@ -10,6 +10,12 @@ Output/Libraries/win64/*
 !Output/Libraries/*/README.md
 Output/Frameworks/*
 !Output/Frameworks/README.md
+Output/Platforms/*/include/*
+!Output/Platforms/*/include/README.md
+Output/Platforms/*/lib/*
+!Output/Platforms/*/lib/README.md
+Output/Platforms/*/src
+downloads
 source/iOS/*
 source/linux/*
 source/linuxARM/*

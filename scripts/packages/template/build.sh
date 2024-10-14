@@ -30,7 +30,7 @@ cd "${REALDIR}" || exit 1
 #   SOURCE_URL              - package variable
 #   SOURCE_HASH             - package variable
 #   PACKAGE_NAME
-#   PACKAGE_DOWNLOAD_DIR
+#   PACKAGE_DOWNLOAD
 #
 # Sets global variables:
 #   PACKAGE_FILE            - Full path to downloaded package.
@@ -57,11 +57,11 @@ cd "${REALDIR}" || exit 1
 #    return $fetch_result
 #}
 
-# Unpack source package. Only called when ${PACKAGE_SOURCE_DIR} is missing/empty.
+# Unpack source package. Only called when ${PACKAGE_SRC} is missing/empty.
 #
 # Uses global variables:
 #   PACKAGE_FILE            - from fetch()
-#   PACKAGE_SOURCE_DIR
+#   PACKAGE_SRC
 #unpack() {
 #    # If the source package is more complicated than either a tar file
 #    # where the first component of the path is stripped and extracted
@@ -78,17 +78,16 @@ cd "${REALDIR}" || exit 1
 # as a way to group DEPENDENCIES in the "package" file.
 #
 # Uses global variables:
-#   PACKAGE_SOURCE_DIR      - from fetch()
-#   OS
+#   PACKAGE_SRC             - from fetch()
 #   PLATFORM
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #   BUILD_LOG
 build() {
-    rm -rf "${BUILD_LOG}"
+    rm -f "${BUILD_LOG}"
 
-    print_ok "Build Task Test."
+    print_ok "Building ..."
     echo "------ Build Task Test ------" >> "${BUILD_LOG}"
     (
         echo "I am the build process ...."
@@ -107,7 +106,7 @@ build() {
         exit 1
     fi
 
-    print_ok "Build Task Test complete."
+    print_ok "Build complete."
 
     # Finish any other install / copy tasks here.
 }
@@ -115,10 +114,10 @@ build() {
 # Clean source package.
 #
 # Uses global variables:
-#   PACKAGE_SOURCE_DIR
+#   PACKAGE_SRC
 #clean_source() {
 #    # If a custom unpack() was needed, you might need a custom clean up
-#    # if more than ${PACKAGE_SOURCE_DIR} and ${BUILD_LOG} should be deleted.
+#    # if more than ${PACKAGE_SRC} and ${BUILD_LOG} should be deleted.
 #}
 
 # Clean output files.
@@ -127,9 +126,9 @@ build() {
 #   HEADERS                 - package variable
 #   LIBRARIES               - package variable
 #   FRAMEWORKS              - package variable
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #clean_output() {
 #    # The builtin version of this function will clean out whatever is
 #    # listed in the HEADERS, LIBRARIES and FRAMEWORKS variables in the
@@ -150,9 +149,9 @@ build() {
 #   HEADERS                 - package variable
 #   LIBRARIES               - package variable
 #   FRAMEWORKS              - package variable
-#   HEADERS_ROOT
-#   LIBRARIES_PLATFORM_ROOT
-#   FRAMEWORKS_ROOT
+#   PLATFORM_INCLUDE
+#   PLATFORM_LIBS
+#   PLATFORM_FRAMEWORKS
 #
 # Returns 0 (true) if all output exist, 1 if any are missing.
 #check_output() {

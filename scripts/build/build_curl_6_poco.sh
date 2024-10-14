@@ -55,12 +55,8 @@ tar -xf ../poco.tar.gz -C poco --strip-components=1
 cd poco
 
 mkdir _build
-mkdir _build_x86_64
-mkdir _build_arm64
 
 PREFIX=${PWD}'/_build'
-PREFIX_x86_64=${PWD}'/_build_x86_64'
-PREFIX_arm64=${PWD}'/_build_arm64'
 
 # Build
 

@@ -52,13 +52,13 @@ if [[ $PLATFORM = 'macOS' ]]; then
 
 	cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
 	-DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="10.15" \
-	-DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSE -DENABLE_DECODER=OFF ./
+	-DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSE ./
 
 elif [[ $OS = 'Linux' ]]; then
 
   CC=clang CXX=clang++ \
 	cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
-	-DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSEG -DENABLE_DECODER=OFF ./
+	-DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSEG ./
 
 	#./configure --prefix="${PREFIX}" --disable-shared --enable-static --disable-dec265 --disable-sherlock265 --disable-sse --disable-dependency-tracking
 

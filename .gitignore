@@ -1,11 +1,12 @@
 # Output directory 
-Output/*/*
-!Output/Platforms/README.md
+output/*/*
+!output/platforms/README.md
 
 # Source directory
 source/*
 !source/README.md
 
+REVIEW.md
 
 # .gitignore file created for free with Tower (https://www.git-tower.com/)
 # For suggestions or improvements please contact us using support@git-tower.com
@@ -176,53 +177,3 @@ core.*
 fleet.local.yaml
 .fleet-cache/
 .fleet/workspace.xml
-
-### Docker ###
-# Docker environment specific files and directories
-
-# Common directories to exclude
-node_modules/
-bower_components/
-target/
-dist/
-
-build/
-.cache/
-# Log files
-*.log
-logs/
-
-# Git-related files
-.git/
-.gitignore
-# Environment files
-.env
-
-.env.*
-# Temporary files
-*.tmp
-*.swp
-# IDE-specific files
-
-.idea/
-.vscode/
-# Docker-specific files
-Dockerfile.*
-docker-compose.override.yml
-
-.docker/
-docker-compose.override.yaml
-docker-compose.*.yml
-docker-compose.*.yaml
-*.env.docker
-
-docker-volumes/
-.docker-sync/
-docker/data/
-docker/logs/
-docker-compose.prod.yml
-
-docker-compose.dev.yml
-docker-compose.local.yml
-# CI/CD-related files
-.dockerignore

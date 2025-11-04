@@ -1,25 +1,43 @@
 #!/bin/bash
 
-# Note: We are building with clang under Linux, it is possible to
-# verify this in Output/Libraries/{platform}/ by running:
+# Note: We build with clang on Linux (not GCC) to ensure consistency.
+# To verify libraries were built with clang, run from output/platforms/{platform}/lib/:
 #   for i in *.a; do echo "++ Checking: $i"; strings -a $i | grep GCC | grep -v except_table; done
-# There should be no output in the form:
-#   GCC: (Ubuntu 9.4.0-1ubuntu1~20.04.2) 9.4.0
+# Expected: Only "++ Checking: ..." messages, no GCC version strings.
+# If you see "GCC: (Ubuntu ...)" output, that library was built with GCC instead of clang.
 
 set -e
 
-cd build
+# Source shared platform detection and export variables for sub-scripts
+source "$(dirname "$0")/build/_build_setup.sh"
 
-./build_duktape.sh
-./build_jq.sh
+echo "_build_setup.sh: Platform detection complete"
+echo "  OS: ${OS}"
+echo "  ARCH: ${ARCH}"
+echo "  PLATFORM: ${PLATFORM}"
+echo "  JOBS: ${JOBS}"
+echo "  PROJECT_ROOT: ${PROJECT_ROOT}"
+echo "  SOURCE_ARCHIVES: ${SOURCE_ARCHIVES}"
+echo "  OUTPUT_DIR: ${OUTPUT_DIR}"
+echo "  OUTPUT_INCLUDE: ${OUTPUT_INCLUDE}"
+echo "  OUTPUT_LIB: ${OUTPUT_LIB}"
+echo "  OUTPUT_SRC: ${OUTPUT_SRC}"
 
-./build_curl.sh
-./build_font.sh
-./build_image.sh
-./build_xml.sh
 
-./build_boost.sh
+echo "Building all libraries for platform: ${PLATFORM}"
 
-./build_podofo.sh
+# cd build
 
-cd ..
+# ./build_duktape.sh
+# ./build_jq.sh
+
+# ./build_curl.sh
+# ./build_font.sh
+# ./build_image.sh
+# ./build_xml.sh
+
+# ./build_boost.sh
+
+# ./build_podofo.sh
+
+# cd ..

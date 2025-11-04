@@ -1,12 +1,12 @@
 #!/bin/bash
-# Cleans the Output/Platforms/${PLATFORM} directory, ready for fresh builds.
+# Cleans the output/platforms/${PLATFORM} directory, ready for fresh builds.
 # Removes the entire platform directory and recreates it fresh.
 
 set -e  # Exit immediately on any error - prevents script from continuing if operations fail
 
 # Get script directory and determine paths based on script location
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-OUTPUT_DIR="${SCRIPT_DIR}/../Output"
+OUTPUT_DIR="${SCRIPT_DIR}/../output"
 
 # Detect platform (OS and architecture)
 # example 'ubuntu22_04-x86_64', 'ubuntu24_04-aarch64', etc.
@@ -73,16 +73,16 @@ if [[ "${PLATFORM}" = 'unknown' ]]; then
 	exit 1
 fi
 
-# Change to Output directory
+# Change to output directory
 cd "${OUTPUT_DIR}" || {
-    echo "ERROR: Failed to change to Output directory: ${OUTPUT_DIR}"
+    echo "ERROR: Failed to change to output directory: ${OUTPUT_DIR}"
     exit 1
 }
 
-# Clean new structure (Output/Platforms/${PLATFORM}/)
+# Clean new structure (output/platforms/${PLATFORM}/)
 # New packages system uses Ubuntu-specific platform names
-# example: Output/Platforms/ubuntu20_04-x86_64/lib/
-PLATFORM_DIR="./Platforms/${PLATFORM}"
+# example: output/platforms/ubuntu20_04-x86_64/lib/
+PLATFORM_DIR="./platforms/${PLATFORM}"
 
 # Remove entire platform directory and recreate fresh
 rm -rf "${PLATFORM_DIR}"

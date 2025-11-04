@@ -1,28 +1,228 @@
+# Output directory 
+Output/*/*
+!Output/Platforms/README.md
+
+# Source directory
+source/*
+!source/README.md
+
+
+# .gitignore file created for free with Tower (https://www.git-tower.com/)
+# For suggestions or improvements please contact us using support@git-tower.com
+# Generated on 2025-10-04
+# Includes: macos, windows, linux, vscode, fleet, docker
+
+### Universal ###
+# Common files that should be ignored in all projects
+
+# Logs
+*.log
+# Temporary files
+*.tmp
+*~
+
+*.bak
+# Environment files (containing secrets, API keys, credentials)
+.env
+*.env
+.env.*
+
+# Local configuration that shouldn't be shared
+*.local
+
+### Macos ###
+# macOS operating system specific files
+
 .DS_Store
-Output/Source/duktape/*
-Output/Headers/*
-!Output/Headers/README.md
-Output/Libraries/iOS/*
-Output/Libraries/linux/*
-Output/Libraries/linuxARM/*
-Output/Libraries/macOS/*
-Output/Libraries/win64/*
-!Output/Libraries/*/README.md
-Output/Frameworks/*
-!Output/Frameworks/README.md
-Output/Platforms/*/include/*
-!Output/Platforms/*/include/README.md
-Output/Platforms/*/lib/*
-!Output/Platforms/*/lib/README.md
-Output/Platforms/*/src
-downloads
-source/iOS/*
-source/linux/*
-source/linuxARM/*
-source/macOS/*
-source/win64/*
-!source/*/README.md
-source/*.tar.gz
-source/*.tar.xz
-source/*.zip
-.nova
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+
+Temporary Items
+.apdisk
+*.icloud
+.AppleDB/
+.AppleDesktop/
+
+*.AppleDouble
+*.AppleDB
+.Spotlight-V100/
+.Trashes/
+*.swp
+
+Network Trash Folder/
+.DS_Store?
+.Spotlight-V100
+.Trashes
+
+### Windows ###
+# Windows operating system specific files
+
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.stackdump
+
+[Dd]esktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+
+*.msm
+*.msp
+*.lnk
+*.tmp
+*.bak
+
+System Volume Information/
+[Tt]emp/
+$Recycle.Bin/
+~$*
+*.log
+
+hiberfil.sys
+pagefile.sys
+*.db
+Desktop.ini
+ntuser.dat*
+
+### Linux ###
+# Linux operating system specific files
+
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+.swap
+.swp
+.swo
+.swn
+.bash_history
+
+.cache/
+.config/
+.local/
+lost+found/
+.gvfs/
+
+.dbus/
+.thumbnails/
+.Xauthority
+.ICEauthority
+.recently-used
+
+*.tmp
+.pid
+.lock
+core
+core.*
+
+.saves-*
+.*.kate-swp
+
+### Vscode ###
+# Visual Studio Code editor settings and workspace files
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.history/
+*.vsix
+.ionide
+
+.vs/
+*.code-workspace
+.vscode-test
+.vscodeignore
+.vscode/chrome
+
+.vscode-server/
+.vscode/sftp.json
+.vscode/tags
+.devcontainer/
+
+### Fleet ###
+# fleet editor specific files
+
+# Fleet
+.fleet/
+*.fleet
+.idea/fleet.xml
+.fleet/settings.json
+
+.fleet/run.json
+fleet.local.yaml
+.fleet-cache/
+.fleet/workspace.xml
+
+### Docker ###
+# Docker environment specific files and directories
+
+# Common directories to exclude
+node_modules/
+bower_components/
+target/
+dist/
+
+build/
+.cache/
+# Log files
+*.log
+logs/
+
+# Git-related files
+.git/
+.gitignore
+# Environment files
+.env
+
+.env.*
+# Temporary files
+*.tmp
+*.swp
+# IDE-specific files
+
+.idea/
+.vscode/
+# Docker-specific files
+Dockerfile.*
+docker-compose.override.yml
+
+.docker/
+docker-compose.override.yaml
+docker-compose.*.yml
+docker-compose.*.yaml
+*.env.docker
+
+docker-volumes/
+.docker-sync/
+docker/data/
+docker/logs/
+docker-compose.prod.yml
+
+docker-compose.dev.yml
+docker-compose.local.yml
+# CI/CD-related files
+.dockerignore

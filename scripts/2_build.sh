@@ -8,10 +8,26 @@
 
 set -e
 
-# Source shared platform detection and export variables for sub-scripts
-source "$(dirname "$0")/build/_build_setup.sh"
+# Parse arguments
+INTERACTIVE=0
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --interactive|-i)
+            INTERACTIVE=1
+            shift
+            ;;
+        *)
+            echo "Unknown option: $1"
+            echo "Usage: $0 [--interactive|-i]"
+            exit 1
+            ;;
+    esac
+done
 
-echo "_build_setup.sh: Platform detection complete"
+# Source shared platform detection and export variables for sub-scripts
+source "$(dirname "$0")/build/_build_common.sh"
+
+echo "_build_common.sh: Platform detection complete"
 echo "  OS: ${OS}"
 echo "  ARCH: ${ARCH}"
 echo "  PLATFORM: ${PLATFORM}"
@@ -23,13 +39,23 @@ echo "  OUTPUT_INCLUDE: ${OUTPUT_INCLUDE}"
 echo "  OUTPUT_LIB: ${OUTPUT_LIB}"
 echo "  OUTPUT_SRC: ${OUTPUT_SRC}"
 
+if [[ $INTERACTIVE -eq 1 ]]; then
+    echo ""
+    echo "Interactive mode enabled - you will be prompted before each build"
+    export INTERACTIVE_FLAG="--interactive"
+else
+    export INTERACTIVE_FLAG=""
+fi
 
+echo ""
 echo "Building all libraries for platform: ${PLATFORM}"
 
-# cd build
+cd build
+#./build_jq.sh ${INTERACTIVE_FLAG}
+
 
 # ./build_duktape.sh
-# ./build_jq.sh
+
 
 # ./build_curl.sh
 # ./build_font.sh

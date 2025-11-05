@@ -48,7 +48,7 @@ interactive_prompt \
 
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build (arm64 + x86_64)
-    echo "Configuring for macOS (universal: arm64 + x86_64)..."
+    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
     ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
         --enable-all-static --enable-pthread-tls --without-oniguruma \
@@ -56,7 +56,7 @@ if [[ $OS = 'Darwin' ]]; then
     
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
-    echo "Configuring for Linux..."
+    print_info "Configuring for Linux..."
     CC=clang CXX=clang++ CFLAGS="-fPIC" \
     ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
         --enable-all-static --enable-pthread-tls --without-oniguruma \
@@ -71,7 +71,7 @@ interactive_prompt \
     "Build prefix: ${PREFIX}" \
     "Built library: ${PREFIX}/lib/lib${LIBRARY_NAME}.a"
 
-echo "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
 make -j${JOBS}
 make install
 

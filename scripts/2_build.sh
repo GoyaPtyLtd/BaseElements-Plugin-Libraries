@@ -8,62 +8,138 @@
 
 set -e
 
-# Parse arguments
-INTERACTIVE=0
+# Parse --build/-b flag before sourcing _build_common.sh
+# Accept multiple library names after --build/-b
+BUILD_TARGETS=()
+ARGS=()
 while [[ $# -gt 0 ]]; do
     case $1 in
-        --interactive|-i)
-            INTERACTIVE=1
-            shift
+        --build|-b)
+            shift  # Remove --build/-b flag
+            # Collect all library names until we hit another flag (starts with -)
+            while [[ $# -gt 0 ]] && [[ ! "$1" =~ ^- ]]; do
+                BUILD_TARGETS+=("$1")
+                shift
+            done
+            if [[ ${#BUILD_TARGETS[@]} -eq 0 ]]; then
+                echo "ERROR: --build/-b requires at least one library name" >&2
+                echo "Available libraries: all, jq, duktape, curl, font, image, xml, boost, podofo" >&2
+                exit 1
+            fi
             ;;
         *)
-            echo "Unknown option: $1"
-            echo "Usage: $0 [--interactive|-i]"
-            exit 1
+            ARGS+=("$1")
+            shift
             ;;
     esac
 done
+# Restore remaining arguments for _build_common.sh
+set -- "${ARGS[@]}"
 
-# Source shared platform detection and export variables for sub-scripts
-source "$(dirname "$0")/build/_build_common.sh"
+# Source common build functionality (handles --interactive flag, platform detection, colors, helpers)
+source "$(dirname "$0")/build/_build_common.sh" "$@"
 
-echo "_build_common.sh: Platform detection complete"
-echo "  OS: ${OS}"
-echo "  ARCH: ${ARCH}"
-echo "  PLATFORM: ${PLATFORM}"
-echo "  JOBS: ${JOBS}"
-echo "  PROJECT_ROOT: ${PROJECT_ROOT}"
-echo "  SOURCE_ARCHIVES: ${SOURCE_ARCHIVES}"
-echo "  OUTPUT_DIR: ${OUTPUT_DIR}"
-echo "  OUTPUT_INCLUDE: ${OUTPUT_INCLUDE}"
-echo "  OUTPUT_LIB: ${OUTPUT_LIB}"
-echo "  OUTPUT_SRC: ${OUTPUT_SRC}"
+print_header "Build Configuration"
+print_info "  OS: ${OS}"
+print_info "  ARCH: ${ARCH}"
+print_info "  PLATFORM: ${PLATFORM}"
+print_info "  JOBS: ${JOBS}"
+print_info "  PROJECT_ROOT: ${PROJECT_ROOT}"
+print_info "  SOURCE_ARCHIVES: ${SOURCE_ARCHIVES}"
+print_info "  OUTPUT_DIR: ${OUTPUT_DIR}"
+print_info "  OUTPUT_INCLUDE: ${OUTPUT_INCLUDE}"
+print_info "  OUTPUT_LIB: ${OUTPUT_LIB}"
+print_info "  OUTPUT_SRC: ${OUTPUT_SRC}"
 
 if [[ $INTERACTIVE -eq 1 ]]; then
     echo ""
-    echo "Interactive mode enabled - you will be prompted before each build"
+    print_header "Interactive mode enabled - you will be prompted before each build"
     export INTERACTIVE_FLAG="--interactive"
 else
     export INTERACTIVE_FLAG=""
 fi
 
 echo ""
-echo "Building all libraries for platform: ${PLATFORM}"
-
 cd build
-#./build_jq.sh ${INTERACTIVE_FLAG}
 
+# Map library names to build scripts
+declare -A BUILD_SCRIPTS=(
+    ["jq"]="build_jq.sh"
+    ["duktape"]="build_duktape.sh"
+    ["curl"]="build_curl.sh"
+    ["font"]="build_font.sh"
+    ["image"]="build_image.sh"
+    ["xml"]="build_xml.sh"
+    ["boost"]="build_boost.sh"
+    ["podofo"]="build_podofo.sh"
+)
 
-# ./build_duktape.sh
+# Show usage if no --build flag provided
+if [[ ${#BUILD_TARGETS[@]} -eq 0 ]]; then
+    echo ""
+    print_header "Usage: $0 --build <library> [library2 ...] [--interactive]"
+    echo ""
+    echo "  or: $0 -b <library> [library2 ...] [-i]"
+    echo ""
+    echo "Build specific libraries or all libraries:"
+    echo ""
+    echo "  --build all                Build all libraries"
+    echo "  --build jq                 Build only jq"
+    echo "  --build boost jq           Build boost and jq"
+    echo "  --build jq duktape curl     Build jq, duktape, and curl"
+    echo ""
+    echo "Available libraries: all, jq, duktape, curl, font, image, xml, boost, podofo"
+    echo ""
+    echo "Options:"
+    echo "  --interactive, -i  Enable interactive mode (prompt before each step)"
+    echo ""
+    exit 1
+fi
 
+# Check if "all" is in the list
+BUILD_ALL=false
+for target in "${BUILD_TARGETS[@]}"; do
+    if [[ "$target" == "all" ]]; then
+        BUILD_ALL=true
+        break
+    fi
+done
 
-# ./build_curl.sh
-# ./build_font.sh
-# ./build_image.sh
-# ./build_xml.sh
+if [[ "$BUILD_ALL" == true ]]; then
+    # Build all libraries
+    print_header "Building all libraries for platform: ${PLATFORM}"
+    ./build_jq.sh ${INTERACTIVE_FLAG}
+    ./build_duktape.sh ${INTERACTIVE_FLAG}
+    ./build_curl.sh ${INTERACTIVE_FLAG}
+    ./build_font.sh ${INTERACTIVE_FLAG}
+    ./build_image.sh ${INTERACTIVE_FLAG}
+    ./build_xml.sh ${INTERACTIVE_FLAG}
+    ./build_boost.sh ${INTERACTIVE_FLAG}
+    ./build_podofo.sh ${INTERACTIVE_FLAG}
+else
+    # Build each specified library
+    for BUILD_TARGET in "${BUILD_TARGETS[@]}"; do
+        if [[ -z "${BUILD_SCRIPTS[$BUILD_TARGET]}" ]]; then
+            print_error "ERROR: Unknown library '${BUILD_TARGET}'"
+            echo ""
+            echo "Available libraries:"
+            echo "  - all"
+            for lib in "${!BUILD_SCRIPTS[@]}"; do
+                echo "  - ${lib}"
+            done
+            exit 1
+        fi
+        
+        BUILD_SCRIPT="${BUILD_SCRIPTS[$BUILD_TARGET]}"
+        if [[ ! -f "$BUILD_SCRIPT" ]]; then
+            print_error "ERROR: Build script not found: ${BUILD_SCRIPT}"
+            exit 1
+        fi
+        
+        print_header "Building ${BUILD_TARGET} for platform: ${PLATFORM}"
+        ./"${BUILD_SCRIPT}" ${INTERACTIVE_FLAG}
+        echo ""
+    done
+fi
 
-# ./build_boost.sh
-
-# ./build_podofo.sh
-
-# cd ..
+cd ..

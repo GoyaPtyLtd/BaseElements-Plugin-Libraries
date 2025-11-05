@@ -33,23 +33,26 @@ if [[ -t 1 ]]; then
         COLOR_YELLOW=$(tput setaf 3 2>/dev/null || echo '\033[1;33m')
         COLOR_CYAN=$(tput setaf 6 2>/dev/null || echo '\033[0;36m')
         COLOR_GREEN=$(tput setaf 2 2>/dev/null || echo '\033[0;32m')
+        COLOR_RED=$(tput setaf 1 2>/dev/null || echo '\033[0;31m')
         COLOR_RESET=$(tput sgr0 2>/dev/null || echo '\033[0m')
     else
         COLOR_YELLOW='\033[1;33m'
         COLOR_CYAN='\033[0;36m'
         COLOR_GREEN='\033[0;32m'
+        COLOR_RED='\033[0;31m'
         COLOR_RESET='\033[0m'
     fi
 else
     COLOR_YELLOW=''
     COLOR_CYAN=''
     COLOR_GREEN=''
+    COLOR_RED=''
     COLOR_RESET=''
 fi
 
 # Export INTERACTIVE flag and colors for use in functions
 export INTERACTIVE
-export COLOR_YELLOW COLOR_CYAN COLOR_GREEN COLOR_RESET
+export COLOR_YELLOW COLOR_CYAN COLOR_GREEN COLOR_RED COLOR_RESET
 
 # ============================================================================
 # PART 2: Platform Detection and Path Setup
@@ -163,6 +166,27 @@ print_header() {
     echo -e "${COLOR_YELLOW}${title}${COLOR_RESET}"
 }
 
+# Helper function: Information message
+# Usage: print_info "This is an information message"
+print_info() {
+    local message="$1"
+    echo -e "${COLOR_CYAN}${message}${COLOR_RESET}"
+}
+
+# Helper function: Success message
+# Usage: print_success "Build complete for jq"
+print_success() {
+    local message="$1"
+    echo -e "${COLOR_GREEN}${message}${COLOR_RESET}"
+}
+
+# Helper function: Error message
+# Usage: print_error "ERROR: Something went wrong"
+print_error() {
+    local message="$1"
+    echo -e "${COLOR_RED}${message}${COLOR_RESET}" >&2
+}
+
 # Helper function: Interactive prompt with details
 # Usage: interactive_prompt "Ready to build" "Platform: ${PLATFORM}" "Jobs: ${JOBS}"
 interactive_prompt() {
@@ -180,15 +204,10 @@ interactive_prompt() {
     fi
 }
 
-# Helper function: Success message
-# Usage: print_success "Build complete for jq"
-print_success() {
-    local message="$1"
-    echo -e "${COLOR_GREEN}${message}${COLOR_RESET}"
-}
-
 # Export functions so they're available to calling scripts
 export -f print_header
+export -f print_info
 export -f interactive_prompt
 export -f print_success
+export -f print_error
 

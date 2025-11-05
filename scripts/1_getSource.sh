@@ -4,9 +4,12 @@
 
 set -e
 
+# Source common build functionality (colors, helpers)
+source "$(dirname "$0")/build/_build_common.sh"
+
 # Check if wget is installed
 if ! command -v wget &> /dev/null; then
-    echo "ERROR: wget is not installed. Please install it first:"
+    print_error "ERROR: wget is not installed. Please install it first:"
     echo "  Ubuntu: sudo apt install wget"
     echo "  macOS: brew install wget"
     exit 1
@@ -15,7 +18,7 @@ fi
 # Get script directory and change to source directory
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "${SCRIPT_DIR}/../source" || {
-    echo "ERROR: Failed to change to source directory"
+    print_error "ERROR: Failed to change to source directory"
     exit 1
 }
 
@@ -26,10 +29,10 @@ download() {
     local count="$3"
     local url="$4"
     local filename="$5"
-    echo "Downloading $name $version ( $count of 24 ) ..."
+    print_info "Downloading ${name} ${version} (${count} of 24)..."
     rm -f "$filename"
     if ! wget -q --show-progress -O "$filename" "$url"; then
-        echo "ERROR: Failed to download $name"
+        print_error "ERROR: Failed to download ${name}"
         echo "  URL: $url"
         echo "  Output: $filename"
         exit 1
@@ -37,9 +40,9 @@ download() {
 }
 
 # Download all libraries
-echo "============================================================================"
-echo "Starting download of 24 source archives..."
-echo "============================================================================"
+print_header "Starting download of 24 source archives..."
+echo ""
+
 download "Boost" "1.85.0" "1" "https://archives.boost.io/release/1.85.0/source/boost_1_85_0.tar.gz" "boost.tar.gz"
 download "Curl" "8.6.0" "2" "https://curl.se/download/curl-8.6.0.tar.gz" "curl.tar.gz"
 download "duktape" "2.7.0" "3" "https://duktape.org/duktape-2.7.0.tar.xz" "duktape.tar.xz"
@@ -64,6 +67,6 @@ download "podofo" "0.9.8" "21" "https://ixpeering.dl.sourceforge.net/project/pod
 download "zlib" "1.3.1" "22" "https://www.zlib.net/zlib-1.3.1.tar.xz" "zlib.tar.xz"
 download "libpng" "1.6.43" "23" "https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.43.tar.gz" "libpng.tar.gz"
 download "nghttp2" "1.62.1" "24" "https://github.com/nghttp2/nghttp2/releases/download/v1.62.1/nghttp2-1.62.1.tar.xz" "nghttp2.tar.xz"
-echo "============================================================================"
-echo "Downloading Complete - All 24 archives downloaded successfully!"
-echo "============================================================================"
+
+echo ""
+print_success "Downloading Complete - All 24 archives downloaded successfully!"

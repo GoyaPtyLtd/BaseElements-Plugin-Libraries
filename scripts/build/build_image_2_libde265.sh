@@ -1,77 +1,80 @@
 #!/bin/bash
 set -e
 
-echo "Starting $(basename "$0") Build"
+# Source common build functionality (platform detection, paths, interactive mode, colors, helpers)
+# This allows the script to be run standalone. When called from 2_build.sh,
+# variables are already exported, but sourcing again is harmless.
+source "$(dirname "$0")/_build_common.sh" "$@"
 
-OS=$(uname -s)		# Linux|Darwin
-ARCH=$(uname -m)	# x86_64|aarch64|arm64
-JOBS=1              # Number of parallel jobs
+LIBRARY_NAME="libde265"
+ARCHIVE_NAME="libde265.tar.gz"
+
+print_header "Starting ${LIBRARY_NAME} Build"
+
+# Clean and create output directories (ensures they exist and are empty)
+interactive_prompt \
+    "Ready to clean and create output directories for ${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_LIB}/${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+rm -rf "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
+rm -rf "${OUTPUT_LIB}/${LIBRARY_NAME}"
+rm -rf "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+mkdir -p "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
+mkdir -p "${OUTPUT_LIB}/${LIBRARY_NAME}"
+mkdir -p "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+# Extract source to output/platforms/${PLATFORM}/src/
+interactive_prompt \
+    "Ready to extract source archive" \
+    "Archive: ${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" \
+    "Destination: ${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+cd "${OUTPUT_SRC}/${LIBRARY_NAME}"
+tar -xf "${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" --strip-components=1
+
+# Create build directory
+BUILD_DIR="${OUTPUT_SRC}/${LIBRARY_NAME}/_build"
+mkdir -p "${BUILD_DIR}"
+PREFIX="${BUILD_DIR}"
+
+# Configure and build
+interactive_prompt \
+    "Ready to configure and build ${LIBRARY_NAME}" \
+    "Platform: ${PLATFORM}" \
+    "Build directory: ${BUILD_DIR}"
+
 if [[ $OS = 'Darwin' ]]; then
-		PLATFORM='macOS'
-    JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+    # macOS universal build
+    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
+    cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
+        -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="10.15" \
+        -DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSE ./
+    
 elif [[ $OS = 'Linux' ]]; then
-    JOBS=$(($(nproc) + 1))
-    if [[ $ARCH = 'aarch64' ]]; then
-        PLATFORM='linuxARM'
-    elif [[ $ARCH = 'x86_64' ]]; then
-        PLATFORM='linux'
-    fi
-fi
-if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
-	echo "!! Unknown OS/ARCH: $OS/$ARCH"
-	exit 1
-fi
-
-
-SRCROOT=${PWD}
-cd ../../Output
-OUTPUT=${PWD}
-
-# Remove old libraries and Headers
-
-rm -f Libraries/${PLATFORM}/libde265.a
-
-rm -rf Headers/libde265
-mkdir Headers/libde265
-
-# Switch to our build directory
-
-cd ../source/${PLATFORM}
-
-rm -rf libde265
-mkdir libde265
-tar -xf ../libde265.tar.gz  -C libde265 --strip-components=1
-cd libde265
-
-mkdir _build
-PREFIX=${PWD}'/_build'
-
-# Build
-
-if [[ $PLATFORM = 'macOS' ]]; then
-
-	cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
-	-DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="10.15" \
-	-DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSE ./
-
-elif [[ $OS = 'Linux' ]]; then
-
-  CC=clang CXX=clang++ \
-	cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
-	-DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSEG ./
+    # Linux build
+    print_info "Configuring for Linux..."
+    CC=clang CXX=clang++ \
+    cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
+        -DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSE ./
 
 	#./configure --prefix="${PREFIX}" --disable-shared --enable-static --disable-dec265 --disable-sherlock265 --disable-sse --disable-dependency-tracking
 
 fi
 
+print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
 make -j${JOBS}
 make install
 
-# Copy the header and library files.
+# Copy headers and libraries
+interactive_prompt \
+    "Ready to copy headers and libraries" \
+    "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
+    "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/${LIBRARY_NAME}.a"
 
-cp -R _build/include/libde265/* "${OUTPUT}/Headers/libde265"
-cp _build/lib/libde265.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp -R "${PREFIX}/include/${LIBRARY_NAME}"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
+cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
-# Return to source directory
-
-cd "${SRCROOT}"
+print_success "Build complete for ${LIBRARY_NAME}"

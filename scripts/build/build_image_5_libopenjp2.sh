@@ -1,79 +1,83 @@
 #!/bin/bash
 set -e
 
-echo "Starting $(basename "$0") Build"
+# Source common build functionality (platform detection, paths, interactive mode, colors, helpers)
+# This allows the script to be run standalone. When called from 2_build.sh,
+# variables are already exported, but sourcing again is harmless.
+source "$(dirname "$0")/_build_common.sh" "$@"
 
-OS=$(uname -s)		# Linux|Darwin
-ARCH=$(uname -m)	# x86_64|aarch64|arm64
-JOBS=1              # Number of parallel jobs
+LIBRARY_NAME="libopenjp2"
+ARCHIVE_NAME="libopenjp2.tar.gz"
+
+print_header "Starting ${LIBRARY_NAME} Build"
+
+# Clean and create output directories (ensures they exist and are empty)
+interactive_prompt \
+    "Ready to clean and create output directories for ${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_LIB}/${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+rm -rf "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
+rm -rf "${OUTPUT_LIB}/${LIBRARY_NAME}"
+rm -rf "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+mkdir -p "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
+mkdir -p "${OUTPUT_LIB}/${LIBRARY_NAME}"
+mkdir -p "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+# Extract source to output/platforms/${PLATFORM}/src/
+interactive_prompt \
+    "Ready to extract source archive" \
+    "Archive: ${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" \
+    "Destination: ${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+cd "${OUTPUT_SRC}/${LIBRARY_NAME}"
+tar -xf "${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" --strip-components=1
+
+# Create build directory
+BUILD_DIR="${OUTPUT_SRC}/${LIBRARY_NAME}/_build"
+mkdir -p "${BUILD_DIR}"
+PREFIX="${BUILD_DIR}"
+
+# Configure and build
+interactive_prompt \
+    "Ready to configure and build ${LIBRARY_NAME}" \
+    "Platform: ${PLATFORM}" \
+    "Build directory: ${BUILD_DIR}"
+
 if [[ $OS = 'Darwin' ]]; then
-		PLATFORM='macOS'
-    JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+    # macOS universal build
+    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
+    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DCMAKE_LIBRARY_PATH:path="${OUTPUT_LIB}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT_INCLUDE}" \
+        -DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
+    
 elif [[ $OS = 'Linux' ]]; then
-    JOBS=$(($(nproc) + 1))
-    if [[ $ARCH = 'aarch64' ]]; then
-        PLATFORM='linuxARM'
-    elif [[ $ARCH = 'x86_64' ]]; then
-        PLATFORM='linux'
-    fi
-fi
-if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
-	echo "!! Unknown OS/ARCH: $OS/$ARCH"
-	exit 1
-fi
-
-
-SRCROOT=${PWD}
-cd ../../Output
-OUTPUT=${PWD}
-
-# Remove old libraries and headers
-
-rm -f Libraries/${PLATFORM}/libopenjp2.a
-
-rm -rf Headers/libopenjp2
-mkdir Headers/libopenjp2
-
-# Switch to our build directory
-
-cd ../source/${PLATFORM}
-
-rm -rf libopenjp2
-mkdir libopenjp2
-tar -xf ../libopenjp2.tar.gz  -C libopenjp2 --strip-components=1
-cd libopenjp2
-
-mkdir _build
-PREFIX=${PWD}'/_build'
-
-# Build
-
-if [[ $PLATFORM = 'macOS' ]]; then
-
-	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
-	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-	-DCMAKE_LIBRARY_PATH:path="${OUTPUT}/Libraries/${PLATFORM}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT}/Headers" \
-	-DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
-
-elif [[ $OS = 'Linux' ]]; then
-
-  CC=clang CXX=clang++ \
-	CFLAGS="-fPIC" \
-	cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
-	-DCMAKE_IGNORE_PATH=/usr/lib/x86_64-linux-gnu/ \
-	-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-	-DCMAKE_LIBRARY_PATH:path="${OUTPUT}/Libraries/${PLATFORM}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT}/Headers" \
-	-DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
-
+    # Linux build
+    print_info "Configuring for Linux..."
+    CC=clang CXX=clang++ \
+    CFLAGS="-fPIC" \
+    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
+        -DCMAKE_IGNORE_PATH=/usr/lib/x86_64-linux-gnu/ \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DCMAKE_LIBRARY_PATH:path="${OUTPUT_LIB}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT_INCLUDE}" \
+        -DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
 fi
 
+print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
 make -j${JOBS}
 make install
 
-# Copy the header and library files.
+# Copy headers and libraries
+interactive_prompt \
+    "Ready to copy headers and libraries" \
+    "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
+    "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/${LIBRARY_NAME}.a"
 
-cp -R _build/include/openjpeg-2.5/* "${OUTPUT}/Headers/libopenjp2"
-cp _build/lib/libopenjp2.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp -R "${PREFIX}/include/openjpeg-2.5"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
+cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
-cd "${SRCROOT}"
+print_success "Build complete for ${LIBRARY_NAME}"

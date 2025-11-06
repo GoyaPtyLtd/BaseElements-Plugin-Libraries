@@ -46,15 +46,15 @@ MISSING_DEPS=()
 
 # Check required libraries
 declare -A REQUIRED_LIBS=(
-    ["freetype"]="${OUTPUT_LIB}/freetype/libfreetype.a"
-    ["fontconfig"]="${OUTPUT_LIB}/fontconfig/fontconfig.a"
-    ["libssl"]="${OUTPUT_LIB}/curl/libssl.a"
-    ["libcrypto"]="${OUTPUT_LIB}/curl/libcrypto.a"
-    ["libxml2"]="${OUTPUT_LIB}/xml/libxml2.a"
-    ["libunistring"]="${OUTPUT_LIB}/font/libunistring.a"
-    ["libz"]="${OUTPUT_LIB}/curl/libz.a"
-    ["libturbojpeg"]="${OUTPUT_LIB}/image/libturbojpeg.a"
-    ["libpng16"]="${OUTPUT_LIB}/image/libpng16.a"
+    ["freetype"]="${OUTPUT_LIB}/freetype2/libfreetype.a"
+    ["fontconfig"]="${OUTPUT_LIB}/fontconfig/libfontconfig.a"
+    ["libssl"]="${OUTPUT_LIB}/openssl/libssl.a"
+    ["libcrypto"]="${OUTPUT_LIB}/openssl/libcrypto.a"
+    ["libxml2"]="${OUTPUT_LIB}/libxml/libxml2.a"
+    ["libunistring"]="${OUTPUT_LIB}/libunistring/libunistring.a"
+    ["libz"]="${OUTPUT_LIB}/zlib/libz.a"
+    ["libturbojpeg"]="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a"
+    ["libpng16"]="${OUTPUT_LIB}/libpng/libpng16.a"
 )
 
 # Check required headers
@@ -87,7 +87,7 @@ done
 
 # Check xmllint executable (required for macOS)
 if [[ $OS = 'Darwin' ]]; then
-    XMLLINT_PATH="${OUTPUT_SRC}/xml/_build/bin/xmllint"
+    XMLLINT_PATH="${OUTPUT_SRC}/libxml/_build/bin/xmllint"
     if [[ ! -f "$XMLLINT_PATH" ]]; then
         MISSING_DEPS+=("Executable: xmllint ($XMLLINT_PATH)")
     fi
@@ -123,17 +123,17 @@ if [[ $OS = 'Darwin' ]]; then
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
          -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE -DPODOFO_BUILD_SHARED:BOOL=FALSE \
-         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype/libfreetype.a" -DFREETYPE_INCLUDE_DIR="${OUTPUT_INCLUDE}/freetype2" \
+         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIR="${OUTPUT_INCLUDE}/freetype2" \
          -DWANT_FONTCONFIG:BOOL=TRUE \
-         -DFONTCONFIG_LIBRARIES="${OUTPUT_LIB}/fontconfig/fontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/curl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DLIBCRYPTO_LIBRARIES="${OUTPUT_LIB}/curl/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DLIBXML2_LIBRARY="${OUTPUT_LIB}/xml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml" \
-         -DLIBXML2_XMLLINT_EXECUTABLE="${OUTPUT_SRC}/xml/_build/bin/xmllint" \
-         -DUNISTRING_LIBRARY="${OUTPUT_LIB}/font/libunistring.a" -DUNISTRING_INCLUDE_DIR="${OUTPUT_INCLUDE}/libunistring" \
-         -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/curl/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
-         -DLIBJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/image/libturbojpeg.a" -DLIBJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
-         -DPNG_LIBRARY="${OUTPUT_LIB}/image/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
+         -DFONTCONFIG_LIBRARIES="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DLIBCRYPTO_LIBRARIES="${OUTPUT_LIB}/openssl/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml" \
+         -DLIBXML2_XMLLINT_EXECUTABLE="${OUTPUT_SRC}/libxml/_build/bin/xmllint" \
+         -DUNISTRING_LIBRARY="${OUTPUT_LIB}/libunistring/libunistring.a" -DUNISTRING_INCLUDE_DIR="${OUTPUT_INCLUDE}/libunistring" \
+         -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
+         -DLIBJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DLIBJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
+         -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
          -DCMAKE_CXX_STANDARD=11 \
          -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" \
          -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" .
@@ -144,15 +144,15 @@ elif [[ $OS = 'Linux' ]]; then
     CC=clang CXX=clang++ \
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
          -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
-         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype/libfreetype.a" -DFREETYPE_INCLUDE_DIR="${OUTPUT_INCLUDE}/freetype2" \
+         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIR="${OUTPUT_INCLUDE}/freetype2" \
          -DWANT_FONTCONFIG:BOOL=TRUE \
-         -DFONTCONFIG_LIBRARIES="${OUTPUT_LIB}/fontconfig/fontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DLIBCRYPTO_LIBRARY="${OUTPUT_LIB}/curl/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/curl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DUNISTRING_LIBRARY="${OUTPUT_LIB}/font/libunistring.a" -DUNISTRING_INCLUDE_DIR="${OUTPUT_INCLUDE}/libunistring" \
-         -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/curl/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
-         -DLIBJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/image/libturbojpeg.a" -DLIBJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
-         -DPNG_LIBRARY="${OUTPUT_LIB}/image/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
+         -DFONTCONFIG_LIBRARIES="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DLIBCRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DUNISTRING_LIBRARY="${OUTPUT_LIB}/libunistring/libunistring.a" -DUNISTRING_INCLUDE_DIR="${OUTPUT_INCLUDE}/libunistring" \
+         -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
+         -DLIBJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DLIBJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
+         -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
          -DWANT_LIB64:BOOL=TRUE \
          -DCMAKE_CXX_FLAGS="-fPIC" .
 fi

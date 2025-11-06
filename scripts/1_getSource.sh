@@ -22,6 +22,18 @@ cd "${SCRIPT_DIR}/../source" || {
     exit 1
 }
 
+# Check if sha256sum is available (Linux) or shasum (macOS)
+if command -v sha256sum >/dev/null 2>&1; then
+    SHA256_CMD="sha256sum"
+    SHA256_CHECK_CMD="sha256sum -c --quiet"
+elif command -v shasum >/dev/null 2>&1; then
+    SHA256_CMD="shasum -a 256"
+    SHA256_CHECK_CMD="shasum -a 256 -c --quiet"
+else
+    SHA256_CMD=""
+    SHA256_CHECK_CMD=""
+fi
+
 # Download function: name, version, count, url, filename
 download() {
     local name="$1"
@@ -36,6 +48,44 @@ download() {
         echo "  URL: $url"
         echo "  Output: $filename"
         exit 1
+    fi
+    
+    # Verify SHA256 hash if SHA256SUMS file exists
+    if [[ -f "SHA256SUMS" ]] && [[ -n "$SHA256_CHECK_CMD" ]]; then
+        # Extract expected hash from SHA256SUMS for this file
+        local expected_hash=$(grep -E "^[0-9a-f]{64}[[:space:]]+\./${filename}$" "SHA256SUMS" | awk '{print $1}')
+        if [[ -z "$expected_hash" ]]; then
+            # Hash missing from SHA256SUMS
+            print_error "ERROR: Hash missing from SHA256SUMS for ${filename}"
+            print_error "  The file ${filename} was downloaded but has no entry in SHA256SUMS"
+            print_error "  This usually means the library version was updated but SHA256SUMS was not regenerated"
+            print_info ""
+            print_info "  To fix:"
+            print_info "    1. Run: source/regenerate_sha256.sh"
+            print_info "    2. Commit the updated source/SHA256SUMS file to the repository"
+            exit 1
+        fi
+        
+        # Hash exists, verify it matches
+        local actual_hash=$($SHA256_CMD "$filename" | awk '{print $1}')
+        if [[ "$actual_hash" != "$expected_hash" ]]; then
+            # Hash mismatch
+            print_error "ERROR: SHA256 hash mismatch for ${filename}"
+            print_error "  Expected hash: ${expected_hash}"
+            print_error "  Actual hash:   ${actual_hash}"
+            print_error ""
+            print_error "  This indicates:"
+            print_error "    - File corruption during download, OR"
+            print_error "    - Wrong file version downloaded, OR"
+            print_error "    - SHA256SUMS contains incorrect hash"
+            print_info ""
+            print_info "  To fix:"
+            print_info "    1. Re-download the file (it may be corrupted)"
+            print_info "    2. If you updated the library version, run: source/regenerate_sha256.sh"
+            print_info "    3. Commit the updated source/SHA256SUMS file to the repository"
+            exit 1
+        fi
+        print_info "  ✓ SHA256 verified"
     fi
 }
 

@@ -36,7 +36,16 @@ Downloads all source archives needed for building the libraries.
 **What it does:**
 - Downloads source archives for all dependencies (Boost, curl, jq, duktape, ImageMagick, etc.)
 - Saves archives to `../source/` directory
+- **Verifies SHA256 hashes** against `source/SHA256SUMS` after each download to ensure file integrity
 - Only needs to be run once or when library versions change
+
+**SHA256 Verification:**
+The script automatically verifies each downloaded file against the `source/SHA256SUMS` file. This ensures:
+- Files are not corrupted during download
+- Files match the expected versions
+- Security (detects tampering or incorrect downloads)
+
+If verification fails, the script will exit with an error message. If you've updated a library version, you'll need to regenerate `SHA256SUMS` (see below).
 
 **Customizing versions or sources:**
 To test different library versions or source from alternate locations (e.g., forks, development branches, or local mirrors), edit `1_getSource.sh` and modify the `download` function calls. Each call takes 5 parameters:
@@ -50,6 +59,12 @@ Example: To test a newer curl version or a fork:
 ```bash
 download "Curl" "8.7.0" "2" "https://github.com/yourfork/curl/archive/refs/tags/curl-8.7.0.tar.gz" "curl.tar.gz"
 ```
+
+**Important:** When updating library versions, you must regenerate the `SHA256SUMS` file:
+```bash
+./source/regenerate_sha256.sh
+```
+Then commit the updated `source/SHA256SUMS` file to the repository.
 
 You can also use local file paths or custom URLs for development/testing purposes.
 
@@ -124,6 +139,30 @@ Copies all built libraries, headers, and selected source files from the output d
 
 **Using `.env` for multiple repository management:**
 The `.env` file is particularly useful for managing multiple copies of this repository, each tracking different library versions. You can maintain separate clones of BaseElements-Plugin-Libraries (e.g., one for testing new library versions, another for stable releases) and configure each `.env` file to point to different BaseElements-Plugin repositories or branches. This allows you to test library updates in isolation before merging into your main development branch.
+
+## Utility Scripts
+
+### `generate_sha256.sh`
+
+Generates SHA256 hashes for all source archives in the `source/` directory.
+
+**What it does:**
+- Scans the `source/` directory for all archive files (`.tar.gz`, `.tar.xz`)
+- Computes SHA256 hash for each file
+- Writes all hashes to `source/SHA256SUMS` in standard format
+- Sorts the output by filename for consistency
+
+**Usage:**
+```bash
+./scripts/generate_sha256.sh
+```
+
+**When to use:**
+- After downloading new source archives
+- After updating library versions in `1_getSource.sh`
+- To regenerate hashes if `SHA256SUMS` is missing or outdated
+
+**Important:** Always commit the updated `source/SHA256SUMS` file to the repository after regenerating it. This ensures all users can verify their downloads match the expected files.
 
 ## Setup Instructions
 

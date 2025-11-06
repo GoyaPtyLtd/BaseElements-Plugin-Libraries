@@ -101,7 +101,7 @@ if [[ $OS = 'Darwin' ]]; then
     ./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
         --with-libz --with-libz-prefix=${ZLIB_PREFIX} \
         --with-crypto=openssl --with-libssl-prefix=${OPENSSL_PREFIX} \
-        --host="${HOST}" \
+		--host="${HOST}" \
         --prefix="${PREFIX}"
     
 elif [[ $OS = 'Linux' ]]; then
@@ -125,10 +125,9 @@ make install
 interactive_prompt \
     "Ready to copy headers and libraries" \
     "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
-    "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/libssh2.a"
+    "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/${LIBRARY_NAME}.a"
 
 cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-cp "${PREFIX}/lib/libssh2.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 print_success "Build complete for ${LIBRARY_NAME}"
-

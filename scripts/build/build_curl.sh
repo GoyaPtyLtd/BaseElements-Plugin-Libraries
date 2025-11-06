@@ -19,11 +19,18 @@ done
 print_info "Cleanup complete"
 
 # Build all curl dependencies in order
-./build_curl_1_zlib.sh "$@"
-./build_curl_2_openssl.sh "$@"
-./build_curl_3_libssh.sh "$@"
-./build_curl_4_nghttp2.sh "$@"
-./build_curl_5_curl.sh "$@"
-./build_curl_6_poco.sh "$@"
+# Pass interactive flag if it was set
+INTERACTIVE_FLAG=""
+if [[ $INTERACTIVE -eq 1 ]]; then
+    INTERACTIVE_FLAG="--interactive"
+fi
+
+SCRIPT_DIR="$(dirname "$0")"
+"${SCRIPT_DIR}/build_curl_1_zlib.sh" ${INTERACTIVE_FLAG}
+"${SCRIPT_DIR}/build_curl_2_openssl.sh" ${INTERACTIVE_FLAG}
+"${SCRIPT_DIR}/build_curl_3_libssh.sh" ${INTERACTIVE_FLAG}
+"${SCRIPT_DIR}/build_curl_4_nghttp2.sh" ${INTERACTIVE_FLAG}
+"${SCRIPT_DIR}/build_curl_5_curl.sh" ${INTERACTIVE_FLAG}
+"${SCRIPT_DIR}/build_curl_6_poco.sh" ${INTERACTIVE_FLAG}
 
 print_success "Curl stack build complete"

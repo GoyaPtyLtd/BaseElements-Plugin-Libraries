@@ -1,6 +1,6 @@
 # BaseElements-Plugin-Libraries
 
-Build scripts and tools for compiling external libraries used in the [BaseElements Plugin](https://github.com/GoyaPtyLtd/BaseElements-Plugin). This repository builds dependencies like Boost, curl, jq, ImageMagick, and others, then copies the compiled libraries and headers into the BaseElements-Plugin repository structure.
+Build scripts and tools for compiling external libraries used in the [BaseElements Plugin](https://github.com/GoyaPtyLtd/BaseElements-Plugin). This repository builds dependencies like Boost, curl, jq, ImageMagick, and others, then copies all compiled libraries, headers, and selected source files into a consolidated `./external/` directory in the BaseElements-Plugin repository.
 
 ## Platform Support
 
@@ -96,36 +96,34 @@ Builds the libraries from source. Can build all libraries or specific ones.
 
 ### Script 3: `3_copy.sh`
 
-Copies built libraries and headers from the output directory into the BaseElements-Plugin repository.
+Copies all built libraries, headers, and selected source files from the output directory into a single consolidated location in the BaseElements-Plugin repository.
 
 **What it does:**
-- Copies compiled libraries to `BaseElements-Plugin/Libraries/{PLATFORM}/`
-- Copies headers to `BaseElements-Plugin/Headers/`
-- Copies source files to `BaseElements-Plugin/Source/` (where needed)
-- Requires `PLUGIN_ROOT` environment variable or `.env` file
+- Copies all compiled libraries to `BaseElements-Plugin/external/lib/`
+- Copies all headers to `BaseElements-Plugin/external/include/`
+- Copies selected source files (e.g., duktape) to `BaseElements-Plugin/external/src/`
+- Removes and recreates the `external/` directory on each run to ensure a clean state
+- Requires `PLUGIN_ROOT` to be set in `.env` file
 
 **Usage:**
 ```bash
-# Copy all libraries
-./3_copy.sh --copy all
+# Copy all libraries, headers, and source files
+./3_copy.sh
 
-# Copy specific libraries
-./3_copy.sh --copy jq
-./3_copy.sh --copy boost jq curl
-
-# Interactive mode
-./3_copy.sh --copy all --interactive
+# Interactive mode (prompts before each step)
+./3_copy.sh --interactive
 ```
 
 **Flags:**
-- `--copy`, `-c` - Specify library names to copy (or "all")
 - `--interactive`, `-i` - Enable interactive mode (prompt before each copy step)
 
-**Available libraries:** `all`, `boost`, `curl`, `duktape`, `font`, `headers`, `image`, `jq`, `xml`
-
 **Requirements:**
-- `PLUGIN_ROOT` environment variable set, or
 - `.env` file in project root with `PLUGIN_ROOT=/path/to/BaseElements-Plugin`
+
+**Note:** This refactored approach consolidates all external libraries into a single `./external/` directory structure, making it simpler to import and reference libraries. The CMake configuration in BaseElements-Plugin will need to be updated to reference the new `./external/` location instead of the previous distributed structure.
+
+**Using `.env` for multiple repository management:**
+The `.env` file is particularly useful for managing multiple copies of this repository, each tracking different library versions. You can maintain separate clones of BaseElements-Plugin-Libraries (e.g., one for testing new library versions, another for stable releases) and configure each `.env` file to point to different BaseElements-Plugin repositories or branches. This allows you to test library updates in isolation before merging into your main development branch.
 
 ## Setup Instructions
 
@@ -167,7 +165,7 @@ cd scripts
 ./0_cleanOutputFolder.sh
 ./1_getSource.sh
 ./2_build.sh --build all
-./3_copy.sh --copy all
+./3_copy.sh
 ```
 
 ### macOS
@@ -207,7 +205,7 @@ cd scripts
 ./0_cleanOutputFolder.sh
 ./1_getSource.sh
 ./2_build.sh --build all
-./3_copy.sh --copy all
+./3_copy.sh
 ```
 
 ### Windows

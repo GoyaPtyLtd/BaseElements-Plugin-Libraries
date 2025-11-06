@@ -1,72 +1,76 @@
 #!/bin/bash
 set -e
 
-echo "Starting $(basename "$0") Build"
+# Source common build functionality (platform detection, paths, interactive mode, colors, helpers)
+# This allows the script to be run standalone. When called from 2_build.sh,
+# variables are already exported, but sourcing again is harmless.
+source "$(dirname "$0")/_build_common.sh" "$@"
 
-OS=$(uname -s)		# Linux|Darwin
-ARCH=$(uname -m)	# x86_64|aarch64|arm64
-JOBS=1              # Number of parallel jobs
+LIBRARY_NAME="zlib"
+ARCHIVE_NAME="zlib.tar.xz"
+
+print_header "Starting ${LIBRARY_NAME} Build"
+
+# Clean and create output directories (ensures they exist and are empty)
+interactive_prompt \
+    "Ready to clean and create output directories for ${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_LIB}/${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+rm -rf "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
+rm -rf "${OUTPUT_LIB}/${LIBRARY_NAME}"
+rm -rf "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+mkdir -p "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
+mkdir -p "${OUTPUT_LIB}/${LIBRARY_NAME}"
+mkdir -p "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+# Extract source to output/platforms/${PLATFORM}/src/
+interactive_prompt \
+    "Ready to extract source archive" \
+    "Archive: ${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" \
+    "Destination: ${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+cd "${OUTPUT_SRC}/${LIBRARY_NAME}"
+tar -xf "${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" --strip-components=1
+
+# Create build directory
+BUILD_DIR="${OUTPUT_SRC}/${LIBRARY_NAME}/_build"
+mkdir -p "${BUILD_DIR}"
+PREFIX="${BUILD_DIR}"
+
+# Configure and build
+interactive_prompt \
+    "Ready to configure and build ${LIBRARY_NAME}" \
+    "Platform: ${PLATFORM}" \
+    "Build directory: ${BUILD_DIR}"
+
 if [[ $OS = 'Darwin' ]]; then
-	PLATFORM='macOS'
-    JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+    # macOS universal build
+    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
+    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+    ./configure --static --prefix="${PREFIX}"
+    
 elif [[ $OS = 'Linux' ]]; then
-    JOBS=$(($(nproc) + 1))
-    if [[ $ARCH = 'aarch64' ]]; then
-        PLATFORM='linuxARM'
-    elif [[ $ARCH = 'x86_64' ]]; then
-        PLATFORM='linux'
-    fi
-fi
-if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
-	echo "!! Unknown OS/ARCH: $OS/$ARCH"
-	exit 1
-fi
-
-
-SRCROOT=${PWD}
-cd ../../Output
-OUTPUT=${PWD}
-
-# Remove old libraries and headers
-
-rm -f Libraries/${PLATFORM}/libz.a
-
-rm -rf Headers/zlib
-mkdir Headers/zlib
-
-# Switch to our build directory
-
-cd ../source/${PLATFORM}
-
-rm -rf zlib
-mkdir zlib
-tar -xf ../zlib.tar.xz -C zlib --strip-components=1
-cd zlib
-
-mkdir _build
-PREFIX=${PWD}'/_build'
-
-# Build
-
-if [[ $PLATFORM = 'macOS' ]]; then
-
-	CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-	./configure --static --prefix="${PREFIX}"
-
-elif [[ $OS = 'Linux' ]]; then
-
+    # Linux build
+    print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
-	CFLAGS="-fPIC" \
-	./configure --static --prefix="${PREFIX}"
-
+    CFLAGS="-fPIC" \
+    ./configure --static --prefix="${PREFIX}"
 fi
 
+print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
 make -j${JOBS}
 make install
 
-# Copy the header and library files.
+# Copy headers and libraries
+interactive_prompt \
+    "Ready to copy headers and libraries" \
+    "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
+    "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/libz.a"
 
-cp -R _build/include/* "${OUTPUT}/Headers/zlib"
-cp _build/lib/libz.a "${OUTPUT}/Libraries/${PLATFORM}"
+cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
+cp "${PREFIX}/lib/libz.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
-cd "${SRCROOT}"
+print_success "Build complete for ${LIBRARY_NAME}"

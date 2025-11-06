@@ -178,9 +178,9 @@ cp -R "${PREFIX}/include/podofo"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/n
 
 # Copy library (different paths for macOS vs Linux)
 if [[ $OS = 'Darwin' ]]; then
-    cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/" 2>/dev/null || true
+    cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 else
-    cp "${PREFIX}/lib64/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/" 2>/dev/null || true
+    cp "${PREFIX}/lib64/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

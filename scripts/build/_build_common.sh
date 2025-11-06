@@ -83,6 +83,12 @@ if [[ $OS = 'Darwin' ]]; then
 	# Use lowercase 'macos' to match GitHub Actions and packages system
 	PLATFORM='macos-arm64_x86_64'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+    # Set HOST triplet for configure scripts (follows packages system pattern)
+    if [[ $ARCH = 'aarch64' ]] || [[ $ARCH = 'arm64' ]]; then
+        HOST='x86_64-apple-darwin'
+    elif [[ $ARCH = 'x86_64' ]]; then
+        HOST='aarch64-apple-darwin'
+    fi
 elif [[ $OS = 'Linux' ]]; then
     JOBS=$(($(nproc) + 1))
     # Detect Ubuntu version from /etc/os-release
@@ -138,6 +144,10 @@ export PLATFORM
 export PROJECT_ROOT
 export SOURCE_BASE
 export OUTPUT_BASE
+# HOST is only set on macOS, so conditionally export it
+if [[ -n "${HOST:-}" ]]; then
+    export HOST
+fi
 
 # Set up output paths (new packages system)
 OUTPUT_DIR="${OUTPUT_BASE}/platforms/${PLATFORM}"

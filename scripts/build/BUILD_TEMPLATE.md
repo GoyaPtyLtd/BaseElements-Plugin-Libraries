@@ -121,7 +121,7 @@ All variables are exported and available to subprocesses:
 ### Platform Detection
 - `OS` - Operating system (Linux|Darwin)
 - `ARCH` - Architecture (x86_64|aarch64|arm64)
-- `PLATFORM` - Platform name (ubuntu20_04-x86_64, macos-arm64_x86_64, etc.)
+- `PLATFORM` - Platform name (ubuntu20_04-x86_64, macos-arm64-x86_64, etc.)
 - `JOBS` - Number of parallel build jobs (CPU count + 1)
 
 ### Paths

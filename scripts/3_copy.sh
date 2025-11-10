@@ -66,32 +66,12 @@ export PLUGIN_ROOT
 # PART 3: Plugin Destination Paths
 # ============================================================================
 
-# Map new platform names to old platform names used by the plugin
-get_plugin_platform_name() {
-    case "${PLATFORM}" in
-        macos-arm64_x86_64)
-            echo "macOS"
-            ;;
-        ubuntu*_04-x86_64)
-            echo "linux"
-            ;;
-        ubuntu*_04-aarch64)
-            echo "linuxARM"
-            ;;
-        *)
-            print_error "ERROR: Unknown platform for plugin mapping: ${PLATFORM}"
-            exit 1
-            ;;
-    esac
-}
-
-PLUGIN_PLATFORM="$(get_plugin_platform_name)"
 EXTERNAL_DIR="${PLUGIN_ROOT}/external"
-PLUGIN_LIB_DIR="${PLUGIN_ROOT}/external/lib"
-PLUGIN_HEADERS_DIR="${PLUGIN_ROOT}/external/include"
-PLUGIN_SOURCE_DIR="${PLUGIN_ROOT}/external/src"
+PLUGIN_PLATFORM_DIR="${PLUGIN_ROOT}/external/${PLATFORM}"
+PLUGIN_LIB_DIR="${PLUGIN_ROOT}/external/${PLATFORM}/lib"
+PLUGIN_HEADERS_DIR="${PLUGIN_ROOT}/external/${PLATFORM}/include"
+PLUGIN_SOURCE_DIR="${PLUGIN_ROOT}/external/${PLATFORM}/src"
 
-export PLUGIN_PLATFORM
 export PLUGIN_LIB_DIR
 export PLUGIN_HEADERS_DIR
 export PLUGIN_SOURCE_DIR
@@ -110,21 +90,21 @@ print_info "  OUTPUT_INCLUDE: ${OUTPUT_INCLUDE}"
 print_info "  OUTPUT_LIB: ${OUTPUT_LIB}"
 print_info "  OUTPUT_SRC: ${OUTPUT_SRC}"
 print_info "  PLUGIN_ROOT: ${PLUGIN_ROOT}"
-print_info "  PLUGIN_PLATFORM: ${PLUGIN_PLATFORM}"
 print_info "  PLUGIN_LIB_DIR: ${PLUGIN_LIB_DIR}"
 print_info "  PLUGIN_HEADERS_DIR: ${PLUGIN_HEADERS_DIR}"
 print_info "  PLUGIN_SOURCE_DIR: ${PLUGIN_SOURCE_DIR}"
 
 echo ""
 
-# Remove external folder
-print_header "Remove external directory"
-print_info "Path: ${EXTERNAL_DIR}"
+# Remove platform-specific directory
+print_header "Remove platform-specific directory"
+print_info "Platform: ${PLATFORM}"
+print_info "Path to remove: ${PLUGIN_PLATFORM_DIR}"
 if [[ $INTERACTIVE -eq 1 ]]; then
-    interactive_prompt "Ready to remove external directory"
+    interactive_prompt "Ready to remove platform-specific directory"
 fi
-rm -rf "${EXTERNAL_DIR}"
-print_success "External directory removed"
+rm -rf "${PLUGIN_PLATFORM_DIR}"
+print_success "Platform-specific directory removed"
 
 echo ""
 

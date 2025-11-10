@@ -114,10 +114,11 @@ Builds the libraries from source. Can build all libraries or specific ones.
 Copies all built libraries, headers, and selected source files from the output directory into a single consolidated location in the BaseElements-Plugin repository.
 
 **What it does:**
-- Copies all compiled libraries to `BaseElements-Plugin/external/lib/`
-- Copies all headers to `BaseElements-Plugin/external/include/`
-- Copies selected source files (e.g., duktape) to `BaseElements-Plugin/external/src/`
-- Removes and recreates the `external/` directory on each run to ensure a clean state
+- Copies all compiled libraries to `BaseElements-Plugin/external/{PLATFORM}/lib/`
+- Copies all headers to `BaseElements-Plugin/external/{PLATFORM}/include/`
+- Copies selected source files (e.g., duktape) to `BaseElements-Plugin/external/{PLATFORM}/src/`
+- Removes and recreates the platform-specific directory on each run to ensure a clean state
+- Platform names: `macos-arm64-x86_64`, `ubuntu20.04-x86_64`, `ubuntu20.04-aarch64`, `ubuntu22.04-x86_64`, `ubuntu22.04-aarch64`, `ubuntu24.04-x86_64`, `ubuntu24.04-aarch64`
 - Requires `PLUGIN_ROOT` to be set in `.env` file
 
 **Usage:**
@@ -168,21 +169,45 @@ Generates SHA256 hashes for all source archives in the `source/` directory.
 
 ### Ubuntu 24.04 (ARM/x86)
 
+**Note:** Ubuntu 24.04 defaults to LLVM/Clang v18, which is ideal for this project and tracks closely to macOS 15 & 26 clang version 17. See: https://documentation.ubuntu.com/ubuntu-for-developers/reference/availability/llvm/
+
+**Alternative:** You can also follow the Ubuntu 22.04 steps in the "Other Ubuntu Versions" section below if you prefer to track one consistent approach (e.g., when using Ansible or GitHub runners to build). 
+
 **1. Update system and install dependencies:**
 ```bash
 sudo apt update
 sudo apt upgrade
-sudo apt install build-essential gperf cmake git git-lfs wget zip
-sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" llvm.sh 18
+sudo apt install \
+    build-essential \
+    gperf \
+    cmake \
+    git \
+    git-lfs \
+    libc++-dev \
+    libc++abi-dev \
+    libexpat1-dev \
+    lld \
+    lldb \
+    liblldb-dev \
+    libomp5 \
+    libomp-dev \
+    llvm \
+    llvm-dev \
+    llvm-runtime \
+    libllvm-ocaml-dev \
+    clang \
+    clangd \
+    clang-format \
+    clang-tidy \
+    clang-tools \
+    libclang-dev \
+    libclang1 \
+    python3-clang
 ```
 
-**2. Configure clang:**
-```bash
-cd ~/source/BaseElements-Plugin-Libraries/scripts/install
-sudo ./update-alternatives-clang.sh
-```
 
-**3. Clone repositories:**
+
+**2. Clone repositories:**
 ```bash
 cd ~
 mkdir -p source
@@ -190,7 +215,7 @@ cd source
 git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
 ```
 
-**4. Configure PLUGIN_ROOT:**
+**3 Configure PLUGIN_ROOT:**
 ```bash
 cd BaseElements-Plugin-Libraries
 cp env.example .env
@@ -198,7 +223,7 @@ cp env.example .env
 # Example: PLUGIN_ROOT=/home/daniel/source/BaseElements-Plugin
 ```
 
-**5. Run build process:**
+**4. Run build process:**
 ```bash
 cd scripts
 ./0_cleanOutputFolder.sh
@@ -207,11 +232,30 @@ cd scripts
 ./3_copy.sh
 ```
 
+### Other Ubuntu Versions
+
+If building on Ubuntu 22.04 you will need to manually install LLVM 18:
+
+**1. Install LLVM 18:**
+```bash
+sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" llvm.sh 18
+```
+
+**2. Follow step 1 from the Ubuntu 24.04 section above** (update system and install dependencies).
+
+**3. Configure clang:**
+```bash
+cd ~/source/BaseElements-Plugin-Libraries/scripts/install
+sudo ./update-alternatives-clang.sh
+```
+
+**4. Follow steps 2-4 from the Ubuntu 24.04 section above** (clone repositories, configure PLUGIN_ROOT, and run build process).
+
 ### macOS
 
-**1. Install Xcode and command line tools:**
+**1. Install command line tools:**
 ```bash
-# Install Xcode from App Store, then:
+# Install Xcode command line tools (no App Store required):
 xcode-select --install
 ```
 
@@ -219,14 +263,15 @@ xcode-select --install
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
-brew install autoconf automake bash cmake gettext git git-lfs gnu-tar libtool m4 pkg-config protobuf wget xz
+brew install autoconf automake bash cmake gettext git git-lfs gnu-tar \
+    libtool m4 pkg-config protobuf wget xz
 ```
+
+**Note:** The command line tools are sufficient for building. If you need the full Xcode IDE, install it from the App Store or use `brew install xcodes` to manage Xcode versions.
 
 **3. Clone repositories:**
 ```bash
 cd ~
-mkdir -p Documents/GitHub
-cd Documents/GitHub
 git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
 ```
 
@@ -235,7 +280,7 @@ git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
 cd BaseElements-Plugin-Libraries
 cp env.example .env
 # Edit .env and set PLUGIN_ROOT to your BaseElements-Plugin path
-# Example: PLUGIN_ROOT=/Users/username/Documents/GitHub/BaseElements-Plugin
+# Example: PLUGIN_ROOT=/Users/username/BaseElements-Plugin
 ```
 
 **5. Run build process:**

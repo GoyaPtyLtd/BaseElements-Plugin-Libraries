@@ -4,7 +4,7 @@ Each subdirectory follows the naming pattern: `{os}{version}-{arch}/`
 Examples:
 - `ubuntu20_04-x86_64/`
 - `ubuntu22_04-aarch64/`
-- `macos-arm64_x86_64/`
+- `macos-arm64-x86_64/`
 
 Each platform directory contains:
 - `include/` - Header files (not tracked in git)

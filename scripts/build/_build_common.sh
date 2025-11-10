@@ -73,7 +73,7 @@ SOURCE_BASE="${PROJECT_ROOT}/source"
 OUTPUT_BASE="${PROJECT_ROOT}/output"
 
 # Detect platform (OS and architecture)
-# Uses new packages system naming: ubuntu20_04-x86_64, macos-arm64_x86_64, etc.
+# Uses new packages system naming: ubuntu20.04-x86_64, macos-arm64-x86_64, etc.
 OS=$(uname -s)		# Linux|Darwin
 ARCH=$(uname -m)	# x86_64|aarch64|arm64
 JOBS=1
@@ -108,13 +108,13 @@ elif [[ $OS = 'Linux' ]]; then
     # Map Ubuntu version to platform name
     case "${version_id}" in
         "20.04")
-            ubuntu_version="ubuntu20_04"
+            ubuntu_version="ubuntu20.04"
             ;;
         "22.04")
-            ubuntu_version="ubuntu22_04"
+            ubuntu_version="ubuntu22.04"
             ;;
         "24.04")
-            ubuntu_version="ubuntu24_04"
+            ubuntu_version="ubuntu24.04"
             ;;
         *)
             echo "ERROR: Unsupported Ubuntu version: ${version_id}" >&2

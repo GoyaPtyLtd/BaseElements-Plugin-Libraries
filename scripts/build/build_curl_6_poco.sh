@@ -6,7 +6,7 @@ set -e
 # variables are already exported, but sourcing again is harmless.
 source "$(dirname "$0")/_build_common.sh" "$@"
 
-LIBRARY_NAME="poco"
+LIBRARY_NAME="Poco"
 ARCHIVE_NAME="poco.tar.gz"
 
 print_header "Starting ${LIBRARY_NAME} Build"

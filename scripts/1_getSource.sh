@@ -41,14 +41,38 @@ download() {
     local count="$3"
     local url="$4"
     local filename="$5"
+    local max_retries=3
+    local retry_delay=2
+    local attempt=1
+    
     print_info "Downloading ${name} ${version} (${count} of 25)..."
     rm -f "$filename"
-    if ! wget -q --show-progress -O "$filename" "$url"; then
-        print_error "ERROR: Failed to download ${name}"
-        echo "  URL: $url"
-        echo "  Output: $filename"
-        exit 1
-    fi
+    
+    # Retry loop for downloads
+    while [[ $attempt -le $max_retries ]]; do
+        if [[ $attempt -gt 1 ]]; then
+            print_info "  Retry attempt ${attempt} of ${max_retries} (waiting ${retry_delay}s)..."
+            sleep $retry_delay
+        fi
+        
+        if wget -q --show-progress -O "$filename" "$url"; then
+            # Download succeeded, break out of retry loop
+            break
+        fi
+        
+        # Download failed
+        if [[ $attempt -eq $max_retries ]]; then
+            # Last attempt failed
+            print_error "ERROR: Failed to download ${name} after ${max_retries} attempts"
+            echo "  URL: $url"
+            echo "  Output: $filename"
+            exit 1
+        fi
+        
+        # Remove partial download before retry
+        rm -f "$filename"
+        attempt=$((attempt + 1))
+    done
     
     # Verify SHA256 hash if SHA256SUMS file exists
     if [[ -f "SHA256SUMS" ]] && [[ -n "$SHA256_CHECK_CMD" ]]; then

@@ -107,7 +107,7 @@ Builds the libraries from source. Can build all libraries or specific ones.
 - `--build`, `-b` - Specify library names to build (or "all")
 - `--interactive`, `-i` - Enable interactive mode (prompt before each build step)
 
-**Available libraries:** `all`, `jq`, `duktape`, `curl`, `font`, `image`, `xml`, `boost`, `podofo`
+**Available libraries:** `all`, `jq`, `duktape`, `curl`, `font`, `image`, `xml`, `boost`, `podofo`, `fm_plugin_sdk`
 
 ### Script 3: `3_copy.sh`
 
@@ -140,6 +140,43 @@ Copies all built libraries, headers, and selected source files from the output d
 
 **Using `.env` for multiple repository management:**
 The `.env` file is particularly useful for managing multiple copies of this repository, each tracking different library versions. You can maintain separate clones of BaseElements-Plugin-Libraries (e.g., one for testing new library versions, another for stable releases) and configure each `.env` file to point to different BaseElements-Plugin repositories or branches. This allows you to test library updates in isolation before merging into your main development branch.
+
+### Script 4: `4_package.sh`
+
+Creates tarballs and SHA256 checksums for platform directories. Designed for future automated builds and releases using GitHub Actions.
+
+**What it does:**
+- Packages only the files that would be copied by `3_copy.sh` (headers, libraries, duktape source, PlugInSDK)
+- Creates compressed tarballs: `external-{PLATFORM}.tar.gz`
+- Generates SHA256 checksum files: `external-{PLATFORM}.tar.gz.sha256`
+- Saves both files in `output/platforms/` alongside the platform directories
+- Automatically overwrites existing packages on rerun
+
+**What gets packaged:**
+- `include/` directory (all headers)
+- `lib/` directory (all compiled libraries)
+- `src/duktape/` directory (duktape source files, if present)
+- `PlugInSDK/` directory (FM Plugin SDK, if present)
+
+**Usage:**
+```bash
+# Package all Ubuntu platforms
+./4_package.sh
+```
+
+**Flags:**
+- No flags needed
+
+**Use case:**
+This script is designed for automated build and release workflows (e.g., GitHub Actions). After building libraries, you can package them into distributable tarballs that can be uploaded as release artifacts or downloaded by other systems. The tarball structure matches what gets copied to the plugin repository, making it easy to extract and use.
+
+**Example workflow:**
+```bash
+./0_cleanOutputFolder.sh
+./1_getSource.sh
+./2_build.sh --build all
+./4_package.sh  # Create distributable packages
+```
 
 ## Utility Scripts
 

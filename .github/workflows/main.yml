@@ -90,7 +90,7 @@ jobs:
 
       - name: Build all libraries
         working-directory: scripts
-        run: ./2_build.sh --build jq
+        run: ./2_build.sh --build all
 
       - name: Package libraries
         working-directory: scripts

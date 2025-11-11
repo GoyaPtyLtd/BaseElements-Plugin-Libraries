@@ -75,12 +75,22 @@ OUTPUT_BASE="${PROJECT_ROOT}/output"
 # Detect platform (OS and architecture)
 # Uses new packages system naming: ubuntu20.04-x86_64, macos-arm64-x86_64, etc.
 OS=$(uname -s)		# Linux|Darwin
+# Detect architecture using uname -m
+ARCH=$(uname -m)
+# Normalize architecture names
+case "${ARCH}" in
+    "arm64")
+        ARCH="aarch64"
+        ;;
+    "amd64")
+        ARCH="x86_64"
+        ;;
+esac
 JOBS=1
 PLATFORM='unknown'
 
 if [[ $OS = 'Darwin' ]]; then
 	# Use lowercase 'macos' to match GitHub Actions and packages system
-	ARCH=$(uname -m)	# x86_64|aarch64|arm64
 	PLATFORM='macos-arm64_x86_64'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
     # Set HOST triplet for configure scripts (follows packages system pattern)
@@ -123,19 +133,7 @@ elif [[ $OS = 'Linux' ]]; then
             ;;
     esac
     
-    # Detect architecture using uname -m
-    ARCH=$(uname -m)
-    # Normalize architecture names
-    case "${ARCH}" in
-        "arm64")
-            ARCH="aarch64"
-            ;;
-        "amd64")
-            ARCH="x86_64"
-            ;;
-    esac
-    
-    # Validate architecture
+    # Map architecture to platform name
     if [[ $ARCH != 'aarch64' ]] && [[ $ARCH != 'x86_64' ]]; then
         echo "ERROR: Unsupported architecture: $ARCH" >&2
         return 1 2>/dev/null || exit 1

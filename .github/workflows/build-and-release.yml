@@ -79,8 +79,9 @@ jobs:
         run: |
           sudo scripts/install/update-alternatives-clang.sh
           # Configure generic cc/c++ to use clang-18 (many build scripts use cc/c++ instead of clang/clang++)
+          # Note: clang++ is already set up as a slave by the script, so we only configure cc and c++
           sudo update-alternatives --install /usr/bin/cc cc /usr/bin/clang-18 100
-          sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++-18 100
+          sudo update-alternatives --install /usr/bin/c++ c++ /usr/bin/clang++ 100
 
       - name: Clean output folder
         working-directory: scripts

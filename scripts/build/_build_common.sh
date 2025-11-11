@@ -123,30 +123,17 @@ elif [[ $OS = 'Linux' ]]; then
             ;;
     esac
     
-    # Detect architecture using dpkg (more reliable than uname -m on Ubuntu)
-    # dpkg returns: amd64 for x86_64, arm64 for aarch64
-    if command -v dpkg >/dev/null 2>&1; then
-        dpkg_arch=$(dpkg --print-architecture)
-        case "${dpkg_arch}" in
-            "amd64")
-                ARCH="x86_64"
-                ;;
-            "arm64")
-                ARCH="aarch64"
-                ;;
-            *)
-                echo "ERROR: Unsupported dpkg architecture: ${dpkg_arch}" >&2
-                return 1 2>/dev/null || exit 1
-                ;;
-        esac
-    else
-        # Fallback to uname -m if dpkg is not available
-        ARCH=$(uname -m)
-        # Normalize arm64 to aarch64
-        if [[ $ARCH = 'arm64' ]]; then
-            ARCH='aarch64'
-        fi
-    fi
+    # Detect architecture using uname -m
+    ARCH=$(uname -m)
+    # Normalize architecture names
+    case "${ARCH}" in
+        "arm64")
+            ARCH="aarch64"
+            ;;
+        "amd64")
+            ARCH="x86_64"
+            ;;
+    esac
     
     # Validate architecture
     if [[ $ARCH != 'aarch64' ]] && [[ $ARCH != 'x86_64' ]]; then

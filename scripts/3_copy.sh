@@ -159,4 +159,20 @@ else
 fi
 
 echo ""
+
+# Copy FM Plugin SDK (if it exists)
+if [[ -d "${OUTPUT_DIR}/PlugInSDK" ]]; then
+    print_header "Copying FM Plugin SDK"
+    print_info "Source: ${OUTPUT_DIR}/PlugInSDK/"
+    print_info "Destination: ${PLUGIN_PLATFORM_DIR}/PlugInSDK/"
+    if [[ $INTERACTIVE -eq 1 ]]; then
+        interactive_prompt "Ready to copy FM Plugin SDK"
+    fi
+    cp -r "${OUTPUT_DIR}/PlugInSDK" "${PLUGIN_PLATFORM_DIR}/"
+    print_success "FM Plugin SDK copied"
+else
+    print_info "FM Plugin SDK not found, skipping"
+fi
+
+echo ""
 print_success "Copy operations complete"

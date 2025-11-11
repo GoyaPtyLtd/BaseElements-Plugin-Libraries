@@ -23,7 +23,7 @@ while [[ $# -gt 0 ]]; do
             done
             if [[ ${#BUILD_TARGETS[@]} -eq 0 ]]; then
                 echo "ERROR: --build/-b requires at least one library name" >&2
-                echo "Available libraries: all, jq, duktape, curl, font, image, xml, boost, podofo" >&2
+                echo "Available libraries: all, jq, duktape, curl, font, image, xml, boost, podofo, fm_plugin_sdk" >&2
                 exit 1
             fi
             ;;
@@ -72,6 +72,7 @@ declare -A BUILD_SCRIPTS=(
     ["xml"]="build_xml.sh"
     ["boost"]="build_boost.sh"
     ["podofo"]="build_podofo.sh"
+    ["fm_plugin_sdk"]="build_fm_plugin_sdk.sh"
 )
 
 # Show usage if no --build flag provided
@@ -83,7 +84,7 @@ if [[ ${#BUILD_TARGETS[@]} -eq 0 ]]; then
     echo ""
     echo "Build specific libraries or all libraries:"
     echo ""
-    echo "Available libraries: all, jq, duktape, curl, font, image, xml, boost, podofo"
+    echo "Available libraries: all, jq, duktape, curl, font, image, xml, boost, podofo, fm_plugin_sdk"
     echo ""
     echo "  --build all                Build all libraries"
     echo "  --build jq                 Build only jq"
@@ -116,6 +117,7 @@ if [[ "$BUILD_ALL" == true ]]; then
     ./build_xml.sh ${INTERACTIVE_FLAG}
     ./build_boost.sh ${INTERACTIVE_FLAG}
     ./build_podofo.sh ${INTERACTIVE_FLAG}
+    ./build_fm_plugin_sdk.sh ${INTERACTIVE_FLAG}
 else
     # Build each specified library
     for BUILD_TARGET in "${BUILD_TARGETS[@]}"; do

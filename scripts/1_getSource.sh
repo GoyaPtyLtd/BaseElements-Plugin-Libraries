@@ -41,7 +41,7 @@ download() {
     local count="$3"
     local url="$4"
     local filename="$5"
-    print_info "Downloading ${name} ${version} (${count} of 24)..."
+    print_info "Downloading ${name} ${version} (${count} of 25)..."
     rm -f "$filename"
     if ! wget -q --show-progress -O "$filename" "$url"; then
         print_error "ERROR: Failed to download ${name}"
@@ -90,7 +90,7 @@ download() {
 }
 
 # Download all libraries
-print_header "Starting download of 24 source archives..."
+print_header "Starting download of 25 source archives..."
 echo ""
 
 download "Boost" "1.85.0" "1" "https://archives.boost.io/release/1.85.0/source/boost_1_85_0.tar.gz" "boost.tar.gz"
@@ -117,6 +117,7 @@ download "podofo" "0.9.8" "21" "https://ixpeering.dl.sourceforge.net/project/pod
 download "zlib" "1.3.1" "22" "https://www.zlib.net/zlib-1.3.1.tar.xz" "zlib.tar.xz"
 download "libpng" "1.6.43" "23" "https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.43.tar.gz" "libpng.tar.gz"
 download "nghttp2" "1.62.1" "24" "https://github.com/nghttp2/nghttp2/releases/download/v1.62.1/nghttp2-1.62.1.tar.xz" "nghttp2.tar.xz"
+download "FM Plugin SDK" "22.0.1.68" "25" "https://downloads.claris.com/DEVREL/sdk/fm_plugin_sdk_22.0.1.68.zip" "fm_plugin_sdk.zip"
 
 echo ""
-print_success "Downloading Complete - All 24 archives downloaded successfully!"
+print_success "Downloading Complete - All 25 archives downloaded successfully!"

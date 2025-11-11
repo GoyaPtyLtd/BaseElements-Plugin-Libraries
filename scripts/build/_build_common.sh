@@ -7,19 +7,14 @@
 # PART 1: Interactive Mode and Color Setup
 # ============================================================================
 
-# Parse arguments for interactive mode and quiet mode
-# Note: This consumes --interactive/-i and --quiet/-q from $@, leaving other args for the calling script
+# Parse arguments for interactive mode
+# Note: This consumes --interactive/-i from $@, leaving other args for the calling script
 INTERACTIVE=0
-QUIET_BUILD=0
 ARGS=()
 while [[ $# -gt 0 ]]; do
     case $1 in
         --interactive|-i)
             INTERACTIVE=1
-            shift
-            ;;
-        --quiet|-q)
-            QUIET_BUILD=1
             shift
             ;;
         *)
@@ -55,9 +50,8 @@ else
     COLOR_RESET=''
 fi
 
-# Export INTERACTIVE and QUIET_BUILD flags and colors for use in functions
+# Export INTERACTIVE flag and colors for use in functions
 export INTERACTIVE
-export QUIET_BUILD
 export COLOR_YELLOW COLOR_CYAN COLOR_GREEN COLOR_RED COLOR_RESET
 
 # ============================================================================

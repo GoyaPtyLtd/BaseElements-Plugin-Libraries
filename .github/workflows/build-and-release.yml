@@ -67,7 +67,7 @@ jobs:
             clang-tools \
             libclang-dev \
             libclang1 \
-            python3-clang \
+            python3-clang \   
             libwebp-dev
 
       - name: Make scripts executable
@@ -90,7 +90,7 @@ jobs:
 
       - name: Build all libraries
         working-directory: scripts
-        run: ./2_build.sh --build all --quiet
+        run: ./2_build.sh --build all
 
       - name: Package libraries
         working-directory: scripts

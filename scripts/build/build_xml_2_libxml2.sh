@@ -96,13 +96,8 @@ elif [[ $OS = 'Linux' ]]; then
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-if [[ $QUIET_BUILD -eq 1 ]]; then
-    make -j${JOBS} -s
-    make install -s
-else
-    make -j${JOBS}
-    make install
-fi
+make -j${JOBS}
+make install
 
 # Fix header includes on macOS (affects XCode compilation - makes it use our iconv instead of system iconv)
 if [[ $OS = 'Darwin' ]]; then

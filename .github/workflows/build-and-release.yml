@@ -75,9 +75,9 @@ jobs:
           chmod +x scripts/build/*.sh
           chmod +x scripts/install/*.sh
 
-      - name: Configure clang alternatives
-        run: |
-          sudo scripts/install/update-alternatives-clang.sh
+      # - name: Configure clang alternatives
+      #   run: |
+      #     sudo scripts/install/update-alternatives-clang.sh
 
       - name: Clean output folder
         working-directory: scripts

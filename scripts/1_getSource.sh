@@ -1,220 +1,123 @@
 #!/bin/bash
-#
-#=======================================================================
-#
-#This just does a cleanout of the source directory.  So gets you setup to pull new archives down to start building.
-#
-#=======================================================================
-
-cd ../source
-
-#=====BOOST======
-#
-#Boost is available from  http://www.boost.org/
-
-echo "Downloading Boost ( 1 of 22 ) ..."
-
-rm -f boost.tar.gz
-wget -q -nv -O boost.tar.gz https://archives.boost.io/release/1.85.0/source/boost_1_85_0.tar.gz
-
-#=====CURL======
-##
-#Download the source from  http://curl.haxx.se/download.html
-
-echo "Downloading Curl ( 2 of 22 ) ..."
-
-rm -f curl.tar.gz
-wget -q -nv -O curl.tar.gz https://curl.se/download/curl-8.6.0.tar.gz
-
-#=====DUKTAPE======
-#
-#Download the source from  http://duktape.org/
-
-echo "Downloading duktape ( 3 of 22 ) ..."
-
-rm -f duktape.tar.xz
-wget -q -nv -O duktape.tar.xz https://duktape.org/duktape-2.7.0.tar.xz
-
-#=====FONTCONFIG======
-#
-#Download fontconfig from   https://www.freedesktop.org/wiki/Software/fontconfig/
-
-echo "Downloading fontconfig ( 4 of 22 ) ..."
-
-rm -f expat.tar.xz
-wget -q -nv -O expat.tar.xz https://github.com/libexpat/libexpat/releases/download/R_2_6_2/expat-2.6.2.tar.xz
-
-rm -f fontconfig.tar.gz
-wget -q -nv -O fontconfig.tar.gz https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.gz
-
-#=====FREETYPE======
-#
-#Download freetype from  https://sourceforge.net/projects/freetype/files/freetype2/
-
-echo "Downloading freetype ( 5 of 22 ) ..."
-
-rm -f freetype.tar.gz
-wget -q -nv -O freetype.tar.gz https://sourceforge.net/projects/freetype/files/freetype2/2.13.2/freetype-2.13.2.tar.gz
-
-#=====LIBICONV======
-#
-#Download the source for libiconv from  https://www.gnu.org/software/libiconv/#downloading
-
-echo "Downloading libiconv ( 6 of 22 ) ..."
-
-rm -f libiconv.tar.gz
-wget -q -nv -O libiconv.tar.gz https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz
-
-#=====LIBDE265======
-#
-#Download the source from  https://github.com/strukturag/libde265/releases
-
-echo "Downloading libde265 ( 7 of 22 ) ..."
-
-rm -f libde265.tar.gz
-wget -q -nv -O libde265.tar.gz https://github.com/strukturag/libde265/archive/refs/tags/v1.0.15.tar.gz
-#wget -q -nv -O libde265.tar.gz https://github.com/strukturag/libde265/releases/download/v1.0.15/libde265-1.0.15.tar.gz
-
-#=====LIBJP2======
-#
-#Download the source from  https://github.com/uclouvain/openjpeg/releases
-
-echo "Downloading openjpeg ( 8 of 22 ) ..."
-
-rm -f libopenjp2.tar.gz
-wget -q -nv -O libopenjp2.tar.gz https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.5.2.tar.gz
-
-#=====LIBHEIF======
-#
-#Download the source from  https://github.com/strukturag/libheif/releases
-
-echo "Downloading libheif ( 9 of 22 ) ..."
-
-rm -f libheif.tar.gz
-wget -q -nv -O libheif.tar.gz https://github.com/strukturag/libheif/releases/download/v1.17.6/libheif-1.17.6.tar.gz
-
-#=====LIBJPEG======
-#
-#Download the source from  http://ijg.org/files/
-
-echo "Downloading libjpeg ( 10 of 22 ) ..."
-
-rm -f libjpeg.tar.gz
-wget -q -nv -O libjpeg.tar.gz http://ijg.org/files/jpegsrc.v9f.tar.gz
-
-#=====LIBJPEGTURBO======
-#
-#Download the source from  https://github.com/libjpeg-turbo/libjpeg-turbo/releases
-
-echo "Downloading libjpeg-turbo ( 11 of 22 ) ..."
-
-rm -f libturbojpeg.tar.gz
-wget -q -nv -O libturbojpeg.tar.gz https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.0.3/libjpeg-turbo-3.0.3.tar.gz
-
-#=====IMAGEMAGICK======
-#
-#Download the source from  https://github.com/ImageMagick/ImageMagick/releases
-
-echo "Downloading ImageMagick ( 12 of 22 ) ..."
-
-rm -f ImageMagick.tar.gz
-wget -q -nv -O ImageMagick.tar.gz https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.1-29.tar.gz
-
-#=====JQ======
-#
-#Download the source from  https://github.com/jqlang/jq/releases
-
-echo "Downloading jq ( 13 of 22 ) ..."
-
-rm -f jq.tar.gz
-wget -q -nv -O jq.tar.gz https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-1.7.1.tar.gz
-
-#=====LIBSSH======
-#
-#Download the source from  http://www.libssh2.org/
-
-echo "Downloading libssh2 ( 14 of 22 ) ..."
-
-rm -f libssh.tar.gz
-wget -q -nv -O libssh.tar.gz https://libssh2.org/download/libssh2-1.11.0.tar.gz
-
-#=====LIBXML======
-#
-#Download the source for libxml2 from  http://xmlsoft.org/downloads.html
-
-echo "Downloading libxml2 ( 15 of 22 ) ..."
-
-rm -f libxml.tar.xz
-wget -q -nv -O libxml.tar.xz https://download.gnome.org/sources/libxml2/2.13/libxml2-2.13.0.tar.xz
-
-#=====LIBXSLT======
-#
-#Download the source from  https://github.com/GNOME/libxslt/tags
-
-echo "Downloading libxslt ( 16 of 22 ) ..."
-
-rm -f libxslt.tar.xz
-wget -q -nv -O libxslt.tar.xz https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.42.tar.xz
-
-#=====OPENSSL======
-#
-#Download the latest openssl source from   http://www.openssl.org/source/
-
-echo "Downloading openssl ( 17 of 22 ) ..."
-
-rm -f openssl.tar.gz
-wget -q -nv -O openssl.tar.gz https://www.openssl.org/source/openssl-3.2.1.tar.gz
-
-#=====POCO======
-#
-#Download the source from  http://pocoproject.org/download/
-
-echo "Downloading Poco ( 18 of 22 ) ..."
-
-rm -f poco.tar.gz
-wget -q -nv -O poco.tar.gz https://github.com/pocoproject/poco/archive/refs/tags/poco-1.13.3-release.tar.gz
-
-#=====PODOFO======
-#
-# new : Download podofo from  http://podofo.sourceforge.net/download.html
-# new : Download podofo from  https://sourceforge.net/projects/podofo/files/podofo/0.9.8/
-
-echo "Downloading podofo ( 19 of 22 ) ..."
-
-rm -f libunistring.tar.gz
-wget -q -nv -O libunistring.tar.gz https://ftp.gnu.org/gnu/libunistring/libunistring-1.2.tar.gz
-
-rm -f podofo.tar.gz
-wget -q -nv -O podofo.tar.gz https://ixpeering.dl.sourceforge.net/project/podofo/podofo/0.9.8/podofo-0.9.8.tar.gz
-
-#=====ZLIB======
-#
-#Download zlib from  https://www.zlib.net
-
-echo "Downloading zlib ( 20 of 22 ) ..."
-
-rm -f zlib.tar.xz
-wget -q -nv -O zlib.tar.xz https://www.zlib.net/zlib-1.3.1.tar.xz
-
-#=====Libpng======
-#
-#Download the source from  https://github.com/pnggroup/libpng/tags
-
-echo "Downloading libjpeg-turbo ( 11 of 22 ) ..."
-
-rm -f libpng.tar.gz
-wget -q -nv -O libpng.tar.gz https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.43.tar.gz
-
-#=====libnghttp2======
-#
-#Download the source from  https://github.com/nghttp2/nghttp2/archive/refs/tags/v1.62.1.tar.gz
-
-echo "Downloading nghttp2 ( 11 of 22 ) ..."
-
-rm -f nghttp2.tar.xz
-wget -q -nv -O nghttp2.tar.xz https://github.com/nghttp2/nghttp2/releases/download/v1.62.1/nghttp2-1.62.1.tar.xz
-
-#=====end======
-
-
-echo "Downloading Complete."
+# Downloads all source archives needed for building the libraries.
+# Archives are downloaded to ../source/ directory.
+
+set -e
+
+# Source common build functionality (colors, helpers)
+source "$(dirname "$0")/build/_build_common.sh"
+
+# Check if wget is installed
+if ! command -v wget &> /dev/null; then
+    print_error "ERROR: wget is not installed. Please install it first:"
+    echo "  Ubuntu: sudo apt install wget"
+    echo "  macOS: brew install wget"
+    exit 1
+fi
+
+# Get script directory and change to source directory
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "${SCRIPT_DIR}/../source" || {
+    print_error "ERROR: Failed to change to source directory"
+    exit 1
+}
+
+# Check if sha256sum is available (Linux) or shasum (macOS)
+if command -v sha256sum >/dev/null 2>&1; then
+    SHA256_CMD="sha256sum"
+    SHA256_CHECK_CMD="sha256sum -c --quiet"
+elif command -v shasum >/dev/null 2>&1; then
+    SHA256_CMD="shasum -a 256"
+    SHA256_CHECK_CMD="shasum -a 256 -c --quiet"
+else
+    SHA256_CMD=""
+    SHA256_CHECK_CMD=""
+fi
+
+# Download function: name, version, count, url, filename
+download() {
+    local name="$1"
+    local version="$2"
+    local count="$3"
+    local url="$4"
+    local filename="$5"
+    print_info "Downloading ${name} ${version} (${count} of 25)..."
+    rm -f "$filename"
+    if ! wget -q --show-progress -O "$filename" "$url"; then
+        print_error "ERROR: Failed to download ${name}"
+        echo "  URL: $url"
+        echo "  Output: $filename"
+        exit 1
+    fi
+    
+    # Verify SHA256 hash if SHA256SUMS file exists
+    if [[ -f "SHA256SUMS" ]] && [[ -n "$SHA256_CHECK_CMD" ]]; then
+        # Extract expected hash from SHA256SUMS for this file
+        local expected_hash=$(grep -E "^[0-9a-f]{64}[[:space:]]+\./${filename}$" "SHA256SUMS" | awk '{print $1}')
+        if [[ -z "$expected_hash" ]]; then
+            # Hash missing from SHA256SUMS
+            print_error "ERROR: Hash missing from SHA256SUMS for ${filename}"
+            print_error "  The file ${filename} was downloaded but has no entry in SHA256SUMS"
+            print_error "  This usually means the library version was updated but SHA256SUMS was not regenerated"
+            print_info ""
+            print_info "  To fix:"
+            print_info "    1. Run: source/regenerate_sha256.sh"
+            print_info "    2. Commit the updated source/SHA256SUMS file to the repository"
+            exit 1
+        fi
+        
+        # Hash exists, verify it matches
+        local actual_hash=$($SHA256_CMD "$filename" | awk '{print $1}')
+        if [[ "$actual_hash" != "$expected_hash" ]]; then
+            # Hash mismatch
+            print_error "ERROR: SHA256 hash mismatch for ${filename}"
+            print_error "  Expected hash: ${expected_hash}"
+            print_error "  Actual hash:   ${actual_hash}"
+            print_error ""
+            print_error "  This indicates:"
+            print_error "    - File corruption during download, OR"
+            print_error "    - Wrong file version downloaded, OR"
+            print_error "    - SHA256SUMS contains incorrect hash"
+            print_info ""
+            print_info "  To fix:"
+            print_info "    1. Re-download the file (it may be corrupted)"
+            print_info "    2. If you updated the library version, run: source/regenerate_sha256.sh"
+            print_info "    3. Commit the updated source/SHA256SUMS file to the repository"
+            exit 1
+        fi
+        print_info "  ✓ SHA256 verified"
+    fi
+}
+
+# Download all libraries
+print_header "Starting download of 25 source archives..."
+echo ""
+
+download "Boost" "1.85.0" "1" "https://archives.boost.io/release/1.85.0/source/boost_1_85_0.tar.gz" "boost.tar.gz"
+download "Curl" "8.6.0" "2" "https://curl.se/download/curl-8.6.0.tar.gz" "curl.tar.gz"
+download "duktape" "2.7.0" "3" "https://duktape.org/duktape-2.7.0.tar.xz" "duktape.tar.xz"
+download "expat" "2.6.2" "4" "https://github.com/libexpat/libexpat/releases/download/R_2_6_2/expat-2.6.2.tar.xz" "expat.tar.xz"
+download "fontconfig" "2.15.0" "5" "https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.gz" "fontconfig.tar.gz"
+download "freetype" "2.13.2" "6" "https://sourceforge.net/projects/freetype/files/freetype2/2.13.2/freetype-2.13.2.tar.gz" "freetype.tar.gz"
+download "libiconv" "1.17" "7" "https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz" "libiconv.tar.gz"
+download "libde265" "1.0.15" "8" "https://github.com/strukturag/libde265/archive/refs/tags/v1.0.15.tar.gz" "libde265.tar.gz"
+download "openjpeg" "2.5.2" "9" "https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.5.2.tar.gz" "libopenjp2.tar.gz"
+download "libheif" "1.17.6" "10" "https://github.com/strukturag/libheif/releases/download/v1.17.6/libheif-1.17.6.tar.gz" "libheif.tar.gz"
+download "libjpeg" "v9f" "11" "http://ijg.org/files/jpegsrc.v9f.tar.gz" "libjpeg.tar.gz"
+download "libjpeg-turbo" "3.0.3" "12" "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.0.3/libjpeg-turbo-3.0.3.tar.gz" "libturbojpeg.tar.gz"
+download "ImageMagick" "7.1.1-29" "13" "https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.1-29.tar.gz" "ImageMagick.tar.gz"
+download "jq" "1.7.1" "14" "https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-1.7.1.tar.gz" "jq.tar.gz"
+download "libssh2" "1.11.0" "15" "https://libssh2.org/download/libssh2-1.11.0.tar.gz" "libssh.tar.gz"
+download "libxml2" "2.13.0" "16" "https://download.gnome.org/sources/libxml2/2.13/libxml2-2.13.0.tar.xz" "libxml.tar.xz"
+download "libxslt" "1.1.42" "17" "https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.42.tar.xz" "libxslt.tar.xz"
+download "openssl" "3.2.1" "18" "https://www.openssl.org/source/openssl-3.2.1.tar.gz" "openssl.tar.gz"
+download "Poco" "1.13.3" "19" "https://github.com/pocoproject/poco/archive/refs/tags/poco-1.13.3-release.tar.gz" "poco.tar.gz"
+download "libunistring" "1.2" "20" "https://ftp.gnu.org/gnu/libunistring/libunistring-1.2.tar.gz" "libunistring.tar.gz"
+download "podofo" "0.9.8" "21" "https://ixpeering.dl.sourceforge.net/project/podofo/podofo/0.9.8/podofo-0.9.8.tar.gz" "podofo.tar.gz"
+download "zlib" "1.3.1" "22" "https://www.zlib.net/zlib-1.3.1.tar.xz" "zlib.tar.xz"
+download "libpng" "1.6.43" "23" "https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.43.tar.gz" "libpng.tar.gz"
+download "nghttp2" "1.62.1" "24" "https://github.com/nghttp2/nghttp2/releases/download/v1.62.1/nghttp2-1.62.1.tar.xz" "nghttp2.tar.xz"
+download "FM Plugin SDK" "22.0.1.68" "25" "https://downloads.claris.com/DEVREL/sdk/fm_plugin_sdk_22.0.1.68.zip" "fm_plugin_sdk.zip"
+
+echo ""
+print_success "Downloading Complete - All 25 archives downloaded successfully!"

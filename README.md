@@ -1,135 +1,335 @@
 # BaseElements-Plugin-Libraries
 
-This is set of scripts and tools that are used to build the external libraries used in the BE plugin : https://github.com/GoyaPtyLtd/BaseElements-Plugin
+Build scripts and tools for compiling external libraries used in the [BaseElements Plugin](https://github.com/GoyaPtyLtd/BaseElements-Plugin). This repository builds dependencies like Boost, curl, jq, ImageMagick, and others, then copies all compiled libraries, headers, and selected source files into a consolidated `./external/` directory in the BaseElements-Plugin repository.
 
-You need to use this to build the libraries used in the BE plugin itself.  As of BE 5.1.0 the Headers and Libraries aren't included in the main repository, and they need to be built from here.
+## Platform Support
 
-### Goals
+- **Ubuntu 24 (ARM/x86)** - Working
+- **macOS** - Untested, Probably almost working
+- **Windows** - Not built
 
-The goal is to turn this into a single script for each FileMaker platform ( Mac, Windows, Ubuntu linux ) that builds the various open source libraries in a configuration that works in the BE Plugin. Each library can then be updated and copied along with it's dependencies into the main BE Plugin folder.
+## Build Scripts
 
-We're a fair way along with this, we have both Mac and Linux building from the same set of files.  The iOS builds should also be possible to do from here.
+The build process consists of numbered scripts that must be run in sequence:
 
-### TODO
+### Script 0: `0_cleanOutputFolder.sh`
 
-1. Build ubuntu x86 and arm versions.
-2. Add all the iOS build stuff to the mac scripts.
-3. Build a Windows script library.
+Cleans the output directory for the current platform, removing all previously built libraries and creating a fresh directory structure.
 
-If you're at all interested in the BE plugin and compiling code for it, or helping out, we'd love some assistance.
+**What it does:**
+- Removes `output/platforms/{PLATFORM}/` directory
+- Creates fresh `include/`, `lib/`, and `src/` directories
+- On macOS, also creates `frameworks/` directory
 
-### Getting Started
+**Usage:**
+```bash
+./0_cleanOutputFolder.sh
+```
 
-To start with, we recommend you fork the BaseElements-Plugin-Libraries repository to your own account so you can test and push changes into the fork instead of our main - that makes it easier to submit patches.  If you've done that, make sure to change the location of the repositories below.
+**Flags:**
+- Platform detection is automatic (no flags needed)
 
-Each of the different OS versions has it's own one off setup.
+### Script 1: `1_getSource.sh`
 
-### macOS Setup
+Downloads all source archives needed for building the libraries.
 
-On the mac you compile for x86, arm and iOS all from the one place, so the compile scripts for mac will build macOS ( and iOS versions eventually, we're working on macOS only for now ).
+**What it does:**
+- Downloads source archives for all dependencies (Boost, curl, jq, duktape, ImageMagick, etc.)
+- Saves archives to `../source/` directory
+- **Verifies SHA256 hashes** against `source/SHA256SUMS` after each download to ensure file integrity
+- Only needs to be run once or when library versions change
 
-You need to install **XCode** and the XCode command line tools - if you don't have the tools, then they'll be installed for you when you try to install brew below.
+**SHA256 Verification:**
+The script automatically verifies each downloaded file against the `source/SHA256SUMS` file. This ensures:
+- Files are not corrupted during download
+- Files match the expected versions
+- Security (detects tampering or incorrect downloads)
 
-There are a bunch of open source tools required as well, to make things easier we recommend you install these with [brew](https://brew.sh). Open that link then follow the install instructions there. Once you've got brew and the xcode command line tools installed, run this command to install the extras you need :
+If verification fails, the script will exit with an error message. If you've updated a library version, you'll need to regenerate `SHA256SUMS` (see below).
 
-    brew install autoconf automake bash cmake gettext git git-lfs gnu-tar libtool m4 pkg-config protobuf wget xz
+**Customizing versions or sources:**
+To test different library versions or source from alternate locations (e.g., forks, development branches, or local mirrors), edit `1_getSource.sh` and modify the `download` function calls. Each call takes 5 parameters:
+- Library name (display only)
+- Version string (display only)
+- Count number (display only)
+- **URL** - Change this to download from a different source or version
+- **Filename** - The local filename to save as
 
-Not all of these may be needed, this was from last time we checked. You want to avoid using lots of brew libraries as the compile options may find those instead of the ones we've built into the scripts, but we do try to hard code to our specific library versions.
+Example: To test a newer curl version or a fork:
+```bash
+download "Curl" "8.7.0" "2" "https://github.com/yourfork/curl/archive/refs/tags/curl-8.7.0.tar.gz" "curl.tar.gz"
+```
 
-You should have FileMaker Pro and/or Server installed before starting to build anything - the plugin build process will copy the built plugin to the Pro Extensions folder ready to test.
+**Important:** When updating library versions, you must regenerate the `SHA256SUMS` file:
+```bash
+./source/regenerate_sha256.sh
+```
+Then commit the updated `source/SHA256SUMS` file to the repository.
 
-It shouldn't matter where you put the local version of the repository, but we put it at ~/Documents/GitHub :
+You can also use local file paths or custom URLs for development/testing purposes.
 
-    cd ~
-    mkdir Documents/GitHub
-    cd Documents/GitHub
+**Usage:**
+```bash
+./1_getSource.sh
+```
 
-    git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
-    git clone --depth 1 --branch development https://github.com/GoyaPtyLtd/BaseElements-Plugin.git
+**Flags:**
+- No flags needed
 
-Then follow the Build Process below.
+### Script 2: `2_build.sh`
 
-### Ubuntu Setup
+Builds the libraries from source. Can build all libraries or specific ones.
 
-There is some general setup for Ubuntu, but slight differences for Ubuntu 20 vs 22, and x86 vs arm.  These instructions assume you're starting from a clean iso install.  You may come across incompatibilities if you've modified or otherwise installed other packages.
+**What it does:**
+- Compiles libraries for the detected platform
+- Places built libraries in `output/platforms/{PLATFORM}/lib/`
+- Places headers in `output/platforms/{PLATFORM}/include/`
+- Uses clang on Linux (not GCC) for cross platform consistency
+- Each library build completely cleans its output directories (`lib/`, `include/`, `src/`) and builds 100% fresh each time
+- Most libraries depend on each other and must be built in order (e.g., `curl` requires `zlib`, `openssl`, `libssh2`, and `nghttp2` to be built first). The script will detect and exit if dependencies are missing.
 
-First, update the OS and install FileMaker Server which is required for building the plugin, and is good to keep active for compatibility - if you try to install something incompatible, it will uninstall FMS, which is a sign not to go there.
 
-    sudo apt update
-    sudo apt upgrade
-    sudo apt install zip
 
-**For Ubuntu 20**
+**Usage:**
+```bash
+# Build all libraries
+./2_build.sh --build all
 
-    wget https://downloads.claris.com/esd/fms_21.0.2.202_Ubuntu20_amd64.zip
-    unzip fms_21.0.2.202_Ubuntu20_amd64.zip
-    sudo apt install ./filemaker-server-21.0.2.202-amd64.deb
+# Build specific libraries
+./2_build.sh --build jq
+./2_build.sh --build boost jq duktape
 
-**For Ubuntu 22 x86**
+# Interactive mode (prompts before each step)
+./2_build.sh --build all --interactive
+```
 
-    wget https://downloads.claris.com/esd/fms_21.0.2.202_Ubuntu22_amd64.zip
-    unzip fms_21.0.2.202_Ubuntu22_amd64.zip
-    sudo apt install ./filemaker-server-21.0.2.202-amd64.deb
+**Flags:**
+- `--build`, `-b` - Specify library names to build (or "all")
+- `--interactive`, `-i` - Enable interactive mode (prompt before each build step)
 
-**For Ubuntu 22 arm**
+**Available libraries:** `all`, `jq`, `duktape`, `curl`, `font`, `image`, `xml`, `boost`, `podofo`, `fm_plugin_sdk`
 
-    wget https://downloads.claris.com/esd/fms_21.0.2.202_Ubuntu22_arm64.zip
-    unzip fms_21.0.2.202_Ubuntu22_arm64.zip
-    sudo apt install ./filemaker-server-21.0.2.202-arm64.deb
+### Script 3: `3_copy.sh`
 
-Install development software :
+Copies all built libraries, headers, and selected source files from the output directory into a single consolidated location in the BaseElements-Plugin repository.
 
-    sudo apt install build-essential gperf cmake git git-lfs
-    sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" llvm.sh 18
+**What it does:**
+- Copies all compiled libraries to `BaseElements-Plugin/external/{PLATFORM}/lib/`
+- Copies all headers to `BaseElements-Plugin/external/{PLATFORM}/include/`
+- Copies selected source files (e.g., duktape) to `BaseElements-Plugin/external/{PLATFORM}/src/`
+- Removes and recreates the platform-specific directory on each run to ensure a clean state
+- Platform names: `macos-arm64-x86_64`, `ubuntu20.04-x86_64`, `ubuntu20.04-aarch64`, `ubuntu22.04-x86_64`, `ubuntu22.04-aarch64`, `ubuntu24.04-x86_64`, `ubuntu24.04-aarch64`
+- Requires `PLUGIN_ROOT` to be set in `.env` file
 
-Grab the repos from GitHub :
+**Usage:**
+```bash
+# Copy all libraries, headers, and source files
+./3_copy.sh
 
-    cd ~
-    mkdir source
-    cd source
-    git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
-    git clone --depth 1 --branch development https://github.com/GoyaPtyLtd/BaseElements-Plugin.git
+# Interactive mode (prompts before each step)
+./3_copy.sh --interactive
+```
 
-As a one off, you need to reconfigure clang so that the command line tools can find the correct binaries.  We've provided a script to do this automatically for clang-18.
+**Flags:**
+- `--interactive`, `-i` - Enable interactive mode (prompt before each copy step)
 
-    cd ~/source/BaseElements-Plugin-Libraries/scripts/install
-    sudo ./update-alternatives-clang.sh
+**Requirements:**
+- `.env` file in project root with `PLUGIN_ROOT=/path/to/BaseElements-Plugin`
 
-Then follow the Build Process below.
+**Note:** This refactored approach consolidates all external libraries into a single `./external/` directory structure, making it simpler to import and reference libraries. The CMake configuration in BaseElements-Plugin will need to be updated to reference the new `./external/` location instead of the previous distributed structure.
 
-### Build Process
+**Using `.env` for multiple repository management:**
+The `.env` file is particularly useful for managing multiple copies of this repository, each tracking different library versions. You can maintain separate clones of BaseElements-Plugin-Libraries (e.g., one for testing new library versions, another for stable releases) and configure each `.env` file to point to different BaseElements-Plugin repositories or branches. This allows you to test library updates in isolation before merging into your main development branch.
 
-Then switch to the Scripts folder as the base from which to call various compile scripts.
+### Script 4: `4_package.sh`
 
-    cd ~/source/BaseElements-Plugin-Libraries/scripts
-or
-    cd ~/Documents/GitHub/BaseElements-Plugin-Libraries/scripts
+Creates tarballs and SHA256 checksums for platform directories. Designed for future automated builds and releases using GitHub Actions.
 
-Then run the script that downloads all the current source files :
+**What it does:**
+- Packages only the files that would be copied by `3_copy.sh` (headers, libraries, duktape source, PlugInSDK)
+- Creates compressed tarballs: `external-{PLATFORM}.tar.gz`
+- Generates SHA256 checksum files: `external-{PLATFORM}.tar.gz.sha256`
+- Saves both files in `output/platforms/` alongside the platform directories
+- Automatically overwrites existing packages on rerun
 
-    ./1_getSource.sh
+**What gets packaged:**
+- `include/` directory (all headers)
+- `lib/` directory (all compiled libraries)
+- `src/duktape/` directory (duktape source files, if present)
+- `PlugInSDK/` directory (FM Plugin SDK, if present)
 
-You don't need to re-run this unless a linked version changes in github because there's a new version of one of the libraries. Each build process starts from a clean folder and unpacks the archive at the beginning, so you only need to download once. You can then run any of the individual **build** scripts, or build everything :
+**Usage:**
+```bash
+# Package all Ubuntu platforms
+./4_package.sh
+```
 
-    ./2_build.sh
+**Flags:**
+- No flags needed
 
-That will then run through every single build process and will take hours on most macs, seems to be only minutes on linux.
+**Use case:**
+This script is designed for automated build and release workflows (e.g., GitHub Actions). After building libraries, you can package them into distributable tarballs that can be uploaded as release artifacts or downloaded by other systems. The tarball structure matches what gets copied to the plugin repository, making it easy to extract and use.
 
-Once that is done, assuming no errors, all the required headers and libraries will be in the correct Plugin folder, so you can can then go to the BE plugin repository and build that.
+**Example workflow:**
+```bash
+./0_cleanOutputFolder.sh
+./1_getSource.sh
+./2_build.sh --build all
+./4_package.sh  # Create distributable packages
+```
 
-### Updating to a new library version.
+## Utility Scripts
 
-So for example, there's a new version of libcurl that you want to build and test for.  The steps would be :
+### `generate_sha256.sh`
 
-* Modify the **1_getSource.sh** script to reference the new download.
-* Change to the **script** directory.
-* Run the **0_cleanOutputFolder.sh** if you've done builds before and it's not a clean clone.
-* Run the **1_getSource.sh** script to download your new version.
-* Run the **2_build.sh.sh** script and fix any issues that come up.
-* Switch to xCode and compile the plugin.  Fix any newly introduced errors.
-* Run FileMaker Pro or FileMaker Server with the new plugin, and run the BaseElements Plugin Tests.fmp12 file and run all the relevant tests.
-* Submit a pull request for the changes to the library, we'll probably run the same tests and then incorporate them into the development branch for the next build.
+Generates SHA256 hashes for all source archives in the `source/` directory.
 
-### Windows Setup
+**What it does:**
+- Scans the `source/` directory for all archive files (`.tar.gz`, `.tar.xz`)
+- Computes SHA256 hash for each file
+- Writes all hashes to `source/SHA256SUMS` in standard format
+- Sorts the output by filename for consistency
 
-TODO
+**Usage:**
+```bash
+./scripts/generate_sha256.sh
+```
+
+**When to use:**
+- After downloading new source archives
+- After updating library versions in `1_getSource.sh`
+- To regenerate hashes if `SHA256SUMS` is missing or outdated
+
+**Important:** Always commit the updated `source/SHA256SUMS` file to the repository after regenerating it. This ensures all users can verify their downloads match the expected files.
+
+## Setup Instructions
+
+### Ubuntu 24.04 (ARM/x86)
+
+**Note:** Ubuntu 24.04 defaults to LLVM/Clang v18, which is ideal for this project and tracks closely to macOS 15 & 26 clang version 17. See: https://documentation.ubuntu.com/ubuntu-for-developers/reference/availability/llvm/
+
+**Alternative:** You can also follow the Ubuntu 22.04 steps in the "Other Ubuntu Versions" section below if you prefer to track one consistent approach (e.g., when using Ansible or GitHub runners to build). 
+
+**1. Update system and install dependencies:**
+```bash
+sudo apt update
+sudo apt upgrade
+sudo apt install \
+    build-essential \
+    zip \
+    gperf \
+    cmake \
+    git \
+    git-lfs \
+    libc++-dev \
+    libc++abi-dev \
+    libexpat1-dev \
+    lld \
+    lldb \
+    liblldb-dev \
+    libomp5 \
+    libomp-dev \
+    llvm \
+    llvm-dev \
+    llvm-runtime \
+    libllvm-ocaml-dev \
+    clang \
+    clangd \
+    clang-format \
+    clang-tidy \
+    clang-tools \
+    libclang-dev \
+    libclang1 \
+    python3-clang
+```
+
+
+
+**2. Clone repositories:**
+```bash
+cd ~
+mkdir -p source
+cd source
+git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
+```
+
+**3 Configure PLUGIN_ROOT:**
+```bash
+cd BaseElements-Plugin-Libraries
+cp env.example .env
+# Edit .env and set PLUGIN_ROOT to your BaseElements-Plugin path
+# Example: PLUGIN_ROOT=/home/daniel/source/BaseElements-Plugin
+```
+
+**4. Run build process:**
+```bash
+cd scripts
+./0_cleanOutputFolder.sh
+./1_getSource.sh
+./2_build.sh --build all
+./3_copy.sh
+```
+
+### Other Ubuntu Versions
+
+If building on Ubuntu 22.04 you will need to manually install LLVM 18:
+
+**1. Install LLVM 18:**
+```bash
+sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" llvm.sh 18
+```
+
+**2. Follow step 1 from the Ubuntu 24.04 section above** (update system and install dependencies).
+
+**3. Configure clang:**
+```bash
+cd ~/source/BaseElements-Plugin-Libraries/scripts/install
+sudo ./update-alternatives-clang.sh
+```
+
+**4. Follow steps 2-4 from the Ubuntu 24.04 section above** (clone repositories, configure PLUGIN_ROOT, and run build process).
+
+### macOS
+
+**1. Install command line tools:**
+```bash
+# Install Xcode command line tools (no App Store required):
+xcode-select --install
+```
+
+**2. Install Homebrew and dependencies:**
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+brew install autoconf automake bash cmake gettext git git-lfs gnu-tar \
+    libtool m4 pkg-config protobuf wget xz
+```
+
+**Note:** The command line tools are sufficient for building. If you need the full Xcode IDE, install it from the App Store or use `brew install xcodes` to manage Xcode versions.
+
+**3. Clone repositories:**
+```bash
+cd ~
+git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
+```
+
+**4. Configure PLUGIN_ROOT:**
+```bash
+cd BaseElements-Plugin-Libraries
+cp env.example .env
+# Edit .env and set PLUGIN_ROOT to your BaseElements-Plugin path
+# Example: PLUGIN_ROOT=/Users/username/BaseElements-Plugin
+```
+
+**5. Run build process:**
+```bash
+cd scripts
+./0_cleanOutputFolder.sh
+./1_getSource.sh
+./2_build.sh --build all
+./3_copy.sh
+```
+
+### Windows
+
+Windows builds are not currently supported. Contributions welcome!

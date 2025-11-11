@@ -1,85 +1,81 @@
 #!/bin/bash
 set -e
 
-echo "Starting $(basename "$0") Build"
+# Source common build functionality (platform detection, paths, interactive mode, colors, helpers)
+# This allows the script to be run standalone. When called from 2_build.sh,
+# variables are already exported, but sourcing again is harmless.
+source "$(dirname "$0")/_build_common.sh" "$@"
 
-OS=$(uname -s)    # Linux|Darwin
-ARCH=$(uname -m)  # x86_64|aarch64|arm64
-JOBS=1              # Number of parallel jobs
+LIBRARY_NAME="nghttp2"
+ARCHIVE_NAME="nghttp2.tar.xz"
+
+print_header "Starting ${LIBRARY_NAME} Build"
+
+# Clean and create output directories (ensures they exist and are empty)
+interactive_prompt \
+    "Ready to clean and create output directories for ${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_LIB}/${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+rm -rf "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
+rm -rf "${OUTPUT_LIB}/${LIBRARY_NAME}"
+rm -rf "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+mkdir -p "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
+mkdir -p "${OUTPUT_LIB}/${LIBRARY_NAME}"
+mkdir -p "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+# Extract source to output/platforms/${PLATFORM}/src/
+interactive_prompt \
+    "Ready to extract source archive" \
+    "Archive: ${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" \
+    "Destination: ${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+cd "${OUTPUT_SRC}/${LIBRARY_NAME}"
+tar -xf "${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" --strip-components=1
+
+# Create build directory
+BUILD_DIR="${OUTPUT_SRC}/${LIBRARY_NAME}/_build"
+mkdir -p "${BUILD_DIR}"
+PREFIX="${BUILD_DIR}"
+
+# Configure and build
+interactive_prompt \
+    "Ready to configure and build ${LIBRARY_NAME}" \
+    "Platform: ${PLATFORM}" \
+    "Build directory: ${BUILD_DIR}"
+
 if [[ $OS = 'Darwin' ]]; then
-    PLATFORM='macOS'
-    JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
-    if [[ $ARCH = 'aarch64' ]]; then
-        HOST='x86_64-apple-darwin'
-    elif [[ $ARCH = 'x86_64' ]]; then
-        HOST='aarch64-apple-darwin'
-    fi
+    # macOS universal build
+    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
+    CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" \
+    ./configure --enable-lib-only --enable-shared=no --enable-static \
+        --prefix="${PREFIX}"
+    
+    print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+    make -j${JOBS}
+    
 elif [[ $OS = 'Linux' ]]; then
-    JOBS=$(($(nproc) + 1))
-    if [[ $ARCH = 'aarch64' ]]; then
-        PLATFORM='linuxARM'
-    elif [[ $ARCH = 'x86_64' ]]; then
-        PLATFORM='linux'
-    fi
-fi
-if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
-  echo "!! Unknown OS/ARCH: $OS/$ARCH"
-  exit 1
-fi
-
-SRCROOT=${PWD}
-cd ../../Output
-OUTPUT=${PWD}
-
-# Remove old libraries and headers
-
-rm -f Libraries/${PLATFORM}/libnghttp2.a
-
-rm -rf Headers/nghttp2
-mkdir Headers/nghttp2
-
-# Switch to our build directory
-
-cd ../source/${PLATFORM}
-
-rm -rf nghttp2
-mkdir nghttp2
-tar -xf ../nghttp2.tar.xz -C nghttp2 --strip-components=1
-cd nghttp2
-
-mkdir _build
-PREFIX=${PWD}'/_build'
-
-# Build
-
-if [[ $PLATFORM = 'macOS' ]]; then
-
-  CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" \
-  ./configure --enable-lib-only --enable-shared=no --enable-static \
-  --prefix="${PREFIX}" \
-  --host="${HOST}" \
-
-  make -j${JOBS}
-
-elif [[ $OS = 'Linux' ]]; then
-
-  CC=clang CXX=clang++ \
-  ./configure --enable-lib-only --enable-shared=no --enable-static \
-  --prefix="${PREFIX}"
-
-  make -j${JOBS}
-
+    # Linux build
+    print_info "Configuring for Linux..."
+    CC=clang CXX=clang++ \
+    ./configure --enable-lib-only --enable-shared=no --enable-static \
+        --prefix="${PREFIX}"
+    
+    print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+    make -j${JOBS}
 fi
 
 make install
 
-# Copy the header and library files.
+# Copy headers and libraries
+interactive_prompt \
+    "Ready to copy headers and libraries" \
+    "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
+    "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/lib${LIBRARY_NAME}.a"
 
-cp -R _build/include/nghttp2/* "${OUTPUT}/Headers/nghttp2"
+cp -R "${PREFIX}/include/nghttp2"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
+cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
-cp _build/lib/libnghttp2.a "${OUTPUT}/Libraries/${PLATFORM}"
-
-# Return to source directory
-
-cd "${SRCROOT}"
-
+print_success "Build complete for ${LIBRARY_NAME}"

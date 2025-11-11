@@ -1,187 +1,189 @@
 #!/bin/bash
 set -e
 
-echo "Starting $(basename "$0") Build"
+# Source common build functionality (platform detection, paths, interactive mode, colors, helpers)
+# This allows the script to be run standalone. When called from 2_build.sh,
+# variables are already exported, but sourcing again is harmless.
+source "$(dirname "$0")/_build_common.sh" "$@"
 
-OS=$(uname -s)		# Linux|Darwin
-ARCH=$(uname -m)	# x86_64|aarch64|arm64
-JOBS=1              # Number of parallel jobs
+LIBRARY_NAME="Poco"
+ARCHIVE_NAME="poco.tar.gz"
+
+print_header "Starting ${LIBRARY_NAME} Build"
+
+# Clean and create output directories (ensures they exist and are empty)
+interactive_prompt \
+    "Ready to clean and create output directories for ${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_LIB}/${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+rm -rf "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
+rm -rf "${OUTPUT_LIB}/${LIBRARY_NAME}"
+rm -rf "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+mkdir -p "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
+mkdir -p "${OUTPUT_LIB}/${LIBRARY_NAME}"
+mkdir -p "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+# Extract source to output/platforms/${PLATFORM}/src/
+interactive_prompt \
+    "Ready to extract source archive" \
+    "Archive: ${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" \
+    "Destination: ${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+cd "${OUTPUT_SRC}/${LIBRARY_NAME}"
+tar -xf "${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" --strip-components=1
+
+# Create build directory
+BUILD_DIR="${OUTPUT_SRC}/${LIBRARY_NAME}/_build"
+mkdir -p "${BUILD_DIR}"
+PREFIX="${BUILD_DIR}"
+
+# Configure and build
+interactive_prompt \
+    "Ready to configure and build ${LIBRARY_NAME}" \
+    "Platform: ${PLATFORM}" \
+    "Build directory: ${BUILD_DIR}" \
+    "Dependencies will be found from: ${OUTPUT_INCLUDE} and ${OUTPUT_LIB}"
+
 if [[ $OS = 'Darwin' ]]; then
-    PLATFORM='macOS'
-    JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
-    if [[ $ARCH = 'aarch64' ]]; then
-        HOST='arm64'
-    elif [[ $ARCH = 'x86_64' ]]; then
-        HOST='x86_64'
-    fi
-elif [[ $OS = 'Linux' ]]; then
-    JOBS=$(($(nproc) + 1))
-    if [[ $ARCH = 'aarch64' ]]; then
-        PLATFORM='linuxARM'
-    elif [[ $ARCH = 'x86_64' ]]; then
-        PLATFORM='linux'
-    fi
-fi
-if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
-	echo "!! Unknown OS/ARCH: $OS/$ARCH"
-	exit 1
-fi
-
-
-SRCROOT=${PWD}
-cd ../../Output
-OUTPUT=${PWD}
-
-# Remove old libraries
-
-rm -f Libraries/${PLATFORM}/libPocoCrypto.a
-rm -f Libraries/${PLATFORM}/libPocoFoundation.a
-rm -f Libraries/${PLATFORM}/libPocoJSON.a
-rm -f Libraries/${PLATFORM}/libPocoNet.a
-rm -f Libraries/${PLATFORM}/libPocoUtil.a
-rm -f Libraries/${PLATFORM}/libPocoXML.a
-rm -f Libraries/${PLATFORM}/libPocoZip.a
-
-rm -rf Headers/Poco
-mkdir Headers/Poco
-
-# Switch to our build directory
-
-cd ../source/${PLATFORM}
-
-rm -rf poco
-mkdir poco
-tar -xf ../poco.tar.gz -C poco --strip-components=1
-cd poco
-
-mkdir _build
-
-PREFIX=${PWD}'/_build'
-
-# Build
-
-if [[ $PLATFORM = 'macOS' ]]; then
-
-	mkdir _build_x86_64
-	mkdir _build_arm64
-	mkdir _build_iPhone
-	mkdir _build_iPhoneSim_x86
-	mkdir _build_iPhoneSim_arm
-
-	PREFIX_x86_64=${PWD}'/_build_x86_64'
-	PREFIX_arm64=${PWD}'/_build_arm64'
-	PREFIX_iPhone=${PWD}'/_build_iPhone'
-	PREFIX_iPhoneSim_x86=${PWD}'/_build_iPhoneSim_x86'
-	PREFIX_iPhoneSim_arm=${PWD}'/_build_iPhoneSim_arm'
-
-	#mac OS
-
-	./configure --cflags="-mmacosx-version-min=10.15" \
-	--prefix="${PREFIX_x86_64}" \
-	--no-sharedlibs --static --poquito --no-tests --no-samples \
-	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
-	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
-
-	make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=${HOST}
-	make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=${HOST}
-	make -s distclean
-
-	./configure --cflags="-mmacosx-version-min=10.15" \
-	--prefix="${PREFIX_arm64}" \
-	--no-sharedlibs --static --poquito --no-tests --no-samples \
-	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
-	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
-
-	make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=${HOST}
-	make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=${HOST}
-	make -s distclean
-
-	mkdir ${PREFIX}/lib
-
-	#just so the generic copy below will work on any platform
-	mkdir -p _build/include/Poco
-	cp -R _build_x86_64/include/Poco/* _build/include/Poco/
-
-	lipo -create "${PREFIX_x86_64}/lib/libPocoCrypto.a" "${PREFIX_arm64}/lib/libPocoCrypto.a" -output "${PREFIX}/lib/libPocoCrypto.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoFoundation.a" "${PREFIX_arm64}/lib/libPocoFoundation.a" -output "${PREFIX}/lib/libPocoFoundation.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoJSON.a" "${PREFIX_arm64}/lib/libPocoJSON.a" -output "${PREFIX}/lib/libPocoJSON.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoNet.a" "${PREFIX_arm64}/lib/libPocoNet.a" -output "${PREFIX}/lib/libPocoNet.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoXML.a" "${PREFIX_arm64}/lib/libPocoXML.a" -output "${PREFIX}/lib/libPocoXML.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoUtil.a" "${PREFIX_arm64}/lib/libPocoUtil.a" -output "${PREFIX}/lib/libPocoUtil.a"
-	lipo -create "${PREFIX_x86_64}/lib/libPocoZip.a" "${PREFIX_arm64}/lib/libPocoZip.a" -output "${PREFIX}/lib/libPocoZip.a"
-
-: <<END_COMMENT
-	#iOS
-
-	./configure --cflags="-miphoneos-version-min=15.0" \
-	--prefix="${PREFIX_iPhone}" \
-	--no-sharedlibs --static --poquito --no-tests --no-samples \
-	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
-	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/iOS"
-
-	make -j${JOBS} POCO_CONFIG=iPhone-clang-libc++ IPHONEOS_DEPLOYMENT_TARGET=15.0
-	make install POCO_CONFIG=iPhone-clang-libc++ IPHONEOS_DEPLOYMENT_TARGET=15.0
-	make -s distclean
-
-	cp _build_iPhone/lib/libPocoCrypto.a "${OUTPUT}/Libraries/iOS"
-	cp _build_iPhone/lib/libPocoFoundation.a "${OUTPUT}/Libraries/iOS"
-	cp _build_iPhone/lib/libPocoJSON.a "${OUTPUT}/Libraries/iOS"
-	cp _build_iPhone/lib/libPocoNet.a "${OUTPUT}/Libraries/iOS"
-	cp _build_iPhone/lib/libPocoXML.a "${OUTPUT}/Libraries/iOS"
-	cp _build_iPhone/lib/libPocoUtil.a "${OUTPUT}/Libraries/iOS"
-	cp _build_iPhone/lib/libPocoZip.a "${OUTPUT}/Libraries/iOS"
-
-	#iOS Simulator
-
-	./configure --cflags="-miphoneos-version-min=15.0" \
-	--prefix="${PREFIX_iPhoneSim_arm}" \
-	--no-sharedlibs --static --poquito --no-tests --no-samples \
-	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
-	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/iOS"
-
-	make -j${JOBS} POCO_CONFIG=iPhoneSimulator IPHONEOS_DEPLOYMENT_TARGET=15.0 POCO_HOST_OSARCH=arm64
-	make install
-	make -s distclean
-
-	./configure --cflags="-miphoneos-version-min=15.0" \
-	--prefix="${PREFIX_iPhoneSim_x86}" \
-	--no-sharedlibs --static --poquito --no-tests --no-samples \
-	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
-	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/iOS"
-
-	make -j${JOBS} POCO_CONFIG=iPhoneSimulator IPHONEOS_DEPLOYMENT_TARGET=15.0 POCO_HOST_OSARCH=x86_64
-	make install
-	make -s distclean
+    # macOS universal build: build x86_64 and arm64 separately, then lipo together
+    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
+    
+    # Build x86_64
+    BUILD_DIR_x86_64="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_x86_64"
+    PREFIX_x86_64="${BUILD_DIR_x86_64}"
+    mkdir -p "${BUILD_DIR_x86_64}"
+    
+    print_info "Building x86_64 architecture..."
+    ./configure --cflags="-mmacosx-version-min=10.15" \
+        --prefix="${PREFIX_x86_64}" \
+        --no-sharedlibs --static --poquito --no-tests --no-samples \
+        --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
+        --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/${LIBRARY_NAME}"
+    
+    make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
+    make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
+    make -s distclean
+    
+    # Build arm64
+    BUILD_DIR_arm64="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_arm64"
+    PREFIX_arm64="${BUILD_DIR_arm64}"
+    mkdir -p "${BUILD_DIR_arm64}"
+    
+    print_info "Building arm64 architecture..."
+    ./configure --cflags="-mmacosx-version-min=10.15" \
+        --prefix="${PREFIX_arm64}" \
+        --no-sharedlibs --static --poquito --no-tests --no-samples \
+        --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
+        --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/${LIBRARY_NAME}"
+    
+    make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
+    make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
+    make -s distclean
+    
+    # Create universal libraries with lipo
+    print_info "Creating universal libraries..."
+    mkdir -p "${PREFIX}/lib"
+    mkdir -p "${PREFIX}/include/Poco"
+    cp -R "${PREFIX_x86_64}/include/Poco"/* "${PREFIX}/include/Poco/"
+    
+    lipo -create "${PREFIX_x86_64}/lib/libPocoCrypto.a" "${PREFIX_arm64}/lib/libPocoCrypto.a" -output "${PREFIX}/lib/libPocoCrypto.a"
+    lipo -create "${PREFIX_x86_64}/lib/libPocoFoundation.a" "${PREFIX_arm64}/lib/libPocoFoundation.a" -output "${PREFIX}/lib/libPocoFoundation.a"
+    lipo -create "${PREFIX_x86_64}/lib/libPocoJSON.a" "${PREFIX_arm64}/lib/libPocoJSON.a" -output "${PREFIX}/lib/libPocoJSON.a"
+    lipo -create "${PREFIX_x86_64}/lib/libPocoNet.a" "${PREFIX_arm64}/lib/libPocoNet.a" -output "${PREFIX}/lib/libPocoNet.a"
+    lipo -create "${PREFIX_x86_64}/lib/libPocoXML.a" "${PREFIX_arm64}/lib/libPocoXML.a" -output "${PREFIX}/lib/libPocoXML.a"
+    lipo -create "${PREFIX_x86_64}/lib/libPocoUtil.a" "${PREFIX_arm64}/lib/libPocoUtil.a" -output "${PREFIX}/lib/libPocoUtil.a"
+    lipo -create "${PREFIX_x86_64}/lib/libPocoZip.a" "${PREFIX_arm64}/lib/libPocoZip.a" -output "${PREFIX}/lib/libPocoZip.a"
+    
+    : <<END_COMMENT
+    # iOS
+    
+    BUILD_DIR_iPhone="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_iPhone"
+    BUILD_DIR_iPhoneSim_x86="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_iPhoneSim_x86"
+    BUILD_DIR_iPhoneSim_arm="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_iPhoneSim_arm"
+    PREFIX_iPhone="${BUILD_DIR_iPhone}"
+    PREFIX_iPhoneSim_x86="${BUILD_DIR_iPhoneSim_x86}"
+    PREFIX_iPhoneSim_arm="${BUILD_DIR_iPhoneSim_arm}"
+    mkdir -p "${BUILD_DIR_iPhone}"
+    mkdir -p "${BUILD_DIR_iPhoneSim_x86}"
+    mkdir -p "${BUILD_DIR_iPhoneSim_arm}"
+    
+    print_info "Building iOS..."
+    ./configure --cflags="-miphoneos-version-min=15.0" \
+        --prefix="${PREFIX_iPhone}" \
+        --no-sharedlibs --static --poquito --no-tests --no-samples \
+        --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
+        --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/iOS"
+    
+    make -j${JOBS} POCO_CONFIG=iPhone-clang-libc++ IPHONEOS_DEPLOYMENT_TARGET=15.0
+    make install POCO_CONFIG=iPhone-clang-libc++ IPHONEOS_DEPLOYMENT_TARGET=15.0
+    make -s distclean
+    
+    cp "${BUILD_DIR_iPhone}/lib/libPocoCrypto.a" "${OUTPUT_LIB}/iOS"
+    cp "${BUILD_DIR_iPhone}/lib/libPocoFoundation.a" "${OUTPUT_LIB}/iOS"
+    cp "${BUILD_DIR_iPhone}/lib/libPocoJSON.a" "${OUTPUT_LIB}/iOS"
+    cp "${BUILD_DIR_iPhone}/lib/libPocoNet.a" "${OUTPUT_LIB}/iOS"
+    cp "${BUILD_DIR_iPhone}/lib/libPocoXML.a" "${OUTPUT_LIB}/iOS"
+    cp "${BUILD_DIR_iPhone}/lib/libPocoUtil.a" "${OUTPUT_LIB}/iOS"
+    cp "${BUILD_DIR_iPhone}/lib/libPocoZip.a" "${OUTPUT_LIB}/iOS"
+    
+    # iOS Simulator
+    
+    print_info "Building iOS Simulator (arm64)..."
+    ./configure --cflags="-miphoneos-version-min=15.0" \
+        --prefix="${PREFIX_iPhoneSim_arm}" \
+        --no-sharedlibs --static --poquito --no-tests --no-samples \
+        --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
+        --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/iOS"
+    
+    make -j${JOBS} POCO_CONFIG=iPhoneSimulator IPHONEOS_DEPLOYMENT_TARGET=15.0 POCO_HOST_OSARCH=arm64
+    make install
+    make -s distclean
+    
+    print_info "Building iOS Simulator (x86_64)..."
+    ./configure --cflags="-miphoneos-version-min=15.0" \
+        --prefix="${PREFIX_iPhoneSim_x86}" \
+        --no-sharedlibs --static --poquito --no-tests --no-samples \
+        --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
+        --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/iOS"
+    
+    make -j${JOBS} POCO_CONFIG=iPhoneSimulator IPHONEOS_DEPLOYMENT_TARGET=15.0 POCO_HOST_OSARCH=x86_64
+    make install
+    make -s distclean
 END_COMMENT
-
-
+    
 elif [[ $OS = 'Linux' ]]; then
-
-	./configure --cflags=-fPIC \
-	--config=Linux-clang \
-	--prefix="${PREFIX}" \
-	--no-sharedlibs --static --poquito --no-tests --no-samples \
-	--omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
-	--include-path="${OUTPUT}/Headers" --library-path="${OUTPUT}/Libraries/${PLATFORM}"
-
-	make -j${JOBS}
-	make install
-
+    # Linux build
+    print_info "Configuring for Linux..."
+    ./configure --cflags="-fPIC" \
+        --config=Linux-clang \
+        --prefix="${PREFIX}" \
+        --no-sharedlibs --static --poquito --no-tests --no-samples \
+        --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
+        --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/${LIBRARY_NAME}"
+    
+    print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+    make -j${JOBS}
+    make install
 fi
 
-# Copy the header and library files.
+# Copy headers and libraries
+interactive_prompt \
+    "Ready to copy headers and libraries" \
+    "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
+    "Libraries: ${OUTPUT_LIB}/${LIBRARY_NAME}/ (multiple Poco libraries)"
 
-cp -R _build/include/Poco/* "${OUTPUT}/Headers/Poco"
+cp -R "${PREFIX}/include/Poco"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
-cp _build/lib/libPocoCrypto.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/lib/libPocoFoundation.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/lib/libPocoJSON.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/lib/libPocoNet.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/lib/libPocoXML.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/lib/libPocoUtil.a "${OUTPUT}/Libraries/${PLATFORM}"
-cp _build/lib/libPocoZip.a "${OUTPUT}/Libraries/${PLATFORM}"
+# Copy all Poco libraries
+cp "${PREFIX}/lib/libPocoCrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libPocoFoundation.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libPocoJSON.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libPocoNet.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libPocoXML.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libPocoUtil.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libPocoZip.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
-# Return to source directory
-
-cd "${SRCROOT}"
-
+print_success "Build complete for ${LIBRARY_NAME}"

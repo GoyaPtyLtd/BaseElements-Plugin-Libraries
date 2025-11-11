@@ -1,78 +1,89 @@
 #!/bin/bash
 set -e
 
-echo "Starting $(basename "$0") Build"
+# Source common build functionality (platform detection, paths, interactive mode, colors, helpers)
+# This allows the script to be run standalone. When called from 2_build.sh,
+# variables are already exported, but sourcing again is harmless.
+source "$(dirname "$0")/_build_common.sh" "$@"
 
-OS=$(uname -s)      # Linux|Darwin
-ARCH=$(uname -m)    # x86_64|aarch64|arm64
-JOBS=1              # Number of parallel jobs
+LIBRARY_NAME="jq"
+ARCHIVE_NAME="jq.tar.gz"
+
+print_header "Starting ${LIBRARY_NAME} Build"
+
+# Clean and create output directories (ensures they exist and are empty)
+interactive_prompt \
+    "Ready to clean and create output directories for ${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_LIB}/${LIBRARY_NAME}" \
+    "Will remove and recreate: ${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+rm -rf "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
+rm -rf "${OUTPUT_LIB}/${LIBRARY_NAME}"
+rm -rf "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+mkdir -p "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
+mkdir -p "${OUTPUT_LIB}/${LIBRARY_NAME}"
+mkdir -p "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+# Extract source to output/platforms/${PLATFORM}/src/
+interactive_prompt \
+    "Ready to extract source archive" \
+    "Archive: ${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" \
+    "Destination: ${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+cd "${OUTPUT_SRC}/${LIBRARY_NAME}"
+tar -xf "${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" --strip-components=1
+
+# Create build directory
+BUILD_DIR="${OUTPUT_SRC}/${LIBRARY_NAME}/_build"
+mkdir -p "${BUILD_DIR}"
+PREFIX="${BUILD_DIR}"
+
+# Configure
+interactive_prompt \
+    "Ready to configure ${LIBRARY_NAME}" \
+    "Platform: ${PLATFORM}" \
+    "Build directory: ${BUILD_DIR}"
+
 if [[ $OS = 'Darwin' ]]; then
-    PLATFORM='macOS'
-    JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
+    # macOS universal build (arm64 + x86_64)
+    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
+    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+    ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
+        --enable-all-static --enable-pthread-tls --without-oniguruma \
+        --prefix="${PREFIX}"
+    
 elif [[ $OS = 'Linux' ]]; then
-    JOBS=$(($(nproc) + 1))
-    if [[ $ARCH = 'aarch64' ]]; then
-        PLATFORM='linuxARM'
-    elif [[ $ARCH = 'x86_64' ]]; then
-        PLATFORM='linux'
-    fi
+    # Linux build
+    print_info "Configuring for Linux..."
+    CC=clang CXX=clang++ CFLAGS="-fPIC" \
+    ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
+        --enable-all-static --enable-pthread-tls --without-oniguruma \
+        --prefix="${PREFIX}"
 fi
-if [[ "${PLATFORM}X" = 'X' ]]; then     # $PLATFORM is empty
-  echo "!! Unknown OS/ARCH: $OS/$ARCH"
-  exit 1
-fi
-
-
-SRCROOT=${PWD}
-cd ../../Output
-OUTPUT=${PWD}
-
-# Remove old libraries and headers
-
-rm -f Libraries/${PLATFORM}/libjq.a
-
-rm -rf Headers/jq
-mkdir Headers/jq
-
-# Switch to our build directory
-
-cd ../source/${PLATFORM}
-
-rm -rf jq
-mkdir jq
-tar -xf ../jq.tar.gz  -C jq --strip-components=1
-cd jq
-
-mkdir _build
-PREFIX=${PWD}'/_build'
 
 # Build
+interactive_prompt \
+    "Ready to build ${LIBRARY_NAME}" \
+    "Platform: ${PLATFORM}" \
+    "Jobs: ${JOBS}" \
+    "Build prefix: ${PREFIX}" \
+    "Built library: ${PREFIX}/lib/lib${LIBRARY_NAME}.a"
 
-if [[ $PLATFORM = 'macOS' ]]; then
-
-  CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-  ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
-  --enable-all-static --enable-pthread-tls --without-oniguruma \
-  --prefix="${PREFIX}"
-
-elif [[ $OS = 'Linux' ]]; then
-
-  CC=clang CXX=clang++ CFLAGS="-fPIC" \
-  ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
-  --enable-all-static --enable-pthread-tls --without-oniguruma \
-  --prefix="${PREFIX}"
-
-fi
-
+print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
 make -j${JOBS}
 make install
 
-# Copy the header and library files.
+# Copy headers and libraries
+interactive_prompt \
+    "Ready to copy headers and libraries" \
+    "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
+    "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/lib${LIBRARY_NAME}.a"
 
-# jq seems to require the version.h file, but doesn't put it into the prefix.
-cp src/version.h "${OUTPUT}/Headers/jq"
-cp -R _build/include/* "${OUTPUT}/Headers/jq"
+# jq requires version.h file, but doesn't put it into the prefix
+cp src/version.h "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/"
+cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
-cp _build/lib/libjq.a "${OUTPUT}/Libraries/${PLATFORM}"
-
-cd "${SRCROOT}"
+print_success "Build complete for ${LIBRARY_NAME}"

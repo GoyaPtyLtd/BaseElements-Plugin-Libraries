@@ -33,8 +33,8 @@ jobs:
       - name: Install LLVM 18
         run: |
           wget -O - https://apt.llvm.org/llvm.sh | sudo bash -s 18
-          sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-18 100
-          sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-18 100
+        # sudo update-alternatives --install /usr/bin/clang clang /usr/bin/clang-18 100
+        # sudo update-alternatives --install /usr/bin/clang++ clang++ /usr/bin/clang++-18 100
 
       - name: Install build dependencies
         run: |
@@ -67,8 +67,7 @@ jobs:
             clang-tools \
             libclang-dev \
             libclang1 \
-            python3-clang \   
-          # Install libwebp-dev (not on 22.04 runners but available on 24.04)
+            python3-clang \
             libwebp-dev
 
       - name: Make scripts executable
@@ -77,9 +76,9 @@ jobs:
           chmod +x scripts/build/*.sh
           chmod +x scripts/install/*.sh
 
-      # - name: Configure clang alternatives
-      #   run: |
-      #     sudo scripts/install/update-alternatives-clang.sh
+      - name: Configure clang alternatives
+        run: |
+          sudo scripts/install/update-alternatives-clang.sh
 
       - name: Clean output folder
         working-directory: scripts

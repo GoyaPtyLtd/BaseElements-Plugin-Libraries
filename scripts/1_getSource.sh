@@ -55,7 +55,13 @@ download() {
             sleep $retry_delay
         fi
         
-        if wget -q --show-progress -O "$filename" "$url"; then
+        # Use timeout to prevent wget from hanging indefinitely
+        # --timeout=60: total timeout for the entire operation
+        # --dns-timeout=10: DNS lookup timeout
+        # --connect-timeout=10: connection timeout
+        # --read-timeout=30: timeout for reading data
+        # --tries=1: don't retry (we handle retries in the script)
+        if wget -q --show-progress --timeout=60 --dns-timeout=10 --connect-timeout=10 --read-timeout=30 --tries=1 -O "$filename" "$url"; then
             # Download succeeded, break out of retry loop
             break
         fi

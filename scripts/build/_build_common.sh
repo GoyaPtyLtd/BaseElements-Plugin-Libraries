@@ -75,12 +75,12 @@ OUTPUT_BASE="${PROJECT_ROOT}/output"
 # Detect platform (OS and architecture)
 # Uses new packages system naming: ubuntu20.04-x86_64, macos-arm64-x86_64, etc.
 OS=$(uname -s)		# Linux|Darwin
-ARCH=$(uname -m)	# x86_64|aarch64|arm64
 JOBS=1
 PLATFORM='unknown'
 
 if [[ $OS = 'Darwin' ]]; then
 	# Use lowercase 'macos' to match GitHub Actions and packages system
+	ARCH=$(uname -m)	# x86_64|aarch64|arm64
 	PLATFORM='macos-arm64_x86_64'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
     # Set HOST triplet for configure scripts (follows packages system pattern)
@@ -123,7 +123,32 @@ elif [[ $OS = 'Linux' ]]; then
             ;;
     esac
     
-    # Map architecture to platform name
+    # Detect architecture using dpkg (more reliable than uname -m on Ubuntu)
+    # dpkg returns: amd64 for x86_64, arm64 for aarch64
+    if command -v dpkg >/dev/null 2>&1; then
+        dpkg_arch=$(dpkg --print-architecture)
+        case "${dpkg_arch}" in
+            "amd64")
+                ARCH="x86_64"
+                ;;
+            "arm64")
+                ARCH="aarch64"
+                ;;
+            *)
+                echo "ERROR: Unsupported dpkg architecture: ${dpkg_arch}" >&2
+                return 1 2>/dev/null || exit 1
+                ;;
+        esac
+    else
+        # Fallback to uname -m if dpkg is not available
+        ARCH=$(uname -m)
+        # Normalize arm64 to aarch64
+        if [[ $ARCH = 'arm64' ]]; then
+            ARCH='aarch64'
+        fi
+    fi
+    
+    # Validate architecture
     if [[ $ARCH != 'aarch64' ]] && [[ $ARCH != 'x86_64' ]]; then
         echo "ERROR: Unsupported architecture: $ARCH" >&2
         return 1 2>/dev/null || exit 1

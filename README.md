@@ -2,6 +2,10 @@
 
 Build scripts and tools for compiling external libraries used in the [BaseElements Plugin](https://github.com/GoyaPtyLtd/BaseElements-Plugin). This repository builds dependencies like Boost, curl, jq, ImageMagick, and others, then copies all compiled libraries, headers, and selected source files into a consolidated `./external/` directory in the BaseElements-Plugin repository.
 
+## Creating Releases
+
+To create a new release with automated builds for all platforms, see [RELEASES.md](RELEASES.md).
+
 ## Platform Support
 
 - **Ubuntu 24 (ARM/x86)** - Working

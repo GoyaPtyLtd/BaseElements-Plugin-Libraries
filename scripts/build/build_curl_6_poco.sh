@@ -63,8 +63,13 @@ if [[ $OS = 'Darwin' ]]; then
         --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
         --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/${LIBRARY_NAME}"
     
-    make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
-    make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
+    if [[ $QUIET_BUILD -eq 1 ]]; then
+        make -j${JOBS} -s POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
+        make install -s POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
+    else
+        make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
+        make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
+    fi
     make -s distclean
     
     # Build arm64
@@ -79,8 +84,13 @@ if [[ $OS = 'Darwin' ]]; then
         --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
         --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/${LIBRARY_NAME}"
     
-    make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
-    make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
+    if [[ $QUIET_BUILD -eq 1 ]]; then
+        make -j${JOBS} -s POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
+        make install -s POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
+    else
+        make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
+        make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
+    fi
     make -s distclean
     
     # Create universal libraries with lipo
@@ -165,8 +175,13 @@ elif [[ $OS = 'Linux' ]]; then
         --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/${LIBRARY_NAME}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-    make -j${JOBS}
-    make install
+    if [[ $QUIET_BUILD -eq 1 ]]; then
+        make -j${JOBS} -s
+        make install -s
+    else
+        make -j${JOBS}
+        make install
+    fi
 fi
 
 # Copy headers and libraries

@@ -59,6 +59,12 @@ else
     export INTERACTIVE_FLAG=""
 fi
 
+if [[ $QUIET_BUILD -eq 1 ]]; then
+    export QUIET_FLAG="--quiet"
+else
+    export QUIET_FLAG=""
+fi
+
 echo ""
 cd build
 
@@ -109,15 +115,15 @@ done
 if [[ "$BUILD_ALL" == true ]]; then
     # Build all libraries
     print_header "Building all libraries for platform: ${PLATFORM}"
-    ./build_jq.sh ${INTERACTIVE_FLAG}
-    ./build_duktape.sh ${INTERACTIVE_FLAG}
-    ./build_curl.sh ${INTERACTIVE_FLAG}
-    ./build_font.sh ${INTERACTIVE_FLAG}
-    ./build_image.sh ${INTERACTIVE_FLAG}
-    ./build_xml.sh ${INTERACTIVE_FLAG}
-    ./build_boost.sh ${INTERACTIVE_FLAG}
-    ./build_podofo.sh ${INTERACTIVE_FLAG}
-    ./build_fm_plugin_sdk.sh ${INTERACTIVE_FLAG}
+    ./build_jq.sh ${INTERACTIVE_FLAG} ${QUIET_FLAG}
+    ./build_duktape.sh ${INTERACTIVE_FLAG} ${QUIET_FLAG}
+    ./build_curl.sh ${INTERACTIVE_FLAG} ${QUIET_FLAG}
+    ./build_font.sh ${INTERACTIVE_FLAG} ${QUIET_FLAG}
+    ./build_image.sh ${INTERACTIVE_FLAG} ${QUIET_FLAG}
+    ./build_xml.sh ${INTERACTIVE_FLAG} ${QUIET_FLAG}
+    ./build_boost.sh ${INTERACTIVE_FLAG} ${QUIET_FLAG}
+    ./build_podofo.sh ${INTERACTIVE_FLAG} ${QUIET_FLAG}
+    ./build_fm_plugin_sdk.sh ${INTERACTIVE_FLAG} ${QUIET_FLAG}
 else
     # Build each specified library
     for BUILD_TARGET in "${BUILD_TARGETS[@]}"; do
@@ -139,7 +145,7 @@ else
         fi
         
         print_header "Building ${BUILD_TARGET} for platform: ${PLATFORM}"
-        ./"${BUILD_SCRIPT}" ${INTERACTIVE_FLAG}
+        ./"${BUILD_SCRIPT}" ${INTERACTIVE_FLAG} ${QUIET_FLAG}
         echo ""
     done
 fi

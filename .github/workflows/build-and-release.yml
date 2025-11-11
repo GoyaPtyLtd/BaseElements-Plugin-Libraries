@@ -67,7 +67,9 @@ jobs:
             clang-tools \
             libclang-dev \
             libclang1 \
-            python3-clang
+            python3-clang \   
+          # Install libwebp-dev (not on 22.04 runners but available on 24.04)
+            libwebp-dev
 
       - name: Make scripts executable
         run: |
@@ -89,7 +91,7 @@ jobs:
 
       - name: Build all libraries
         working-directory: scripts
-        run: ./2_build.sh --build all
+        run: ./2_build.sh --build all --quiet
 
       - name: Package libraries
         working-directory: scripts

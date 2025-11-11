@@ -101,11 +101,15 @@ Builds the libraries from source. Can build all libraries or specific ones.
 
 # Interactive mode (prompts before each step)
 ./2_build.sh --build all --interactive
+
+# Quiet mode (suppresses verbose make output, useful for CI/CD)
+./2_build.sh --build all --quiet
 ```
 
 **Flags:**
 - `--build`, `-b` - Specify library names to build (or "all")
 - `--interactive`, `-i` - Enable interactive mode (prompt before each build step)
+- `--quiet`, `-q` - Suppress verbose make output (shows only script messages and errors)
 
 **Available libraries:** `all`, `jq`, `duktape`, `curl`, `font`, `image`, `xml`, `boost`, `podofo`, `fm_plugin_sdk`
 
@@ -224,6 +228,7 @@ sudo apt install \
     libc++-dev \
     libc++abi-dev \
     libexpat1-dev \
+    libwebp-dev \
     lld \
     lldb \
     liblldb-dev \

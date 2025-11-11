@@ -54,7 +54,11 @@ if [[ $OS = 'Darwin' ]]; then
         --prefix="${PREFIX}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-    make -j${JOBS}
+    if [[ $QUIET_BUILD -eq 1 ]]; then
+        make -j${JOBS} -s
+    else
+        make -j${JOBS}
+    fi
     
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
@@ -64,10 +68,18 @@ elif [[ $OS = 'Linux' ]]; then
         --prefix="${PREFIX}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-    make -j${JOBS}
+    if [[ $QUIET_BUILD -eq 1 ]]; then
+        make -j${JOBS} -s
+    else
+        make -j${JOBS}
+    fi
 fi
 
-make install
+if [[ $QUIET_BUILD -eq 1 ]]; then
+    make install -s
+else
+    make install
+fi
 
 # Copy headers and libraries
 interactive_prompt \

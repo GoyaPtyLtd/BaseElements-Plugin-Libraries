@@ -123,8 +123,13 @@ if [[ $OS = 'Darwin' ]]; then
         --prefix="${PREFIX_x86_64}" \
         --host="${HOST}"
     
-    make -j${JOBS}
-    make install
+    if [[ $QUIET_BUILD -eq 1 ]]; then
+        make -j${JOBS} -s
+        make install -s
+    else
+        make -j${JOBS}
+        make install
+    fi
     make -s distclean
     
     # Build arm64
@@ -143,8 +148,13 @@ if [[ $OS = 'Darwin' ]]; then
         --prefix="${PREFIX_arm64}" \
         --host="${HOST}"
     
-    make -j${JOBS}
-    make install
+    if [[ $QUIET_BUILD -eq 1 ]]; then
+        make -j${JOBS} -s
+        make install -s
+    else
+        make -j${JOBS}
+        make install
+    fi
     make -s distclean
     
     # Create universal library with lipo
@@ -164,8 +174,13 @@ elif [[ $OS = 'Linux' ]]; then
         --prefix="${PREFIX}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-    make -j${JOBS}
-    make install
+    if [[ $QUIET_BUILD -eq 1 ]]; then
+        make -j${JOBS} -s
+        make install -s
+    else
+        make -j${JOBS}
+        make install
+    fi
 fi
 
 # Copy headers and libraries

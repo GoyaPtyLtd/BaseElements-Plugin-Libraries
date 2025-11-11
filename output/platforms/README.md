@@ -2,8 +2,8 @@ This directory contains platform-specific build outputs.
 
 Each subdirectory follows the naming pattern: `{os}{version}-{arch}/`
 Examples:
-- `ubuntu20_04-x86_64/`
-- `ubuntu22_04-aarch64/`
+- `ubuntu24.04-x86_64/`
+- `ubuntu24.04-aarch64/`
 - `macos-arm64-x86_64/`
 
 Each platform directory contains:

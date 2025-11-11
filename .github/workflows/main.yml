@@ -67,7 +67,7 @@ jobs:
             clang-tools \
             libclang-dev \
             libclang1 \
-            python3-clang \   
+            python3-clang \
             libwebp-dev
 
       - name: Make scripts executable
@@ -90,7 +90,7 @@ jobs:
 
       - name: Build all libraries
         working-directory: scripts
-        run: ./2_build.sh --build all
+        run: ./2_build.sh --build jq
 
       - name: Package libraries
         working-directory: scripts
@@ -100,9 +100,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: external-${{ matrix.platform }}
-          path: |
-            output/platforms/external-${{ matrix.platform }}.tar.gz
-            output/platforms/external-${{ matrix.platform }}.tar.gz.sha256
+          path: output/platforms/external-${{ matrix.platform }}.tar.gz
           retention-days: 30
 
   release:

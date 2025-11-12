@@ -141,7 +141,7 @@ download "libssh2" "1.11.1" "15" "https://libssh2.org/download/libssh2-1.11.1.ta
 download "libxml2" "2.13.0" "16" "https://download.gnome.org/sources/libxml2/2.13/libxml2-2.13.0.tar.xz" "libxml.tar.xz"
 download "libxslt" "1.1.42" "17" "https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.42.tar.xz" "libxslt.tar.xz"
 download "openssl" "3.2.1" "18" "https://www.openssl.org/source/openssl-3.2.1.tar.gz" "openssl.tar.gz"
-download "Poco" "1.13.3" "19" "https://github.com/pocoproject/poco/archive/refs/tags/poco-1.13.3-release.tar.gz" "poco.tar.gz"
+download "Poco" "1.14.2" "19" "https://github.com/pocoproject/poco/archive/refs/tags/poco-1.14.2-release.tar.gz" "poco.tar.gz"
 download "libunistring" "1.2" "20" "https://ftp.gnu.org/gnu/libunistring/libunistring-1.2.tar.gz" "libunistring.tar.gz"
 download "podofo" "0.9.8" "21" "https://ixpeering.dl.sourceforge.net/project/podofo/podofo/0.9.8/podofo-0.9.8.tar.gz" "podofo.tar.gz"
 download "zlib" "1.3.1" "22" "https://www.zlib.net/zlib-1.3.1.tar.xz" "zlib.tar.xz"

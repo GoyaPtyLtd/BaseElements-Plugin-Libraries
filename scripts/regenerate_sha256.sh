@@ -41,7 +41,7 @@ print_info "Generating SHA256SUMS..."
 rm -f "SHA256SUMS"
 
 # Generate hashes for all files except README.md and SHA256SUMS
-find . -maxdepth 1 -type f ! -name "README.md" ! -name "SHA256SUMS" -print0 | sort -z | while IFS= read -r -d '' file; do
+find . -maxdepth 1 -type f ! -name "README.md" ! -name ".DS_Store" ! -name "SHA256SUMS" -print0 | sort -z | while IFS= read -r -d '' file; do
     filename=$(basename "$file")
     print_info "  Computing hash for ${filename}..."
     $SHA256_CMD "$file" >> "SHA256SUMS"

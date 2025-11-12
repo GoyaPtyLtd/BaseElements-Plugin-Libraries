@@ -111,15 +111,15 @@ if [[ $OS = 'Darwin' ]]; then
     BUILD_DIR_x86_64="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_x86_64"
     PREFIX_x86_64="${BUILD_DIR_x86_64}"
     mkdir -p "${BUILD_DIR_x86_64}"
-    OPENSSL_PREFIX_x86="${OUTPUT_SRC}/openssl/_build_x86_64"
+    OPENSSL_PREFIX_x86_64="${OUTPUT_SRC}/openssl/_build_x86_64"
     
     print_info "Building x86_64 architecture..."
     CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
     CPPFLAGS="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/openssl" \
     LDFLAGS="-L${OUTPUT_LIB}/${LIBRARY_NAME}" LIBS="-ldl" \
     ./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
-        --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 \
-        --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX_x86} --with-libssh2=${LIBSSH2_PREFIX} --with-nghttp2=${NGHTTP2_PREFIX} \
+        --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp --disable-unix-sockets \
+        --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX_x86_64} --with-libssh2=${LIBSSH2_PREFIX} --with-nghttp2=${NGHTTP2_PREFIX} \
         --prefix="${PREFIX_x86_64}" \
         --host="${HOST}"
     
@@ -131,15 +131,15 @@ if [[ $OS = 'Darwin' ]]; then
     BUILD_DIR_arm64="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_arm64"
     PREFIX_arm64="${BUILD_DIR_arm64}"
     mkdir -p "${BUILD_DIR_arm64}"
-    OPENSSL_PREFIX_arm="${OUTPUT_SRC}/openssl/_build_arm64"
+    OPENSSL_PREFIX_arm64="${OUTPUT_SRC}/openssl/_build_arm64"
     
     print_info "Building arm64 architecture..."
     CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
     CPPFLAGS="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/openssl" \
     LDFLAGS="-L${OUTPUT_LIB}/${LIBRARY_NAME}" LIBS="-ldl" \
     ./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
-        --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 \
-        --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX_arm} --with-libssh2=${LIBSSH2_PREFIX} --with-nghttp2=${NGHTTP2_PREFIX} \
+        --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp --disable-unix-sockets \
+        --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX_arm64} --with-libssh2=${LIBSSH2_PREFIX} --with-nghttp2=${NGHTTP2_PREFIX} \
         --prefix="${PREFIX_arm64}" \
         --host="${HOST}"
     

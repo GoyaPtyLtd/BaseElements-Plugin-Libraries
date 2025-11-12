@@ -1,4 +1,5 @@
-#!/bin/bash
+#!/usr/local/bin/bash
+
 set -e
 
 # Source common build functionality (platform detection, paths, interactive mode, colors, helpers)
@@ -121,13 +122,12 @@ interactive_prompt \
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build (arm64 + x86_64)
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
-    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
-         -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE -DPODOFO_BUILD_SHARED:BOOL=FALSE \
+    cmake -G "Unix Makefiles" -S . -B "${PREFIX}" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
+		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
          -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIR="${OUTPUT_INCLUDE}/freetype2" \
-         -DWANT_FONTCONFIG:BOOL=TRUE \
-         -DFONTCONFIG_LIBRARIES="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DLIBCRYPTO_LIBRARIES="${OUTPUT_LIB}/openssl/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DFONTCONFIG_LIBRARIES="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}/fontconfig" \
+         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl" \
+         -DLIBCRYPTO_LIBRARIES="${OUTPUT_LIB}/openssl/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl" \
          -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml" \
          -DLIBXML2_XMLLINT_EXECUTABLE="${OUTPUT_SRC}/libxml/_build/bin/xmllint" \
          -DUNISTRING_LIBRARY="${OUTPUT_LIB}/libunistring/libunistring.a" -DUNISTRING_INCLUDE_DIR="${OUTPUT_INCLUDE}/libunistring" \
@@ -136,7 +136,7 @@ if [[ $OS = 'Darwin' ]]; then
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
          -DCMAKE_CXX_STANDARD=11 \
          -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" \
-         -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" .
+         -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++"
     
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
@@ -154,7 +154,7 @@ elif [[ $OS = 'Linux' ]]; then
          -DLIBJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DLIBJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
          -DWANT_LIB64:BOOL=TRUE \
-         -DCMAKE_CXX_FLAGS="-fPIC" .
+         -DCMAKE_CXX_FLAGS="-fPIC" ./
 fi
 
 # Build
@@ -165,8 +165,10 @@ interactive_prompt \
     "Build prefix: ${PREFIX}"
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+cd _build
 make -j${JOBS}
 make install
+cd ..
 
 # Copy headers and libraries
 interactive_prompt \

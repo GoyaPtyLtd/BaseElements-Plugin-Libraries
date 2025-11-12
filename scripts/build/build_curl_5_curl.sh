@@ -159,7 +159,7 @@ elif [[ $OS = 'Linux' ]]; then
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
     ./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
-        --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 \
+        --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp \
         --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX} --with-libssh2=${LIBSSH2_PREFIX} \
         --prefix="${PREFIX}"
     

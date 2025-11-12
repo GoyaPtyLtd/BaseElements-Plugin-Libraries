@@ -1,4 +1,4 @@
-#!/bin/bash
+#!bash
 
 # Note: We build with clang on Linux (not GCC) to ensure consistency.
 # To verify libraries were built with clang, run from output/platforms/{platform}/lib/:

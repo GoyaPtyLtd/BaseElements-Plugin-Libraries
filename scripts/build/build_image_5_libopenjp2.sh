@@ -51,6 +51,7 @@ if [[ $OS = 'Darwin' ]]; then
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
+        -DCMAKE_IGNORE_PATH=/usr/local/lib/ \
         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
         -DCMAKE_LIBRARY_PATH:path="${OUTPUT_LIB}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT_INCLUDE}" \
         -DCMAKE_INSTALL_PREFIX="${PREFIX}" ./

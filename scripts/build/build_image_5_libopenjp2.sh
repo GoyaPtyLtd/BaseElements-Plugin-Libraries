@@ -6,6 +6,12 @@ set -e
 # variables are already exported, but sourcing again is harmless.
 source "$(dirname "$0")/_build_common.sh" "$@"
 
+# Skip building on Linux (not needed)
+if [[ $OS = 'Linux' ]]; then
+    print_info "Skipping ${LIBRARY_NAME} build on Linux (not needed)"
+    exit 0
+fi
+
 LIBRARY_NAME="libopenjp2"
 ARCHIVE_NAME="libopenjp2.tar.gz"
 
@@ -46,26 +52,14 @@ interactive_prompt \
     "Platform: ${PLATFORM}" \
     "Build directory: ${BUILD_DIR}"
 
-if [[ $OS = 'Darwin' ]]; then
-    # macOS universal build
-    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
-    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
-        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-        -DCMAKE_LIBRARY_PATH:path="${OUTPUT_LIB}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT_INCLUDE}" \
-        -DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
-    
-elif [[ $OS = 'Linux' ]]; then
-    # Linux build
-    print_info "Configuring for Linux..."
-    CC=clang CXX=clang++ \
-    CFLAGS="-fPIC" \
-    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
-        -DCMAKE_IGNORE_PATH=/usr/lib/x86_64-linux-gnu/ \
-        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-        -DCMAKE_LIBRARY_PATH:path="${OUTPUT_LIB}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT_INCLUDE}" \
-        -DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
-fi
+# macOS universal build
+print_info "Configuring for macOS (universal: arm64 + x86_64)..."
+CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
+    -DCMAKE_IGNORE_PATH=/usr/local/lib/ \
+    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+    -DCMAKE_LIBRARY_PATH:path="${OUTPUT_LIB}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT_INCLUDE}" \
+    -DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
 make -j${JOBS}

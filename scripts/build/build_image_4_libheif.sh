@@ -98,9 +98,10 @@ if [[ $OS = 'Darwin' ]]; then
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     export MACOSX_DEPLOYMENT_TARGET=10.15
     
-    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" \
-    cmake -G "Unix Makefiles" --preset=release-noplugins -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_BUILD_TYPE=RELEASE \
+    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+    cmake -G "Unix Makefiles" --preset=release-noplugins -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_BUILD_TYPE=RELEASE \
         -DBUILD_SHARED_LIBS:BOOL=OFF -DWITH_REDUCED_VISIBILITY=OFF -DWITH_UNCOMPRESSED_CODEC=OFF \
+		-DWITH_EXAMPLES=OFF -DBUILD_DOCUMENTATION=OFF \
         -DWITH_AOM_DECODER:BOOL=OFF -DWITH_AOM_ENCODER:BOOL=OFF \
         -DWITH_X265:BOOL=OFF -DWITH_LIBSHARPYUV:BOOL=OFF \
         -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib/" -DZLIB_LIBRARY="${OUTPUT_LIB}/zlib/libz.a" \
@@ -113,6 +114,7 @@ elif [[ $OS = 'Linux' ]]; then
     CC=clang CXX=clang++ CFLAGS="-fPIC" \
     cmake -G "Unix Makefiles" --preset=release-noplugins -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_BUILD_TYPE=RELEASE \
         -DBUILD_SHARED_LIBS:BOOL=OFF -DWITH_REDUCED_VISIBILITY=OFF -DWITH_UNCOMPRESSED_CODEC=OFF \
+		-DWITH_EXAMPLES=OFF -DBUILD_DOCUMENTATION=OFF \
         -DWITH_AOM_DECODER:BOOL=OFF -DWITH_AOM_ENCODER:BOOL=OFF \
         -DWITH_X265:BOOL=OFF -DWITH_LIBSHARPYUV:BOOL=OFF \
         -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib/" -DZLIB_LIBRARY="${OUTPUT_LIB}/zlib/libz.a" \

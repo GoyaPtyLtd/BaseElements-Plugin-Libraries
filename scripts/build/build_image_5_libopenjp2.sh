@@ -44,6 +44,7 @@ tar -xf "${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" --strip-components=1
 # Create build directory
 BUILD_DIR="${OUTPUT_SRC}/${LIBRARY_NAME}/_build"
 mkdir -p "${BUILD_DIR}"
+cd "${BUILD_DIR}"
 PREFIX="${BUILD_DIR}"
 
 # Configure and build
@@ -59,13 +60,24 @@ cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OF
     -DCMAKE_IGNORE_PATH=/usr/local/lib/ \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
     -DCMAKE_LIBRARY_PATH:path="${OUTPUT_LIB}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT_INCLUDE}" \
-    -DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
+    -DBUILD_CODEC:BOOL=OFF -DBUILD_JPIPSERVER:BOOL=OFF -DBUILD_JPIPCLIENT:BOOL=OFF \
+    -DCMAKE_INSTALL_PREFIX="${PREFIX}" ../
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-make -j${JOBS}
-make install
 
-# Copy headers and libraries
+# Build only the library target to avoid linking executables against Homebrew libraries
+cmake --build . --target openjp2 -- -j${JOBS}
+
+# Install only the library (skip make install which rebuilds all targets including executables)
+# Copy the library from build location to PREFIX
+mkdir -p "${PREFIX}/lib"
+cp "${BUILD_DIR}/bin/libopenjp2.a" "${PREFIX}/lib/libopenjp2.a"
+
+# Copy headers manually (no generated headers for openjp2)
+mkdir -p "${PREFIX}/include/openjpeg-2.5"
+cp "${OUTPUT_SRC}/${LIBRARY_NAME}/src/lib/openjp2"/*.h "${PREFIX}/include/openjpeg-2.5/"
+
+# Copy headers and libraries to final destination
 interactive_prompt \
     "Ready to copy headers and libraries" \
     "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \

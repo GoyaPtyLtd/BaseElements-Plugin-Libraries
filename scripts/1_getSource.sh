@@ -91,7 +91,7 @@ download() {
             print_error "  This usually means the library version was updated but SHA256SUMS was not regenerated"
             print_info ""
             print_info "  To fix:"
-            print_info "    1. Run: source/regenerate_sha256.sh"
+            print_info "    1. Run: ./scripts/regenerate_sha256.sh"
             print_info "    2. Commit the updated source/SHA256SUMS file to the repository"
             exit 1
         fi
@@ -111,7 +111,7 @@ download() {
             print_info ""
             print_info "  To fix:"
             print_info "    1. Re-download the file (it may be corrupted)"
-            print_info "    2. If you updated the library version, run: source/regenerate_sha256.sh"
+            print_info "    2. If you updated the library version, run: ./scripts/regenerate_sha256.sh"
             print_info "    3. Commit the updated source/SHA256SUMS file to the repository"
             exit 1
         fi

@@ -73,16 +73,25 @@ rm -rf "$TEMP_PACKAGE_DIR"
 # Create temporary package directory with platform name (matching what copy script copies)
 mkdir -p "$TEMP_PACKAGE_DIR"
 
-# Copy include/ directory (headers)
+# Copy include/ directory (headers) - copy contents like 3_copy.sh does
 if [[ -d "${PLATFORM_DIR}/include" ]]; then
     print_info "  Including headers from include/"
-    cp -r "${PLATFORM_DIR}/include" "$TEMP_PACKAGE_DIR/"
+    mkdir -p "${TEMP_PACKAGE_DIR}/include"
+    cp -r "${PLATFORM_DIR}/include"/* "${TEMP_PACKAGE_DIR}/include/" 2>/dev/null || {
+        print_error "ERROR: No headers found in ${PLATFORM_DIR}/include"
+        exit 1
+    }
 fi
 
-# Copy lib/ directory (libraries)
+# Copy lib/ directory (libraries) - flatten structure like 3_copy.sh does
 if [[ -d "${PLATFORM_DIR}/lib" ]]; then
     print_info "  Including libraries from lib/"
-    cp -r "${PLATFORM_DIR}/lib" "$TEMP_PACKAGE_DIR/"
+    mkdir -p "${TEMP_PACKAGE_DIR}/lib"
+    # Copy all library files from all subdirectories (flatten structure)
+    find "${PLATFORM_DIR}/lib" -name "*.a" -type f -exec cp {} "${TEMP_PACKAGE_DIR}/lib/" \; || {
+        print_error "ERROR: No libraries found in ${PLATFORM_DIR}/lib"
+        exit 1
+    }
 fi
 
 # Copy duktape source files (if they exist)

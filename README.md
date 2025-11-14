@@ -1,339 +1,178 @@
 # BaseElements-Plugin-Libraries
 
-Build scripts and tools for compiling external libraries used in the [BaseElements Plugin](https://github.com/GoyaPtyLtd/BaseElements-Plugin). This repository builds dependencies like Boost, curl, jq, ImageMagick, and others, then copies all compiled libraries, headers, and selected source files into a consolidated `./external/` directory in the BaseElements-Plugin repository.
+Build scripts for compiling external libraries used by the [BaseElements Plugin](https://github.com/GoyaPtyLtd/BaseElements-Plugin). These scripts download sources, build each dependency, and consolidate everything into a single `external/` directory inside the plugin repo.
 
-## Creating Releases
+## Releases
 
-To create a new release with automated builds for all platforms, see [RELEASES.md](RELEASES.md).
+For automated multi-platform builds, see `RELEASES.md`.
 
-## Platform Support
+## Platform Status
 
-- **Ubuntu 24 (ARM/x86)** - Working
-- **macOS** - Untested, Probably almost working
-- **Windows** - Not built
+- Ubuntu 24.04 (ARM/x86) – Working  
+- macOS – Untested but close  
+- Windows – Not supported
 
 ## Build Scripts
 
-The build process consists of numbered scripts that must be run in sequence:
+### 0_cleanOutputFolder.sh
 
-### Script 0: `0_cleanOutputFolder.sh`
+Resets the output directory for the current platform:
 
-Cleans the output directory for the current platform, removing all previously built libraries and creating a fresh directory structure.
+- Deletes `output/platforms/{PLATFORM}/`
+- Recreates `include/`, `lib/`, `src/`, and on macOS `frameworks/`
 
-**What it does:**
-- Removes `output/platforms/{PLATFORM}/` directory
-- Creates fresh `include/`, `lib/`, and `src/` directories
-- On macOS, also creates `frameworks/` directory
+Run:
 
-**Usage:**
-```bash
-./0_cleanOutputFolder.sh
-```
+    ./0_cleanOutputFolder.sh
 
-**Flags:**
-- Platform detection is automatic (no flags needed)
+### 1_getSource.sh
 
-### Script 1: `1_getSource.sh`
+Downloads and verifies all source archives into `source/`:
 
-Downloads all source archives needed for building the libraries.
+- Verifies SHA256 checksums from `source/SHA256SUMS`
+- Only needed when versions change
+- To change versions, edit URLs/filenames in the script
+- After changing versions, regenerate checksums:
 
-**What it does:**
-- Downloads source archives for all dependencies (Boost, curl, jq, duktape, ImageMagick, etc.)
-- Saves archives to `../source/` directory
-- **Verifies SHA256 hashes** against `source/SHA256SUMS` after each download to ensure file integrity
-- Only needs to be run once or when library versions change
+    ./scripts/regenerate_sha256.sh
 
-**SHA256 Verification:**
-The script automatically verifies each downloaded file against the `source/SHA256SUMS` file. This ensures:
-- Files are not corrupted during download
-- Files match the expected versions
-- Security (detects tampering or incorrect downloads)
+Run:
 
-If verification fails, the script will exit with an error message. If you've updated a library version, you'll need to regenerate `SHA256SUMS` (see below).
+    ./1_getSource.sh
 
-**Customizing versions or sources:**
-To test different library versions or source from alternate locations (e.g., forks, development branches, or local mirrors), edit `1_getSource.sh` and modify the `download` function calls. Each call takes 5 parameters:
-- Library name (display only)
-- Version string (display only)
-- Count number (display only)
-- **URL** - Change this to download from a different source or version
-- **Filename** - The local filename to save as
+### 2_build.sh
 
-Example: To test a newer curl version or a fork:
-```bash
-download "Curl" "8.7.0" "2" "https://github.com/yourfork/curl/archive/refs/tags/curl-8.7.0.tar.gz" "curl.tar.gz"
-```
+Builds libraries for the detected platform:
 
-**Important:** When updating library versions, you must regenerate the `SHA256SUMS` file:
-```bash
-./source/regenerate_sha256.sh
-```
-Then commit the updated `source/SHA256SUMS` file to the repository.
+- Uses clang for consistent cross-platform output  
+- Outputs to `output/platforms/{PLATFORM}/`  
+- Cleans each library’s output before building  
+- Supports building all or selected libraries
 
-You can also use local file paths or custom URLs for development/testing purposes.
+Run:
 
-**Usage:**
-```bash
-./1_getSource.sh
-```
+    ./2_build.sh --build all
+    ./2_build.sh --build jq boost duktape
 
-**Flags:**
-- No flags needed
+Flags:
 
-### Script 2: `2_build.sh`
+- `--build` / `-b` – Select libraries or `all`  
+- `--interactive` / `-i` – Prompt before each step
 
-Builds the libraries from source. Can build all libraries or specific ones.
+Libraries: `jq`, `duktape`, `curl`, `font`, `image`, `xml`, `boost`, `podofo`, `fm_plugin_sdk`, `all`.
 
-**What it does:**
-- Compiles libraries for the detected platform
-- Places built libraries in `output/platforms/{PLATFORM}/lib/`
-- Places headers in `output/platforms/{PLATFORM}/include/`
-- Uses clang on Linux (not GCC) for cross platform consistency
-- Each library build completely cleans its output directories (`lib/`, `include/`, `src/`) and builds 100% fresh each time
-- Most libraries depend on each other and must be built in order (e.g., `curl` requires `zlib`, `openssl`, `libssh2`, and `nghttp2` to be built first). The script will detect and exit if dependencies are missing.
+### 3_copy.sh
 
+Copies built output into the BaseElements-Plugin repo under `external/{PLATFORM}/`:
 
+- Libraries → `lib/`
+- Headers → `include/`
+- Selected source (e.g. duktape) → `src/`
+- FileMaker PlugInSDK if present
 
-**Usage:**
-```bash
-# Build all libraries
-./2_build.sh --build all
+Requires `.env` in the repo root:
 
-# Build specific libraries
-./2_build.sh --build jq
-./2_build.sh --build boost jq duktape
+    PLUGIN_ROOT=/path/to/BaseElements-Plugin
 
-# Interactive mode (prompts before each step)
-./2_build.sh --build all --interactive
-```
+Run:
 
-**Flags:**
-- `--build`, `-b` - Specify library names to build (or "all")
-- `--interactive`, `-i` - Enable interactive mode (prompt before each build step)
+    ./3_copy.sh
 
-**Available libraries:** `all`, `jq`, `duktape`, `curl`, `font`, `image`, `xml`, `boost`, `podofo`, `fm_plugin_sdk`
+### 4_package.sh
 
-### Script 3: `3_copy.sh`
+Packages the same files used by `3_copy.sh` into:
 
-Copies all built libraries, headers, and selected source files from the output directory into a single consolidated location in the BaseElements-Plugin repository.
+- `external-{PLATFORM}.tar.gz`
+- `external-{PLATFORM}.tar.gz.sha256`
 
-**What it does:**
-- Copies all compiled libraries to `BaseElements-Plugin/external/{PLATFORM}/lib/`
-- Copies all headers to `BaseElements-Plugin/external/{PLATFORM}/include/`
-- Copies selected source files (e.g., duktape) to `BaseElements-Plugin/external/{PLATFORM}/src/`
-- Removes and recreates the platform-specific directory on each run to ensure a clean state
-- Platform names: `macos-arm64-x86_64`, `ubuntu20.04-x86_64`, `ubuntu20.04-aarch64`, `ubuntu22.04-x86_64`, `ubuntu22.04-aarch64`, `ubuntu24.04-x86_64`, `ubuntu24.04-aarch64`
-- Requires `PLUGIN_ROOT` to be set in `.env` file
+Outputs to `output/platforms/`.
 
-**Usage:**
-```bash
-# Copy all libraries, headers, and source files
-./3_copy.sh
+Run:
 
-# Interactive mode (prompts before each step)
-./3_copy.sh --interactive
-```
-
-**Flags:**
-- `--interactive`, `-i` - Enable interactive mode (prompt before each copy step)
-
-**Requirements:**
-- `.env` file in project root with `PLUGIN_ROOT=/path/to/BaseElements-Plugin`
-
-**Note:** This refactored approach consolidates all external libraries into a single `./external/` directory structure, making it simpler to import and reference libraries. The CMake configuration in BaseElements-Plugin will need to be updated to reference the new `./external/` location instead of the previous distributed structure.
-
-**Using `.env` for multiple repository management:**
-The `.env` file is particularly useful for managing multiple copies of this repository, each tracking different library versions. You can maintain separate clones of BaseElements-Plugin-Libraries (e.g., one for testing new library versions, another for stable releases) and configure each `.env` file to point to different BaseElements-Plugin repositories or branches. This allows you to test library updates in isolation before merging into your main development branch.
-
-### Script 4: `4_package.sh`
-
-Creates tarballs and SHA256 checksums for platform directories. Designed for future automated builds and releases using GitHub Actions.
-
-**What it does:**
-- Packages only the files that would be copied by `3_copy.sh` (headers, libraries, duktape source, PlugInSDK)
-- Creates compressed tarballs: `external-{PLATFORM}.tar.gz`
-- Generates SHA256 checksum files: `external-{PLATFORM}.tar.gz.sha256`
-- Saves both files in `output/platforms/` alongside the platform directories
-- Automatically overwrites existing packages on rerun
-
-**What gets packaged:**
-- `include/` directory (all headers)
-- `lib/` directory (all compiled libraries)
-- `src/duktape/` directory (duktape source files, if present)
-- `PlugInSDK/` directory (FM Plugin SDK, if present)
-
-**Usage:**
-```bash
-# Package all Ubuntu platforms
-./4_package.sh
-```
-
-**Flags:**
-- No flags needed
-
-**Use case:**
-This script is designed for automated build and release workflows (e.g., GitHub Actions). After building libraries, you can package them into distributable tarballs that can be uploaded as release artifacts or downloaded by other systems. The tarball structure matches what gets copied to the plugin repository, making it easy to extract and use.
-
-**Example workflow:**
-```bash
-./0_cleanOutputFolder.sh
-./1_getSource.sh
-./2_build.sh --build all
-./4_package.sh  # Create distributable packages
-```
+    ./4_package.sh
 
 ## Utility Scripts
 
-### `generate_sha256.sh`
+### regenerate_sha256.sh
 
-Generates SHA256 hashes for all source archives in the `source/` directory.
+Rebuilds `SHA256SUMS` for all archives in `source/`.
 
-**What it does:**
-- Scans the `source/` directory for all archive files (`.tar.gz`, `.tar.xz`)
-- Computes SHA256 hash for each file
-- Writes all hashes to `source/SHA256SUMS` in standard format
-- Sorts the output by filename for consistency
+Run:
 
-**Usage:**
-```bash
-./scripts/generate_sha256.sh
-```
+    ./scripts/regenerate_sha256.sh
 
-**When to use:**
-- After downloading new source archives
-- After updating library versions in `1_getSource.sh`
-- To regenerate hashes if `SHA256SUMS` is missing or outdated
-
-**Important:** Always commit the updated `source/SHA256SUMS` file to the repository after regenerating it. This ensures all users can verify their downloads match the expected files.
+Use after adding or updating library sources, then commit the updated `SHA256SUMS`.
 
 ## Setup Instructions
 
-### Ubuntu 24.04 (ARM/x86)
+### Ubuntu 24.04
 
-**Note:** Ubuntu 24.04 defaults to LLVM/Clang v18, which is ideal for this project and tracks closely to macOS 15 & 26 clang version 17. See: https://documentation.ubuntu.com/ubuntu-for-developers/reference/availability/llvm/
+Ubuntu 24.04 includes LLVM/Clang 18, which works well for this project.
 
-**Alternative:** You can also follow the Ubuntu 22.04 steps in the "Other Ubuntu Versions" section below if you prefer to track one consistent approach (e.g., when using Ansible or GitHub runners to build). 
+Install dependencies:
 
-**1. Update system and install dependencies:**
-```bash
-sudo apt update
-sudo apt upgrade
-sudo apt install \
-    build-essential \
-    zip \
-    gperf \
-    cmake \
-    git \
-    git-lfs \
-    libc++-dev \
-    libc++abi-dev \
-    libexpat1-dev \
-    lld \
-    lldb \
-    liblldb-dev \
-    libomp5 \
-    libomp-dev \
-    llvm \
-    llvm-dev \
-    llvm-runtime \
-    libllvm-ocaml-dev \
-    clang \
-    clangd \
-    clang-format \
-    clang-tidy \
-    clang-tools \
-    libclang-dev \
-    libclang1 \
-    python3-clang
-```
+    sudo apt update
+    sudo apt upgrade
+    sudo apt install build-essential zip gperf cmake git git-lfs \
+        libc++-dev libc++abi-dev libexpat1-dev lld lldb liblldb-dev \
+        libomp5 libomp-dev llvm llvm-dev llvm-runtime clang clangd \
+        clang-format clang-tidy clang-tools libclang-dev libclang1 python3-clang
 
+Clone and configure:
 
+    git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
+    cd BaseElements-Plugin-Libraries
+    cp env.example .env
+    # Edit .env and set PLUGIN_ROOT to your BaseElements-Plugin path
 
-**2. Clone repositories:**
-```bash
-cd ~
-mkdir -p source
-cd source
-git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
-```
+Build:
 
-**3 Configure PLUGIN_ROOT:**
-```bash
-cd BaseElements-Plugin-Libraries
-cp env.example .env
-# Edit .env and set PLUGIN_ROOT to your BaseElements-Plugin path
-# Example: PLUGIN_ROOT=/home/daniel/source/BaseElements-Plugin
-```
+    cd scripts
+    ./0_cleanOutputFolder.sh
+    ./1_getSource.sh
+    ./2_build.sh --build all
+    ./3_copy.sh
 
-**4. Run build process:**
-```bash
-cd scripts
-./0_cleanOutputFolder.sh
-./1_getSource.sh
-./2_build.sh --build all
-./3_copy.sh
-```
+### Ubuntu 22.04
 
-### Other Ubuntu Versions
+Install LLVM 18:
 
-If building on Ubuntu 22.04 you will need to manually install LLVM 18:
+    sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" llvm.sh 18
 
-**1. Install LLVM 18:**
-```bash
-sudo bash -c "$(wget -O - https://apt.llvm.org/llvm.sh)" llvm.sh 18
-```
+Configure clang alternatives:
 
-**2. Follow step 1 from the Ubuntu 24.04 section above** (update system and install dependencies).
+    cd scripts/install
+    sudo ./update-alternatives-clang.sh
 
-**3. Configure clang:**
-```bash
-cd ~/source/BaseElements-Plugin-Libraries/scripts/install
-sudo ./update-alternatives-clang.sh
-```
-
-**4. Follow steps 2-4 from the Ubuntu 24.04 section above** (clone repositories, configure PLUGIN_ROOT, and run build process).
+Then follow the same dependency install and build steps as Ubuntu 24.04.
 
 ### macOS
 
-**1. Install command line tools:**
-```bash
-# Install Xcode command line tools (no App Store required):
-xcode-select --install
-```
+Install Xcode command line tools:
 
-**2. Install Homebrew and dependencies:**
-```bash
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    xcode-select --install
 
-brew install autoconf automake bash cmake gettext git git-lfs gnu-tar \
-    libtool m4 pkg-config protobuf wget xz
-```
+Install Homebrew and dependencies:
 
-**Note:** The command line tools are sufficient for building. If you need the full Xcode IDE, install it from the App Store or use `brew install xcodes` to manage Xcode versions.
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    brew install autoconf automake bash cmake gettext git git-lfs gnu-tar \
+        libtool m4 pkg-config protobuf wget xz
 
-**3. Clone repositories:**
-```bash
-cd ~
-git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
-```
+Clone and configure:
 
-**4. Configure PLUGIN_ROOT:**
-```bash
-cd BaseElements-Plugin-Libraries
-cp env.example .env
-# Edit .env and set PLUGIN_ROOT to your BaseElements-Plugin path
-# Example: PLUGIN_ROOT=/Users/username/BaseElements-Plugin
-```
+    git clone https://github.com/GoyaPtyLtd/BaseElements-Plugin-Libraries.git
+    cd BaseElements-Plugin-Libraries
+    cp env.example .env
+    # Set PLUGIN_ROOT to your BaseElements-Plugin path
 
-**5. Run build process:**
-```bash
-cd scripts
-./0_cleanOutputFolder.sh
-./1_getSource.sh
-./2_build.sh --build all
-./3_copy.sh
-```
+Build:
+
+    cd scripts
+    ./0_cleanOutputFolder.sh
+    ./1_getSource.sh
+    ./2_build.sh --build all
+    ./3_copy.sh
 
 ### Windows
 
-Windows builds are not currently supported. Contributions welcome!
+Windows builds are not currently supported. Contributions welcome.

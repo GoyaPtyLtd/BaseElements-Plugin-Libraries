@@ -156,7 +156,19 @@ END_COMMENT
     
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
+    # Explicitly unset CFLAGS/CXXFLAGS/ARCHFLAGS to prevent macOS-specific -arch flags from being inherited
+    # Poco's build system (including PCRE2) will pick up these environment variables
+    # ARCHFLAGS is particularly problematic as Poco's Linux config file incorrectly sets it to -arch
+    unset CFLAGS
+    unset CXXFLAGS
+    unset LDFLAGS
+    unset ARCHFLAGS
+    
     print_info "Configuring for Linux..."
+    CC=clang CXX=clang++ \
+    ARCHFLAGS="" \
+    CFLAGS="-fPIC" \
+    CXXFLAGS="-fPIC" \
     ./configure --cflags="-fPIC" \
         --config=Linux-clang \
         --prefix="${PREFIX}" \
@@ -165,6 +177,13 @@ elif [[ $OS = 'Linux' ]]; then
         --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/${LIBRARY_NAME}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+    # CRITICAL: ARCHFLAGS must be set to empty string to override Poco's config file which sets it to -arch
+    # The config file has: ARCHFLAGS ?= -arch $(POCO_HOST_OSARCH)
+    # By setting ARCHFLAGS="" we override this and prevent -arch flags from being used on Linux
+    CC=clang CXX=clang++ \
+    ARCHFLAGS="" \
+    CFLAGS="-fPIC" \
+    CXXFLAGS="-fPIC" \
     make -j${JOBS}
     make install
 fi

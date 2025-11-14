@@ -94,10 +94,12 @@ if [[ $OS = 'Darwin' ]]; then
 	PLATFORM='macos-arm64_x86_64'
     JOBS=$(($(sysctl -n hw.logicalcpu) + 1))
     # Set HOST triplet for configure scripts (follows packages system pattern)
+    # Note: For universal builds, scripts should set HOST per-architecture
+    # This sets a default based on the current architecture
     if [[ $ARCH = 'aarch64' ]] || [[ $ARCH = 'arm64' ]]; then
-        HOST='x86_64-apple-darwin'
+        HOST='arm64-apple-darwin'
     elif [[ $ARCH = 'x86_64' ]]; then
-        HOST='aarch64-apple-darwin'
+        HOST='x86_64-apple-darwin'
     fi
 elif [[ $OS = 'Linux' ]]; then
     JOBS=$(($(nproc) + 1))

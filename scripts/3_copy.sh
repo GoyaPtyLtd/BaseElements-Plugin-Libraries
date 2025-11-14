@@ -168,10 +168,27 @@ if [[ -d "${OUTPUT_DIR}/PlugInSDK" ]]; then
     if [[ $INTERACTIVE -eq 1 ]]; then
         interactive_prompt "Ready to copy FM Plugin SDK"
     fi
-    cp -r "${OUTPUT_DIR}/PlugInSDK" "${PLUGIN_PLATFORM_DIR}/"
+    cp -R -P "${OUTPUT_DIR}/PlugInSDK" "${PLUGIN_PLATFORM_DIR}/"
     print_success "FM Plugin SDK copied"
 else
     print_info "FM Plugin SDK not found, skipping"
+fi
+
+echo ""
+
+# Copy FMWrapper headers to include directory (Nick requested this - macOS only)
+if [[ $OS = 'Darwin' ]] && [[ -d "${OUTPUT_DIR}/PlugInSDK/Headers/FMWrapper" ]]; then
+    print_header "Copying FMWrapper headers to include/"
+    print_info "Source: ${OUTPUT_DIR}/PlugInSDK/Headers/FMWrapper/"
+    print_info "Destination: ${PLUGIN_HEADERS_DIR}/FMWrapper/"
+    if [[ $INTERACTIVE -eq 1 ]]; then
+        interactive_prompt "Ready to copy FMWrapper headers"
+    fi
+    mkdir -p "${PLUGIN_HEADERS_DIR}/FMWrapper"
+    cp -r "${OUTPUT_DIR}/PlugInSDK/Headers/FMWrapper"/* "${PLUGIN_HEADERS_DIR}/FMWrapper/"
+    print_success "FMWrapper headers copied"
+elif [[ $OS = 'Darwin' ]]; then
+    print_info "FMWrapper headers not found, skipping"
 fi
 
 echo ""

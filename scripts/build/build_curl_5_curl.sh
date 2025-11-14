@@ -121,7 +121,7 @@ if [[ $OS = 'Darwin' ]]; then
         --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp --disable-unix-sockets \
         --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX_x86_64} --with-libssh2=${LIBSSH2_PREFIX} --with-nghttp2=${NGHTTP2_PREFIX} \
         --prefix="${PREFIX_x86_64}" \
-        --host="${HOST}"
+        --host="x86_64-apple-darwin"
     
     make -j${JOBS}
     make install
@@ -141,7 +141,7 @@ if [[ $OS = 'Darwin' ]]; then
         --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp --disable-unix-sockets \
         --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX_arm64} --with-libssh2=${LIBSSH2_PREFIX} --with-nghttp2=${NGHTTP2_PREFIX} \
         --prefix="${PREFIX_arm64}" \
-        --host="${HOST}"
+        --host="arm64-apple-darwin"
     
     make -j${JOBS}
     make install

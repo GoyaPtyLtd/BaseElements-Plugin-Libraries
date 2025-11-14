@@ -9,7 +9,7 @@ For automated multi-platform builds, see `RELEASES.md`.
 ## Platform Status
 
 - Ubuntu 24.04 (ARM/x86) – Working  
-- macOS – Untested but close  
+- macOS (ARM/x86) – Working  
 - Windows – Not supported
 
 ## Build Scripts

@@ -1,4 +1,5 @@
 #!/bin/bash
+# Bash 3 compatible - no bash 4+ features used
 
 # Note: We build with clang on Linux (not GCC) to ensure consistency.
 # To verify libraries were built with clang, run from output/platforms/{platform}/lib/:
@@ -17,9 +18,16 @@ while [[ $# -gt 0 ]]; do
         --build|-b)
             shift  # Remove --build/-b flag
             # Collect all library names until we hit another flag (starts with -)
-            while [[ $# -gt 0 ]] && [[ ! "$1" =~ ^- ]]; do
-                BUILD_TARGETS+=("$1")
-                shift
+            while [[ $# -gt 0 ]]; do
+                case "$1" in
+                    -*)
+                        break
+                        ;;
+                    *)
+                        BUILD_TARGETS+=("$1")
+                        shift
+                        ;;
+                esac
             done
             if [[ ${#BUILD_TARGETS[@]} -eq 0 ]]; then
                 echo "ERROR: --build/-b requires at least one library name" >&2
@@ -60,20 +68,26 @@ else
 fi
 
 echo ""
-cd build
+cd "$(dirname "$0")/build"
 
-# Map library names to build scripts
-declare -A BUILD_SCRIPTS=(
-    ["jq"]="build_jq.sh"
-    ["duktape"]="build_duktape.sh"
-    ["curl"]="build_curl.sh"
-    ["font"]="build_font.sh"
-    ["image"]="build_image.sh"
-    ["xml"]="build_xml.sh"
-    ["boost"]="build_boost.sh"
-    ["podofo"]="build_podofo.sh"
-    ["fm_plugin_sdk"]="build_fm_plugin_sdk.sh"
-)
+# Map library names to build scripts (bash 3 compatible - using function instead of associative array)
+get_build_script() {
+    case "$1" in
+        jq) echo "build_jq.sh" ;;
+        duktape) echo "build_duktape.sh" ;;
+        curl) echo "build_curl.sh" ;;
+        font) echo "build_font.sh" ;;
+        image) echo "build_image.sh" ;;
+        xml) echo "build_xml.sh" ;;
+        boost) echo "build_boost.sh" ;;
+        podofo) echo "build_podofo.sh" ;;
+        fm_plugin_sdk) echo "build_fm_plugin_sdk.sh" ;;
+        *) echo "" ;;
+    esac
+}
+
+# List of all available libraries (for error messages)
+AVAILABLE_LIBS="jq duktape curl font image xml boost podofo fm_plugin_sdk"
 
 # Show usage if no --build flag provided
 if [[ ${#BUILD_TARGETS[@]} -eq 0 ]]; then
@@ -121,18 +135,18 @@ if [[ "$BUILD_ALL" == true ]]; then
 else
     # Build each specified library
     for BUILD_TARGET in "${BUILD_TARGETS[@]}"; do
-        if [[ -z "${BUILD_SCRIPTS[$BUILD_TARGET]}" ]]; then
+        BUILD_SCRIPT=$(get_build_script "$BUILD_TARGET")
+        if [[ -z "$BUILD_SCRIPT" ]]; then
             print_error "ERROR: Unknown library '${BUILD_TARGET}'"
             echo ""
             echo "Available libraries:"
             echo "  - all"
-            for lib in "${!BUILD_SCRIPTS[@]}"; do
+            for lib in $AVAILABLE_LIBS; do
                 echo "  - ${lib}"
             done
             exit 1
         fi
         
-        BUILD_SCRIPT="${BUILD_SCRIPTS[$BUILD_TARGET]}"
         if [[ ! -f "$BUILD_SCRIPT" ]]; then
             print_error "ERROR: Build script not found: ${BUILD_SCRIPT}"
             exit 1

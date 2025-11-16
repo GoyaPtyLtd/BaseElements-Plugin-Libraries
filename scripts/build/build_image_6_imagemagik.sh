@@ -141,7 +141,7 @@ if [[ $OS = 'Darwin' ]]; then
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
-        --host="${HOST}" \
+        --host="arm64-apple-darwin" \
         --prefix="${PREFIX_arm64}"
     
     print_info "Building ${LIBRARY_NAME} for arm64 (${JOBS} parallel jobs)..."
@@ -161,7 +161,7 @@ if [[ $OS = 'Darwin' ]]; then
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
-        --host="${HOST}" \
+        --host="x86_64-apple-darwin" \
         --prefix="${PREFIX_x86_64}"
     
     print_info "Building ${LIBRARY_NAME} for x86_64 (${JOBS} parallel jobs)..."

@@ -17,22 +17,24 @@ jobs:
           - runner: ubuntu-22.04
             arch: x86_64
             platform: ubuntu22.04-x86_64
+            package_platform: ubuntu22.04-x86_64
           - runner: ubuntu-22.04-arm
             arch: aarch64
             platform: ubuntu22.04-aarch64
+            package_platform: ubuntu22.04-aarch64
           - runner: ubuntu-24.04
             arch: x86_64
             platform: ubuntu24.04-x86_64
+            package_platform: ubuntu24.04-x86_64
           - runner: ubuntu-24.04-arm
             arch: aarch64
             platform: ubuntu24.04-aarch64
-          # macOS builds
-          - runner: macos-13
-            arch: x86_64
-            platform: macos-x86_64
+            package_platform: ubuntu24.04-aarch64
+          # macOS build (universal)
           - runner: macos-14
             arch: arm64
             platform: macos-arm64
+            package_platform: macos-arm64_x86_64
 
     steps:
       - name: Checkout repository
@@ -210,7 +212,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: external-${{ matrix.platform }}
-          path: output/platforms/external-${{ matrix.platform }}.tar.gz
+          path: output/platforms/external-${{ matrix.package_platform }}.tar.gz
           retention-days: 30
 
   release:

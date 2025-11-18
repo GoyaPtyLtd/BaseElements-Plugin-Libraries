@@ -138,7 +138,7 @@ if [[ $OS = 'Darwin' ]]; then
     CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
     CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg" LDFLAGS="-L${OUTPUT_LIB}" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
-        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes --with-tiff=no --with-lcms=no \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
         --host="${HOST}" \
@@ -158,7 +158,7 @@ if [[ $OS = 'Darwin' ]]; then
     CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
     CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg" LDFLAGS="-L${OUTPUT_LIB}" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
-        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes --with-tiff=no --with-lcms=no \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
         --host="${HOST}" \
@@ -182,7 +182,7 @@ elif [[ $OS = 'Linux' ]]; then
     CC=clang CXX=clang++ \
     CFLAGS="-fPIC" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
-        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
         --without-lcms --without-lqr --without-djvu --without-openexr --without-jbig --without-tiff  --without-openjp2 \

@@ -8,29 +8,40 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
       matrix:
         include:
-          - os: ubuntu-22.04
+          # Ubuntu builds
+          - runner: ubuntu-22.04
             arch: x86_64
             platform: ubuntu22.04-x86_64
-          - os: ubuntu-22.04-arm
+            package_platform: ubuntu22.04-x86_64
+          - runner: ubuntu-22.04-arm
             arch: aarch64
             platform: ubuntu22.04-aarch64
-          - os: ubuntu-24.04
+            package_platform: ubuntu22.04-aarch64
+          - runner: ubuntu-24.04
             arch: x86_64
             platform: ubuntu24.04-x86_64
-          - os: ubuntu-24.04-arm
+            package_platform: ubuntu24.04-x86_64
+          - runner: ubuntu-24.04-arm
             arch: aarch64
             platform: ubuntu24.04-aarch64
+            package_platform: ubuntu24.04-aarch64
+          # macOS build (universal)
+          - runner: macos-14
+            arch: arm64
+            platform: macos-arm64
+            package_platform: macos-arm64_x86_64
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install build dependencies
+      - name: Install build dependencies (Ubuntu)
+        if: startsWith(matrix.runner, 'ubuntu')
         run: |
           sudo apt-get update
           sudo apt-get install -y \
@@ -61,9 +72,10 @@ jobs:
             clang-tools \
             libclang-dev \
             libclang1 \
-            python3-clang \
+            python3-clang
 
-      - name: Install LLVM 18
+      - name: Install LLVM 18 (Ubuntu)
+        if: startsWith(matrix.runner, 'ubuntu')
         run: |
           wget -O /tmp/llvm.sh https://apt.llvm.org/llvm.sh
           chmod +x /tmp/llvm.sh
@@ -73,7 +85,8 @@ jobs:
           ls -la /usr/bin/llvm-config-18 2>/dev/null && echo "llvm-config-18 found" || echo "llvm-config-18 NOT found"
           ls -la /usr/bin/clang-18 2>/dev/null && echo "clang-18 found" || echo "clang-18 NOT found"
 
-      - name: Configure clang alternatives
+      - name: Configure clang alternatives (Ubuntu)
+        if: startsWith(matrix.runner, 'ubuntu')
         run: |
           VERSION=18
           PRIORITY=100
@@ -120,7 +133,14 @@ jobs:
             echo "Falling back to system defaults."
           fi
 
-      - name: Debug - Show LLVM and Clang versions
+      - name: Install build dependencies (macOS)
+        if: startsWith(matrix.runner, 'macos')
+        run: |
+          brew install autoconf automake bash cmake gettext git git-lfs gnu-tar \
+            libtool m4 pkg-config protobuf wget xz
+
+      - name: Debug - Show LLVM and Clang versions (Ubuntu)
+        if: startsWith(matrix.runner, 'ubuntu')
         run: |
           echo "=========================================="
           echo "LLVM and Clang Version Information"
@@ -144,6 +164,25 @@ jobs:
           readlink -f $(which clang 2>/dev/null) || echo "clang not found"
           readlink -f $(which clang++ 2>/dev/null) || echo "clang++ not found"
           readlink -f $(which llvm-config 2>/dev/null) || echo "llvm-config not found"
+          echo ""
+          echo "=========================================="
+
+      - name: Debug - Show LLVM and Clang versions (macOS)
+        if: startsWith(matrix.runner, 'macos')
+        run: |
+          echo "=========================================="
+          echo "LLVM and Clang Version Information"
+          echo "=========================================="
+          echo ""
+          echo "=== Clang Version ==="
+          clang --version || echo "clang not found"
+          echo ""
+          echo "=== Clang++ Version ==="
+          clang++ --version || echo "clang++ not found"
+          echo ""
+          echo "=== Which binaries are being used ==="
+          which clang || echo "clang not in PATH"
+          which clang++ || echo "clang++ not in PATH"
           echo ""
           echo "=========================================="
 
@@ -173,18 +212,31 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: external-${{ matrix.platform }}
-          path: output/platforms/external-${{ matrix.platform }}.tar.gz
+          path: output/platforms/external-${{ matrix.package_platform }}.tar.gz
           retention-days: 30
 
   release:
     needs: build
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    # Only run if this was triggered by a tag push
+    if: |
+      (github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')) ||
+      github.event_name == 'workflow_dispatch'
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
+          merge-multiple: true
+
+      - name: List downloaded artifacts
+        run: |
+          echo "Artifacts downloaded:"
+          find artifacts -type f -name "*.tar.gz" || echo "No artifacts found"
+          ls -la artifacts/ || true
 
       - name: Create Release
         uses: softprops/action-gh-release@v1

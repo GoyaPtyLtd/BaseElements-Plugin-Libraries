@@ -83,7 +83,13 @@ PREFIX="${BUILD_DIR}"
 
 # Set up dependency paths
 ZLIB_PREFIX="${OUTPUT_SRC}/zlib/_build"
-OPENSSL_PREFIX="${OUTPUT_SRC}/openssl/_build"
+if [[ $OS = 'Darwin' ]]; then
+    # On macOS, use arm64 build directory which has both lib and include
+    # The libssh2 configure script needs a prefix with both subdirectories
+    OPENSSL_PREFIX="${OUTPUT_SRC}/openssl/_build_arm64"
+else
+    OPENSSL_PREFIX="${OUTPUT_SRC}/openssl/_build"
+fi
 
 # Configure and build
 interactive_prompt \
@@ -95,13 +101,14 @@ interactive_prompt \
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
+    # Use universal OpenSSL libs from _build/lib, but prefix points to _build_arm64 for headers
+    OPENSSL_UNIVERSAL_LIB="${OUTPUT_SRC}/openssl/_build/lib"
     CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" \
-    CPPFLAGS="-I${OUTPUT_INCLUDE}/zlib"  \
-    LDFLAGS="-L${OUTPUT_LIB}/zlib" LIBS="-ldl" \
+    CPPFLAGS="-I${OUTPUT_INCLUDE}/zlib -I${OUTPUT_INCLUDE}/openssl"  \
+    LDFLAGS="-L${OUTPUT_LIB}/zlib -L${OPENSSL_UNIVERSAL_LIB}" LIBS="-ldl" \
     ./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
         --with-libz --with-libz-prefix=${ZLIB_PREFIX} \
         --with-crypto=openssl --with-libssl-prefix=${OPENSSL_PREFIX} \
-		--host="${HOST}" \
         --prefix="${PREFIX}"
     
 elif [[ $OS = 'Linux' ]]; then

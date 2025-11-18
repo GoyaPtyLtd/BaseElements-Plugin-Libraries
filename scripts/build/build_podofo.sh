@@ -7,7 +7,15 @@ set -e
 source "$(dirname "$0")/_build_common.sh" "$@"
 
 LIBRARY_NAME="podofo"
-ARCHIVE_NAME="podofo.tar.gz"
+# Select archive based on platform: Linux uses 0.9.8, macOS uses 1.0.2b
+# NOTE: Ubuntu 22.04 cannot build PoDoFo versions past 0.9.8 due to CMake version limitations.
+# Ubuntu 22.04 ships with CMake 3.22.1, but PoDoFo 1.0.2b+ requires CMake 3.23+.
+# macOS uses 1.0.2b because it has CMake 3.23+ available via Homebrew.
+if [[ $OS = 'Darwin' ]]; then
+    ARCHIVE_NAME="podofo-macos.tar.gz"
+else
+    ARCHIVE_NAME="podofo-linux.tar.gz"
+fi
 
 print_header "Starting ${LIBRARY_NAME} Build"
 
@@ -44,45 +52,48 @@ PREFIX="${BUILD_DIR}"
 print_info "Checking dependencies for ${LIBRARY_NAME}..."
 MISSING_DEPS=()
 
-# Check required libraries
-declare -A REQUIRED_LIBS=(
-    ["freetype"]="${OUTPUT_LIB}/freetype2/libfreetype.a"
-    ["fontconfig"]="${OUTPUT_LIB}/fontconfig/libfontconfig.a"
-    ["libssl"]="${OUTPUT_LIB}/openssl/libssl.a"
-    ["libcrypto"]="${OUTPUT_LIB}/openssl/libcrypto.a"
-    ["libxml2"]="${OUTPUT_LIB}/libxml/libxml2.a"
-    ["libunistring"]="${OUTPUT_LIB}/libunistring/libunistring.a"
-    ["libz"]="${OUTPUT_LIB}/zlib/libz.a"
-    ["libturbojpeg"]="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a"
-    ["libpng16"]="${OUTPUT_LIB}/libpng/libpng16.a"
+# Check required libraries (bash 3 compatible - using arrays instead of associative arrays)
+REQUIRED_LIB_NAMES=("freetype" "fontconfig" "libxml2" "libunistring" "libz" "libturbojpeg" "libpng16")
+REQUIRED_LIB_PATHS=(
+    "${OUTPUT_LIB}/freetype2/libfreetype.a"
+    "${OUTPUT_LIB}/fontconfig/libfontconfig.a"
+    "${OUTPUT_LIB}/libxml/libxml2.a"
+    "${OUTPUT_LIB}/libunistring/libunistring.a"  # Linux only
+    "${OUTPUT_LIB}/zlib/libz.a"
+    "${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a"
+    "${OUTPUT_LIB}/libpng/libpng16.a"
 )
 
 # Check required headers
-declare -A REQUIRED_HEADERS=(
-    ["freetype2"]="${OUTPUT_INCLUDE}/freetype2"
-    ["fontconfig"]="${OUTPUT_INCLUDE}/fontconfig"
-    ["openssl"]="${OUTPUT_INCLUDE}/openssl"
-    ["libxml"]="${OUTPUT_INCLUDE}/libxml"
-    ["libunistring"]="${OUTPUT_INCLUDE}/libunistring"
-    ["zlib"]="${OUTPUT_INCLUDE}/zlib"
-    ["libturbojpeg"]="${OUTPUT_INCLUDE}/libturbojpeg"
-    ["libpng"]="${OUTPUT_INCLUDE}/libpng"
+REQUIRED_HEADER_NAMES=("freetype2" "fontconfig" "libxml" "libunistring" "zlib" "libturbojpeg" "libpng")
+REQUIRED_HEADER_PATHS=(
+    "${OUTPUT_INCLUDE}/freetype2"
+    "${OUTPUT_INCLUDE}/fontconfig"
+    "${OUTPUT_INCLUDE}/libxml"
+    "${OUTPUT_INCLUDE}/libunistring"  # Linux only
+    "${OUTPUT_INCLUDE}/zlib"
+    "${OUTPUT_INCLUDE}/libturbojpeg"
+    "${OUTPUT_INCLUDE}/libpng"
 )
 
 # Verify libraries exist
-for lib_name in "${!REQUIRED_LIBS[@]}"; do
-    lib_path="${REQUIRED_LIBS[$lib_name]}"
+i=0
+for lib_name in "${REQUIRED_LIB_NAMES[@]}"; do
+    lib_path="${REQUIRED_LIB_PATHS[$i]}"
     if [[ ! -f "$lib_path" ]]; then
         MISSING_DEPS+=("Library: $lib_name ($lib_path)")
     fi
+    i=$((i + 1))
 done
 
 # Verify headers exist
-for header_name in "${!REQUIRED_HEADERS[@]}"; do
-    header_path="${REQUIRED_HEADERS[$header_name]}"
+i=0
+for header_name in "${REQUIRED_HEADER_NAMES[@]}"; do
+    header_path="${REQUIRED_HEADER_PATHS[$i]}"
     if [[ ! -d "$header_path" ]]; then
         MISSING_DEPS+=("Headers: $header_name ($header_path)")
     fi
+    i=$((i + 1))
 done
 
 # Check xmllint executable (required for macOS)
@@ -123,21 +134,31 @@ if [[ $OS = 'Darwin' ]]; then
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
  
     cd "${BUILD_DIR}"
- 
+    
+    # Build include path flags to prioritize our libraries over system ones (especially Mono framework)
+    # This ensures we use our built libjpeg/libpng instead of system versions
+    INCLUDE_FLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libpng -I${OUTPUT_INCLUDE}/zlib -I${OUTPUT_INCLUDE}"
+    
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
          -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
-         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIR_freetype2="${OUTPUT_INCLUDE}/freetype2" \
-         -DFontconfig_LIBRARY="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFontconfig_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DOPENSSL_SSL_LIBRARY="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl" \
+         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" \
+         -DFREETYPE_LIBRARY="${OUTPUT_LIB}/freetype2/libfreetype.a" \
+         -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2" \
+         -DFREETYPE_INCLUDE_DIR="${OUTPUT_INCLUDE}/freetype2" \
+         -DFREETYPE_INCLUDE_DIR_FT2BUILD="${OUTPUT_INCLUDE}/freetype2" \
+         -DFONTCONFIG_LIBRARY="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
          -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml" \
          -DLIBXML2_XMLLINT_EXECUTABLE="${OUTPUT_SRC}/libxml/_build/bin/xmllint" \
          -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
          -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
-         -DCMAKE_CXX_STANDARD=17 \
-         -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=13.3 -stdlib=libc++" \
-         -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=13.3 -stdlib=libc++" ..
+         -DCMAKE_DISABLE_FIND_PACKAGE_OpenSSL=TRUE \
+         -DCMAKE_DISABLE_FIND_PACKAGE_LIBCRYPTO=TRUE \
+         -DCMAKE_IGNORE_PATH="/Library/Frameworks/Mono.framework;/usr/local/lib;/opt/homebrew;/usr/local" \
+         -DCMAKE_CXX_STANDARD=11 \
+         -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++ ${INCLUDE_FLAGS}" \
+         -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++ ${INCLUDE_FLAGS}" ..
     
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
@@ -145,15 +166,19 @@ elif [[ $OS = 'Linux' ]]; then
     CC=clang CXX=clang++ \
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
          -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
-         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIR="${OUTPUT_INCLUDE}/freetype2" \
+         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" \
+         -DFREETYPE_LIBRARY="${OUTPUT_LIB}/freetype2/libfreetype.a" \
+         -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2" \
+         -DFREETYPE_INCLUDE_DIR="${OUTPUT_INCLUDE}/freetype2" \
+         -DFREETYPE_INCLUDE_DIR_FT2BUILD="${OUTPUT_INCLUDE}/freetype2" \
          -DWANT_FONTCONFIG:BOOL=TRUE \
          -DFONTCONFIG_LIBRARIES="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DLIBCRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
          -DUNISTRING_LIBRARY="${OUTPUT_LIB}/libunistring/libunistring.a" -DUNISTRING_INCLUDE_DIR="${OUTPUT_INCLUDE}/libunistring" \
          -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
          -DLIBJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DLIBJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
+         -DCMAKE_DISABLE_FIND_PACKAGE_OpenSSL=TRUE \
+         -DCMAKE_DISABLE_FIND_PACKAGE_LIBCRYPTO=TRUE \
          -DWANT_LIB64:BOOL=TRUE \
          -DCMAKE_CXX_FLAGS="-fPIC" .
 fi

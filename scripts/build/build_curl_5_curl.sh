@@ -174,11 +174,7 @@ interactive_prompt \
     "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
     "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/libcurl.a"
 
-if [[ $OS = 'Darwin' ]]; then
-    cp -R "${PREFIX_x86_64}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-else
-    cp -R "${PREFIX}/include/curl"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-fi
+cp -R "${PREFIX}/include/curl"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
 cp "${PREFIX}/lib/libcurl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 

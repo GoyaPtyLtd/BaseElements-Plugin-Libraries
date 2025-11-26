@@ -123,7 +123,7 @@ download() {
 print_header "Starting download of 25 source archives..."
 echo ""
 
-download "Boost" "1.85.0" "1" "https://archives.boost.io/release/1.85.0/source/boost_1_85_0.tar.gz" "boost.tar.gz"
+download "Boost" "1.89.0" "1" "https://archives.boost.io/release/1.89.0/source/boost_1_89_0.tar.gz" "boost.tar.gz"
 download "Curl" "8.7.1" "2" "https://github.com/curl/curl/releases/download/curl-8_7_1/curl-8.7.1.tar.gz" "curl.tar.gz"
 download "duktape" "2.7.0" "3" "https://duktape.org/duktape-2.7.0.tar.xz" "duktape.tar.xz"
 download "expat" "2.6.2" "4" "https://github.com/libexpat/libexpat/releases/download/R_2_6_2/expat-2.6.2.tar.xz" "expat.tar.xz"

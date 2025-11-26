@@ -7,15 +7,7 @@ set -e
 source "$(dirname "$0")/_build_common.sh" "$@"
 
 LIBRARY_NAME="podofo"
-# Select archive based on platform: Linux uses 0.9.8, macOS uses 1.0.2b
-# NOTE: Ubuntu 22.04 cannot build PoDoFo versions past 0.9.8 due to CMake version limitations.
-# Ubuntu 22.04 ships with CMake 3.22.1, but PoDoFo 1.0.2b+ requires CMake 3.23+.
-# macOS uses 1.0.2b because it has CMake 3.23+ available via Homebrew.
-if [[ $OS = 'Darwin' ]]; then
-    ARCHIVE_NAME="podofo-macos.tar.gz"
-else
-    ARCHIVE_NAME="podofo-linux.tar.gz"
-fi
+ARCHIVE_NAME="podofo.tar.gz"
 
 print_header "Starting ${LIBRARY_NAME} Build"
 

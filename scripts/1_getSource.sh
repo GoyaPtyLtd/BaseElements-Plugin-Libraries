@@ -123,7 +123,7 @@ download() {
 print_header "Starting download of 25 source archives..."
 echo ""
 
-download "Boost" "1.89.0" "1" "https://archives.boost.io/release/1.89.0/source/boost_1_89_0.tar.gz" "boost.tar.gz"
+download "Boost" "1.89.0" "1" "https://github.com/boostorg/boost/releases/download/boost-1.89.0/boost-1.89.0-b2-nodocs.tar.gz" "boost.tar.gz"
 download "Curl" "8.7.1" "2" "https://github.com/curl/curl/releases/download/curl-8_7_1/curl-8.7.1.tar.gz" "curl.tar.gz"
 download "duktape" "2.7.0" "3" "https://duktape.org/duktape-2.7.0.tar.xz" "duktape.tar.xz"
 download "expat" "2.6.2" "4" "https://github.com/libexpat/libexpat/releases/download/R_2_6_2/expat-2.6.2.tar.xz" "expat.tar.xz"
@@ -143,14 +143,7 @@ download "libxslt" "1.1.42" "17" "https://download.gnome.org/sources/libxslt/1.1
 download "openssl" "3.2.1" "18" "https://www.openssl.org/source/openssl-3.2.1.tar.gz" "openssl.tar.gz"
 download "Poco" "1.14.2" "19" "https://github.com/pocoproject/poco/archive/refs/tags/poco-1.14.2-release.tar.gz" "poco.tar.gz"
 download "libunistring" "1.2" "20" "https://ftp.gnu.org/gnu/libunistring/libunistring-1.2.tar.gz" "libunistring.tar.gz"
-# PoDoFo: Optional different versions for different platforms
-# Linux uses 0.9.8 (compatible with CMake 3.22.1)
-#   NOTE: Ubuntu 22.04 cannot build PoDoFo versions past 0.9.8 due to CMake version limitations.
-#   Ubuntu 22.04 ships with CMake 3.22.1, but PoDoFo 1.0.2b+ requires CMake 3.23+.
-# macOS uses 1.0.2b (requires CMake 3.23+, which macOS has via Homebrew)
-download "podofo (Linux)" "0.9.8" "21a" "https://ixpeering.dl.sourceforge.net/project/podofo/podofo/0.9.8/podofo-0.9.8.tar.gz" "podofo-linux.tar.gz"
-download "podofo (macOS)" "0.9.8" "21a" "https://ixpeering.dl.sourceforge.net/project/podofo/podofo/0.9.8/podofo-0.9.8.tar.gz" "podofo-macos.tar.gz"
-# download "podofo (macOS)" "1.0.2b" "21b" "https://github.com/nickorr/podofo/archive/refs/tags/1.0.2b.tar.gz" "podofo-macos.tar.gz"
+download "podofo" "0.9.8" "21a" "https://ixpeering.dl.sourceforge.net/project/podofo/podofo/0.9.8/podofo-0.9.8.tar.gz" "podofo.tar.gz"
 download "zlib" "1.3.1" "22" "https://www.zlib.net/zlib-1.3.1.tar.xz" "zlib.tar.xz"
 download "libpng" "1.6.43" "23" "https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.43.tar.gz" "libpng.tar.gz"
 download "nghttp2" "1.62.1" "24" "https://github.com/nghttp2/nghttp2/releases/download/v1.62.1/nghttp2-1.62.1.tar.xz" "nghttp2.tar.xz"

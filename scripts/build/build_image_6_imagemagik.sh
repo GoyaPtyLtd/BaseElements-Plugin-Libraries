@@ -21,11 +21,15 @@ REQUIRED_LIBS=(
     "libpng:libpng16.a"
     "libde265:libde265.a"
     "libheif:libheif.a"
-    "libopenjp2:libopenjp2.a"
     "libturbojpeg:libjpeg.a"
     "freetype2:libfreetype.a"
     "fontconfig:libfontconfig.a"
 )
+
+# libopenjp2 is required only on macOS
+if [[ $OS = 'Darwin' ]]; then
+    REQUIRED_LIBS+=("libopenjp2:libopenjp2.a")
+fi
 
 for lib_entry in "${REQUIRED_LIBS[@]}"; do
     IFS=':' read -r lib_name lib_file <<< "$lib_entry"
@@ -35,7 +39,13 @@ for lib_entry in "${REQUIRED_LIBS[@]}"; do
 done
 
 # Check required headers
-REQUIRED_HEADERS=("zlib" "libpng" "libde265" "libheif" "libopenjp2" "libturbojpeg" "freetype2" "fontconfig")
+REQUIRED_HEADERS=("zlib" "libpng" "libde265" "libheif" "libturbojpeg" "freetype2" "fontconfig")
+
+# libopenjp2 headers are required only on macOS
+if [[ $OS = 'Darwin' ]]; then
+    REQUIRED_HEADERS+=("libopenjp2")
+fi
+
 for header_dir in "${REQUIRED_HEADERS[@]}"; do
     if [[ ! -d "${OUTPUT_INCLUDE}/${header_dir}" ]]; then
         MISSING_DEPS+=("Headers: ${header_dir} (${OUTPUT_INCLUDE}/${header_dir})")
@@ -55,7 +65,9 @@ if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
     echo "  image_2_libde265 (libde265)"
     echo "  image_3_libpng (libpng)"
     echo "  image_4_libheif (libheif)"
-    echo "  image_5_libopenjp2 (libopenjp2)"
+    if [[ $OS = 'Darwin' ]]; then
+        echo "  image_5_libopenjp2 (libopenjp2) - macOS only"
+    fi
     echo "  font_3_freetype (freetype2)"
     echo "  font_4_fontconfig (fontconfig)"
     exit 1
@@ -99,7 +111,10 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libde265/_build/lib/pkgconfig"
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libheif/_build/lib/pkgconfig"
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/fontconfig/_build/lib/pkgconfig"
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/freetype/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libopenjp2/_build/lib/pkgconfig"
+# libopenjp2 is only needed on macOS
+if [[ $OS = 'Darwin' ]]; then
+    PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libopenjp2/_build/lib/pkgconfig"
+fi
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig"
 export PKG_CONFIG_PATH
 
@@ -123,10 +138,10 @@ if [[ $OS = 'Darwin' ]]; then
     CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
     CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg" LDFLAGS="-L${OUTPUT_LIB}" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
-        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes --with-tiff=no --with-lcms=no \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
-        --host="${HOST}" \
+        --host="arm64-apple-darwin" \
         --prefix="${PREFIX_arm64}"
     
     print_info "Building ${LIBRARY_NAME} for arm64 (${JOBS} parallel jobs)..."
@@ -143,10 +158,10 @@ if [[ $OS = 'Darwin' ]]; then
     CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
     CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg" LDFLAGS="-L${OUTPUT_LIB}" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
-        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes --with-tiff=no --with-lcms=no \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
-        --host="${HOST}" \
+        --host="x86_64-apple-darwin" \
         --prefix="${PREFIX_x86_64}"
     
     print_info "Building ${LIBRARY_NAME} for x86_64 (${JOBS} parallel jobs)..."
@@ -167,9 +182,10 @@ elif [[ $OS = 'Linux' ]]; then
     CC=clang CXX=clang++ \
     CFLAGS="-fPIC" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
-        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
+        --without-lcms --without-lqr --without-djvu --without-openexr --without-jbig --without-tiff  --without-openjp2 \
         --prefix="${PREFIX}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."

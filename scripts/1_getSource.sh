@@ -91,7 +91,7 @@ download() {
             print_error "  This usually means the library version was updated but SHA256SUMS was not regenerated"
             print_info ""
             print_info "  To fix:"
-            print_info "    1. Run: source/regenerate_sha256.sh"
+            print_info "    1. Run: ./scripts/regenerate_sha256.sh"
             print_info "    2. Commit the updated source/SHA256SUMS file to the repository"
             exit 1
         fi
@@ -111,7 +111,7 @@ download() {
             print_info ""
             print_info "  To fix:"
             print_info "    1. Re-download the file (it may be corrupted)"
-            print_info "    2. If you updated the library version, run: source/regenerate_sha256.sh"
+            print_info "    2. If you updated the library version, run: ./scripts/regenerate_sha256.sh"
             print_info "    3. Commit the updated source/SHA256SUMS file to the repository"
             exit 1
         fi
@@ -123,8 +123,8 @@ download() {
 print_header "Starting download of 25 source archives..."
 echo ""
 
-download "Boost" "1.85.0" "1" "https://archives.boost.io/release/1.85.0/source/boost_1_85_0.tar.gz" "boost.tar.gz"
-download "Curl" "8.7.1" "2" "https://curl.se/download/curl-8.7.1.tar.gz" "curl.tar.gz"
+download "Boost" "1.89.0" "1" "https://github.com/boostorg/boost/releases/download/boost-1.89.0/boost-1.89.0-b2-nodocs.tar.gz" "boost.tar.gz"
+download "Curl" "8.7.1" "2" "https://github.com/curl/curl/releases/download/curl-8_7_1/curl-8.7.1.tar.gz" "curl.tar.gz"
 download "duktape" "2.7.0" "3" "https://duktape.org/duktape-2.7.0.tar.xz" "duktape.tar.xz"
 download "expat" "2.6.2" "4" "https://github.com/libexpat/libexpat/releases/download/R_2_6_2/expat-2.6.2.tar.xz" "expat.tar.xz"
 download "fontconfig" "2.15.0" "5" "https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.gz" "fontconfig.tar.gz"
@@ -138,8 +138,8 @@ download "libjpeg-turbo" "3.0.3" "12" "https://github.com/libjpeg-turbo/libjpeg-
 download "ImageMagick" "7.1.1-29" "13" "https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.1-29.tar.gz" "ImageMagick.tar.gz"
 download "jq" "1.7.1" "14" "https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-1.7.1.tar.gz" "jq.tar.gz"
 download "libssh2" "1.11.1" "15" "https://libssh2.org/download/libssh2-1.11.1.tar.gz" "libssh.tar.gz"
-download "libxml2" "2.13.0" "16" "https://download.gnome.org/sources/libxml2/2.13/libxml2-2.13.0.tar.xz" "libxml.tar.xz"
-download "libxslt" "1.1.42" "17" "https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.42.tar.xz" "libxslt.tar.xz"
+download "libxml2" "2.15.0" "16" "https://download.gnome.org/sources/libxml2/2.15/libxml2-2.15.1.tar.xz" "libxml.tar.xz"
+download "libxslt" "1.1.43" "17" "https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.43.tar.xz" "libxslt.tar.xz"
 download "openssl" "3.2.1" "18" "https://www.openssl.org/source/openssl-3.2.1.tar.gz" "openssl.tar.gz"
 download "Poco" "1.14.2" "19" "https://github.com/pocoproject/poco/archive/refs/tags/poco-1.14.2-release.tar.gz" "poco.tar.gz"
 download "libunistring" "1.2" "20" "https://ftp.gnu.org/gnu/libunistring/libunistring-1.2.tar.gz" "libunistring.tar.gz"

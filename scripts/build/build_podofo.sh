@@ -134,16 +134,16 @@ if [[ $OS = 'Darwin' ]]; then
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
          -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
-         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIR_FT2BUILD="${OUTPUT_INCLUDE}/freetype2" -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2"  \
-         -DFONTCONFIG_LIBRARY="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl" \
+         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2"  \
+         -DFontconfig_LIBRARIES="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFontconfig_INCLUDE_DIRS="${OUTPUT_INCLUDE}" \
+         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_SSL_LIBRARY="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl"  -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}"  \
          -DLIBCRYPTO_LIBRARIES="${OUTPUT_LIB}/openssl/libcrypto.a" -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl" \
-         -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml" \
+         -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml"  -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
          -DLIBXML2_XMLLINT_EXECUTABLE="${OUTPUT_SRC}/libxml/_build/bin/xmllint" \
          -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
          -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
-         -DCMAKE_IGNORE_PATH="/Library/Frameworks/Mono.framework;/usr/local/lib;/opt/homebrew;/usr/local;/opt/homebrew/lib;/Library/Frameworks/Mono.framework/Headers" \
+         -DCMAKE_IGNORE_PREFIX_PATH="/Library/Frameworks;/usr/local;/opt/homebrew" \
          -DCMAKE_CXX_STANDARD=11 \
          -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" \
          -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ..
@@ -154,16 +154,16 @@ elif [[ $OS = 'Linux' ]]; then
     CC=clang CXX=clang++ \
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
 		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
-         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIR_FT2BUILD="${OUTPUT_INCLUDE}/freetype2" -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2"  \
-         -DFONTCONFIG_LIBRARY="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFontconfig_LIBRARY="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_SSL_LIBRARY="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl" \
+         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2"  \
+         -DFontconfig_LIBRARIES="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFontconfig_INCLUDE_DIRS="${OUTPUT_INCLUDE}" \
+         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_SSL_LIBRARY="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl"  -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}"  \
          -DLIBCRYPTO_LIBRARIES="${OUTPUT_LIB}/openssl/libcrypto.a" -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl" \
-         -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml" \
+         -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml"  -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
          -DLIBXML2_XMLLINT_EXECUTABLE="${OUTPUT_SRC}/libxml/_build/bin/xmllint" \
          -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
          -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
-         -DCMAKE_IGNORE_PATH="/usr/lib;/opt/homebrew;/usr/lib/aarch64-linux-gnu;/usr/lib/x86_64-linux-gnu;/lib/aarch64-linux-gnu;/x86_64-linux-gnu;/lib/aarch64-linux-gnu" \
+         -DCMAKE_IGNORE_PREFIX_PATH="/usr/lib;/opt/homebrew;/lib/aarch64-linux-gnu;/lib/x86_64-linux-gnu" \
          -DCMAKE_CXX_FLAGS="-fPIC" ..
 fi
 

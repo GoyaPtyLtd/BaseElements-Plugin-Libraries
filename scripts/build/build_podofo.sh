@@ -144,8 +144,6 @@ if [[ $OS = 'Darwin' ]]; then
          -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
          -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
-         -DCMAKE_DISABLE_FIND_PACKAGE_OpenSSL=TRUE \
-         -DCMAKE_DISABLE_FIND_PACKAGE_LIBCRYPTO=TRUE \
          -DCMAKE_IGNORE_PATH="/Library/Frameworks/Mono.framework;/usr/local/lib;/opt/homebrew;/usr/local" \
          -DCMAKE_CXX_STANDARD=11 \
          -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" \
@@ -158,18 +156,16 @@ elif [[ $OS = 'Linux' ]]; then
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
          -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
          -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" \
-         -DFREETYPE_LIBRARY="${OUTPUT_LIB}/freetype2/libfreetype.a" \
-         -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2" \
+         -DFONTCONFIG_LIBRARIES="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}/fontconfig" \
          -DFREETYPE_INCLUDE_DIR="${OUTPUT_INCLUDE}/freetype2" \
-         -DFREETYPE_INCLUDE_DIR_FT2BUILD="${OUTPUT_INCLUDE}/freetype2" \
-         -DWANT_FONTCONFIG:BOOL=TRUE \
-         -DFONTCONFIG_LIBRARIES="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DUNISTRING_LIBRARY="${OUTPUT_LIB}/libunistring/libunistring.a" -DUNISTRING_INCLUDE_DIR="${OUTPUT_INCLUDE}/libunistring" \
+         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl" \
+         -DLIBCRYPTO_LIBRARIES="${OUTPUT_LIB}/openssl/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl" \
+         -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml" \
+         -DLIBXML2_XMLLINT_EXECUTABLE="${OUTPUT_SRC}/libxml/_build/bin/xmllint" \
          -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
-         -DLIBJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DLIBJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
+         -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
-         -DCMAKE_DISABLE_FIND_PACKAGE_OpenSSL=TRUE \
-         -DCMAKE_DISABLE_FIND_PACKAGE_LIBCRYPTO=TRUE \
+         -DCMAKE_IGNORE_PATH="/usr/lib;/opt/homebrew;/usr/lib/aarch64-linux-gnu" \
          -DWANT_LIB64:BOOL=TRUE \
          -DCMAKE_CXX_FLAGS="-fPIC" ./
 fi

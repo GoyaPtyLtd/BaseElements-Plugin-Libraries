@@ -121,12 +121,12 @@ interactive_prompt \
     "Build directory: ${BUILD_DIR}" \
     "Dependencies will be found from: ${OUTPUT_INCLUDE} and ${OUTPUT_LIB}"
 
+cd "${BUILD_DIR}"
+
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build (arm64 + x86_64)
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
- 
-    cd "${BUILD_DIR}"
-    
+     
     # Build include path flags to prioritize our libraries over system ones (especially Mono framework)
     # This ensures we use our built libjpeg/libpng instead of system versions
     INCLUDE_FLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libpng -I${OUTPUT_INCLUDE}/zlib -I${OUTPUT_INCLUDE}"
@@ -143,7 +143,7 @@ if [[ $OS = 'Darwin' ]]; then
          -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
          -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
-         -DCMAKE_IGNORE_PATH="/Library/Frameworks/Mono.framework;/usr/local/lib;/opt/homebrew;/usr/local" \
+         -DCMAKE_IGNORE_PATH="/Library/Frameworks/Mono.framework;/usr/local/lib;/opt/homebrew;/usr/local;/opt/homebrew/lib;/Library/Frameworks/Mono.framework/Headers" \
          -DCMAKE_CXX_STANDARD=11 \
          -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" \
          -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ..
@@ -164,7 +164,7 @@ elif [[ $OS = 'Linux' ]]; then
          -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
          -DCMAKE_IGNORE_PATH="/usr/lib;/opt/homebrew;/usr/lib/aarch64-linux-gnu;/usr/lib/x86_64-linux-gnu;/lib/aarch64-linux-gnu;/x86_64-linux-gnu;/lib/aarch64-linux-gnu" \
-         -DCMAKE_CXX_FLAGS="-fPIC" .
+         -DCMAKE_CXX_FLAGS="-fPIC" ..
 fi
 
 # Build
@@ -175,10 +175,8 @@ interactive_prompt \
     "Build prefix: ${PREFIX}"
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-cd _build
 make -j${JOBS}
 make install
-cd ..
 
 # Copy headers and libraries
 interactive_prompt \

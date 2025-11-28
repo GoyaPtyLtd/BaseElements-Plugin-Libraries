@@ -28,6 +28,10 @@ if [[ ! -f "${OUTPUT_LIB}/libturbojpeg/libjpeg.a" ]]; then
     MISSING_DEPS+=("Library: libjpeg (${OUTPUT_LIB}/libturbojpeg/libjpeg.a)")
 fi
 
+if [[ ! -f "${OUTPUT_LIB}/libpng/libpng16.a" ]]; then
+    MISSING_DEPS+=("Library: libpng (${OUTPUT_LIB}/libpng/libpng16.a)")
+fi
+
 # Check required headers
 if [[ ! -d "${OUTPUT_INCLUDE}/zlib" ]]; then
     MISSING_DEPS+=("Headers: zlib (${OUTPUT_INCLUDE}/zlib)")
@@ -41,6 +45,10 @@ if [[ ! -d "${OUTPUT_INCLUDE}/libturbojpeg" ]]; then
     MISSING_DEPS+=("Headers: libturbojpeg (${OUTPUT_INCLUDE}/libturbojpeg)")
 fi
 
+if [[ ! -d "${OUTPUT_INCLUDE}/libpng" ]]; then
+    MISSING_DEPS+=("Headers: libpng (${OUTPUT_INCLUDE}/libpng)")
+fi
+
 # Report missing dependencies
 if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
     print_error "ERROR: Missing dependencies for ${LIBRARY_NAME}:"
@@ -52,6 +60,7 @@ if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
     echo "  curl_1_zlib (zlib)"
     echo "  image_1_libturbojpeg (libturbojpeg)"
     echo "  image_2_libde265 (libde265)"
+    echo "  image_3_libpng (libpng)"
     exit 1
 fi
 
@@ -100,13 +109,15 @@ if [[ $OS = 'Darwin' ]]; then
     
     CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
     cmake -G "Unix Makefiles" --preset=release-noplugins -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_BUILD_TYPE=RELEASE \
-        -DBUILD_SHARED_LIBS:BOOL=OFF -DWITH_REDUCED_VISIBILITY=OFF -DWITH_UNCOMPRESSED_CODEC=OFF \
-		-DWITH_EXAMPLES=OFF \
+		-DCMAKE_IGNORE_PATH=/usr/local/lib/ \
+        -DBUILD_SHARED_LIBS:BOOL=OFF -DWITH_REDUCED_VISIBILITY=OFF -DWITH_UNCOMPRESSED_CODEC=OFF -DWITH_EXAMPLES=OFF \
+		-DWITH_LIBDE265=ON -DWITH_JPEG_DECODER=ON -DWITH_JPEG_ENCODER=ON -DWITH_OpenJPEG_DECODER=ON -DWITH_OpenJPEG_ENCODER=ON \
         -DWITH_AOM_DECODER:BOOL=OFF -DWITH_AOM_ENCODER:BOOL=OFF \
         -DWITH_X265:BOOL=OFF -DWITH_LIBSHARPYUV:BOOL=OFF \
         -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib/" -DZLIB_LIBRARY="${OUTPUT_LIB}/zlib/libz.a" \
         -DLIBDE265_INCLUDE_DIR="${OUTPUT_INCLUDE}" -DLIBDE265_LIBRARY="${OUTPUT_LIB}/libde265/libde265.a" \
-        -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg/" -DJPEG_LIBRARY="${OUTPUT_LIB}/libturbojpeg/libjpeg.a" ./
+        -DJPEG_INCLUDE_DIRS="${OUTPUT_INCLUDE}/libturbojpeg/" -DJPEG_LIBRARY="${OUTPUT_LIB}/libturbojpeg/libjpeg.a" \
+        -DPNG_INCLUDE_DIRS="${OUTPUT_INCLUDE}/libpng/" -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" ./
     
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
@@ -119,7 +130,7 @@ elif [[ $OS = 'Linux' ]]; then
         -DWITH_X265:BOOL=OFF -DWITH_LIBSHARPYUV:BOOL=OFF \
         -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib/" -DZLIB_LIBRARY="${OUTPUT_LIB}/zlib/libz.a" \
         -DLIBDE265_INCLUDE_DIR="${OUTPUT_INCLUDE}" -DLIBDE265_LIBRARY="${OUTPUT_LIB}/libde265/libde265.a" \
-        -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg/" -DJPEG_LIBRARY="${OUTPUT_LIB}/libturbojpeg/libjpeg.a" ./
+        -DJPEG_INCLUDE_DIRS="${OUTPUT_INCLUDE}/libturbojpeg/" -DJPEG_LIBRARIES="${OUTPUT_LIB}/libturbojpeg/libjpeg.a" ./
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."

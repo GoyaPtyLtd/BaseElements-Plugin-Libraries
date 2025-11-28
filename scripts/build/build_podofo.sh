@@ -135,7 +135,7 @@ if [[ $OS = 'Darwin' ]]; then
          -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
          -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2"  \
-         -DFontconfig_LIBRARIES="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFontconfig_INCLUDE_DIRS="${OUTPUT_INCLUDE}" \
+         -DFontconfig_LIBRARY="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFontconfig_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
          -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_SSL_LIBRARY="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl"  -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}"  \
          -DLIBCRYPTO_LIBRARIES="${OUTPUT_LIB}/openssl/libcrypto.a" -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl" \
          -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml"  -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
@@ -145,8 +145,8 @@ if [[ $OS = 'Darwin' ]]; then
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
          -DCMAKE_IGNORE_PREFIX_PATH="/Library/Frameworks;/usr/local;/opt/homebrew" \
          -DCMAKE_CXX_STANDARD=11 \
-         -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" \
-         -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ..
+         -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=13.3 -stdlib=libc++" \
+         -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=13.3 -stdlib=libc++" ..
     
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
@@ -155,7 +155,7 @@ elif [[ $OS = 'Linux' ]]; then
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
 		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
          -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2"  \
-         -DFontconfig_LIBRARIES="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFontconfig_INCLUDE_DIRS="${OUTPUT_INCLUDE}" \
+         -DFontconfig_LIBRARY="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFontconfig_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
          -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_SSL_LIBRARY="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl"  -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}"  \
          -DLIBCRYPTO_LIBRARIES="${OUTPUT_LIB}/openssl/libcrypto.a" -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" -DLIBCRYPTO_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl" \
          -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml"  -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
@@ -186,11 +186,6 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/podofo"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
-# Copy library (different paths for macOS vs Linux)
-if [[ $OS = 'Darwin' ]]; then
-    cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-else
-    cp "${PREFIX}/lib64/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-fi
+cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 print_success "Build complete for ${LIBRARY_NAME}"

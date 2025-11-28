@@ -1,5 +1,4 @@
-#!/usr/local/bin/bash
-
+#!/bin/bash
 set -e
 
 # Source common build functionality (platform detection, paths, interactive mode, colors, helpers)

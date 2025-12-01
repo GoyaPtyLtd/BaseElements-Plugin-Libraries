@@ -1,0 +1,90 @@
+name: Build and Release Libraries
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ${{ matrix.runner }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # macOS build (universal)
+          - runner: macos-14
+            arch: arm64
+            platform: macos-arm64
+            package_platform: macos-arm64_x86_64
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install build dependencies
+        run: |
+          brew install autoconf automake bash cmake gettext git git-lfs gnu-tar \
+            libtool m4 pkg-config protobuf wget xz
+
+      - name: Make scripts executable
+        run: |
+          chmod +x scripts/*.sh
+          chmod +x scripts/build/*.sh
+          chmod +x scripts/install/*.sh
+
+      - name: Clean output folder
+        working-directory: scripts
+        run: ./0_cleanOutputFolder.sh
+
+      - name: Download sources
+        working-directory: scripts
+        run: ./1_getSource.sh
+
+      - name: Build curl
+        working-directory: scripts
+        run: ./2_build.sh --build curl
+
+      - name: Build font
+        working-directory: scripts
+        run: ./2_build.sh --build font
+
+      - name: Build image
+        working-directory: scripts
+        run: ./2_build.sh --build image
+
+      - name: Build xml
+        working-directory: scripts
+        run: ./2_build.sh --build xml
+
+      - name: Build podofo
+        working-directory: scripts
+        run: ./2_build.sh --build podofo
+
+      - name: Build boost
+        working-directory: scripts
+        run: ./2_build.sh --build boost
+
+      - name: Build jq
+        working-directory: scripts
+        run: ./2_build.sh --build all
+
+      - name: Build duktape
+        working-directory: scripts
+        run: ./2_build.sh --build duktape
+
+      - name: Build fm_plugin_sdk
+        working-directory: scripts
+        run: ./2_build.sh --build fm_plugin_sdk
+
+      - name: Package libraries
+        working-directory: scripts
+        run: ./4_package.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-${{ matrix.platform }}
+          path: output/platforms/external-${{ matrix.package_platform }}.tar.gz
+          retention-days: 30

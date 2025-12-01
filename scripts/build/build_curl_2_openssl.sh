@@ -57,7 +57,7 @@ if [[ $OS = 'Darwin' ]]; then
     
     print_info "Building x86_64 architecture..."
     CFLAGS="-mmacosx-version-min=10.15" \
-    ./Configure d--silent arwin64-x86_64-cc no-shared no-docs no-tests \
+    ./Configure --silent darwin64-x86_64-cc no-shared no-docs no-tests \
         --prefix="${PREFIX_x86_64}"
     
     make --silent -j${JOBS}

@@ -49,6 +49,8 @@ interactive_prompt \
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
+
+    CPPFLAGS+="-Wno-unused-but-set-variable -Wno-unused-variable" \
     cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
         -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="10.15" \
         -DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSE ./

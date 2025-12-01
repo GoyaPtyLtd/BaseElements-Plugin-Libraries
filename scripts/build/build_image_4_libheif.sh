@@ -108,6 +108,7 @@ if [[ $OS = 'Darwin' ]]; then
     export MACOSX_DEPLOYMENT_TARGET=10.15
     
     CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+    CPPFLAGS+="-Wno-deprecated-declarations -Wno-pointer-sign" \
     cmake -G "Unix Makefiles" --preset=release-noplugins -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_BUILD_TYPE=RELEASE \
 		-DCMAKE_IGNORE_PREFIX_PATH="/usr/local/;/opt/homebrew/" \
         -DBUILD_SHARED_LIBS:BOOL=OFF -DWITH_REDUCED_VISIBILITY=OFF -DWITH_UNCOMPRESSED_CODEC=OFF -DWITH_EXAMPLES=OFF \

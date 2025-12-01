@@ -146,9 +146,8 @@ if [[ $OS = 'Darwin' ]]; then
     
     CFLAGS="-arch arm64 -mmacosx-version-min=10.15 -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2" \
     CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15 -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2" \
-    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libopenjp2" \
+    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libopenjp2" \
     FREETYPE_CFLAGS="-I${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="-L${OUTPUT_LIB}/freetype2 -lfreetype" \
-    JPEG_CFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg" JPEG_LIBS="-L${OUTPUT_LIB}/libturbojpeg -ljpeg" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
 		--with-openjp2=yes \
@@ -170,9 +169,8 @@ if [[ $OS = 'Darwin' ]]; then
     
     CFLAGS="-arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2" \
     CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2" \
-    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libopenjp2" \
-    FREETYPE_CFLAGS="-I${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="-L${OUTPUT_LIB}/freetype2 -lfreetype" \
-    JPEG_CFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg" JPEG_LIBS="-L${OUTPUT_LIB}/libturbojpeg -ljpeg" \
+    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libopenjp2" \
+    LIBS+="-I${OUTPUT_INCLUDE}/libturbojpeg -ljpeg -I${OUTPUT_INCLUDE}/freetype2 -lfreetype" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
 		--with-openjp2=yes \

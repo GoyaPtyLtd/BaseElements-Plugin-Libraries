@@ -92,6 +92,7 @@ if [[ $OS = 'Darwin' ]]; then
     # macOS universal build
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+    CPPFLAGS+="-Wno-deprecated-declarations -Wno-pointer-sign" \
     LDFLAGS="-L${OUTPUT_LIB}" \
     FREETYPE_CFLAGS="-I${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="-L${OUTPUT_LIB}/freetype2 -lfreetype" \
     ./configure --silent --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \

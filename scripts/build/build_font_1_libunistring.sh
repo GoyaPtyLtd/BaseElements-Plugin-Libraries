@@ -50,7 +50,8 @@ if [[ $OS = 'Darwin' ]]; then
     # macOS universal build
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-    ./configure --silent --enable-static --enable-shared=NO --prefix="${PREFIX}"
+    CPPFLAGS+="-Wno-deprecated-declarations" \
+	./configure --silent --enable-static --enable-shared=NO --prefix="${PREFIX}"
     
 elif [[ $OS = 'Linux' ]]; then
     # Linux build

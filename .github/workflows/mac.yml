@@ -1,9 +1,6 @@
 name: Build Mac Libraries
 
 on:
-  push:
-    tags:
-      - 'v*'
   workflow_dispatch:
 
 jobs:
@@ -25,8 +22,7 @@ jobs:
 
       - name: Install build dependencies
         run: |
-          brew install autoconf automake bash cmake gettext git git-lfs gnu-tar \
-            libtool m4 pkg-config protobuf wget xz
+          brew install autoconf automake bash cmake git libtool m4 protobuf
 
       - name: Make scripts executable
         run: |

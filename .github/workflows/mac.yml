@@ -22,7 +22,9 @@ jobs:
 
       - name: Install build dependencies
         run: |
-          brew install autoconf automake bash cmake git libtool m4 protobuf
+          brew install autoconf automake bash git libtool m4 protobuf
+          brew uninstall --ignore-dependencies jpeg-turbo
+          brew uninstall --ignore-dependencies freetype
 
       - name: Make scripts executable
         run: |

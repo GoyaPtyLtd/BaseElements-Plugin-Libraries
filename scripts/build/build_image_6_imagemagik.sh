@@ -144,15 +144,17 @@ if [[ $OS = 'Darwin' ]]; then
     mkdir -p "${BUILD_DIR_arm64}"
     PREFIX_arm64="${BUILD_DIR_arm64}"
     
-    CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
-    CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
-    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libopenjp2" LDFLAGS="-L${OUTPUT_LIB}" \
+    CFLAGS="-arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT_INCLUDE}/libturbojpeg" \
+    CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT_INCLUDE}/libturbojpeg" \
+    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libopenjp2" \
+	LDFLAGS="-L${OUTPUT_LIB} -ljpeg" \
+    JPEG_LIBS="-L${OUTPUT}/Libraries/macOS -ljpeg" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
-        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
-		--with-jpeg-config="${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig" \
-		--with-freetype-config="${OUTPUT_SRC}/freetype/_build/lib/pkgconfig" \
-        --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 --with-tiff=no --with-lcms=no \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
+		--with-openjp2=yes \
+        --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
+        --without-lcms --without-lqr --without-djvu --without-openexr --without-jbig \
         --host="arm64-apple-darwin" \
         --prefix="${PREFIX_arm64}"
     
@@ -166,15 +168,17 @@ if [[ $OS = 'Darwin' ]]; then
     mkdir -p "${BUILD_DIR_x86_64}"
     PREFIX_x86_64="${BUILD_DIR_x86_64}"
     
-    CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
-    CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
-    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libopenjp2" LDFLAGS="-L${OUTPUT_LIB}" \
-    ./configure --disable-shared --disable-docs --disable-dependency-tracking \
-        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
-		--with-jpeg-config="${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig" \
-		--with-freetype-config="${OUTPUT_SRC}/freetype/_build/lib/pkgconfig" \
-        --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 --with-tiff=no --with-lcms=no \
+    CFLAGS="-arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT_INCLUDE}/libturbojpeg" \
+    CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT_INCLUDE}/libturbojpeg" \
+    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libopenjp2" \
+	LDFLAGS="-L${OUTPUT_LIB} -ljpeg" \
+    JPEG_LIBS="-L${OUTPUT}/Libraries/macOS -ljpeg" \
+	./configure --disable-shared --disable-docs --disable-dependency-tracking \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
+		--with-openjp2=yes \
+        --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
+        --without-lcms --without-lqr --without-djvu --without-openexr --without-jbig \
         --host="x86_64-apple-darwin" \
         --prefix="${PREFIX_x86_64}"
     
@@ -199,7 +203,7 @@ elif [[ $OS = 'Linux' ]]; then
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
-        --without-lcms --without-lqr --without-djvu --without-openexr --without-jbig --without-tiff  --without-openjp2 \
+        --without-lcms --without-lqr --without-djvu --without-openexr --without-jbig \
         --prefix="${PREFIX}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."

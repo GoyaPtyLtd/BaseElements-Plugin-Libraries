@@ -57,7 +57,7 @@ if [[ $OS = 'Darwin' ]]; then
     mkdir -p "${BUILD_DIR_x86_64}"
     
     print_info "Building x86_64 architecture..."
-    ./configure --silent --cflags="-mmacosx-version-min=10.15" \
+    ./configure --cflags="-mmacosx-version-min=10.15" \
         --prefix="${PREFIX_x86_64}" \
         --no-sharedlibs --static --poquito --no-tests --no-samples \
         --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
@@ -73,7 +73,7 @@ if [[ $OS = 'Darwin' ]]; then
     mkdir -p "${BUILD_DIR_arm64}"
     
     print_info "Building arm64 architecture..."
-    ./configure --silent --cflags="-mmacosx-version-min=10.15" \
+    ./configure --cflags="-mmacosx-version-min=10.15" \
         --prefix="${PREFIX_arm64}" \
         --no-sharedlibs --static --poquito --no-tests --no-samples \
         --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \

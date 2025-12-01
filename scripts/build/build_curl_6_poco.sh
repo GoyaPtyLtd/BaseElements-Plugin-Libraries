@@ -63,9 +63,9 @@ if [[ $OS = 'Darwin' ]]; then
         --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
         --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/${LIBRARY_NAME}"
     
-    make --silent -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
-    make --silent install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
-    make --silent distclean
+    make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
+    make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
+    make distclean
     
     # Build arm64
     BUILD_DIR_arm64="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_arm64"
@@ -79,9 +79,9 @@ if [[ $OS = 'Darwin' ]]; then
         --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
         --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/${LIBRARY_NAME}"
     
-    make --silent -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
-    make --silent install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
-    make --silent distclean
+    make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
+    make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
+    make distclean
     
     # Create universal libraries with lipo
     print_info "Creating universal libraries..."
@@ -169,7 +169,7 @@ elif [[ $OS = 'Linux' ]]; then
     ARCHFLAGS="" \
     CFLAGS="-fPIC" \
     CXXFLAGS="-fPIC" \
-    ./configure --silent --cflags="-fPIC" \
+    ./configure --cflags="-fPIC" \
         --config=Linux-clang \
         --prefix="${PREFIX}" \
         --no-sharedlibs --static --poquito --no-tests --no-samples \
@@ -184,8 +184,8 @@ elif [[ $OS = 'Linux' ]]; then
     ARCHFLAGS="" \
     CFLAGS="-fPIC" \
     CXXFLAGS="-fPIC" \
-    make --silent -j${JOBS}
-    make --silent install
+    make -j${JOBS}
+    make install
 fi
 
 # Copy headers and libraries

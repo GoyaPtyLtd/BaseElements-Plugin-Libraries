@@ -111,12 +111,22 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libde265/_build/lib/pkgconfig"
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libheif/_build/lib/pkgconfig"
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/fontconfig/_build/lib/pkgconfig"
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/freetype/_build/lib/pkgconfig"
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig"
+
+HEIC_PREFIX="${OUTPUT_SRC}/libheif/_build"
+FREETYPE_PREFIX="${OUTPUT_SRC}/freetype/_build"
+FONTCONFIG_PREFIX="${OUTPUT_SRC}/fontconfig/_build"
+PNG_PREFIX="${OUTPUT_SRC}/libpng/_build"
+JPEG_PREFIX="${OUTPUT_SRC}/libturbojpeg/_build"
+
 # libopenjp2 is only needed on macOS
 if [[ $OS = 'Darwin' ]]; then
+	OPENJP_PREFIX="${OUTPUT_SRC}/libopenjp2/_build"
     PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libopenjp2/_build/lib/pkgconfig"
 fi
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig"
 export PKG_CONFIG_PATH
+
+LIBHEIF_PREFIX="${OUTPUT_SRC}/libheif/_build"
 
 # Configure and build
 interactive_prompt \
@@ -136,10 +146,12 @@ if [[ $OS = 'Darwin' ]]; then
     
     CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
     CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
-    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg" LDFLAGS="-L${OUTPUT_LIB}" \
+    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libopenjp2" LDFLAGS="-L${OUTPUT_LIB}" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
-        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes --with-tiff=no --with-lcms=no \
-        --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
+		--jpeg-includes="${JPEG_PREFIX}/lib" -jpeg-libraries="${JPEG_PREFIX}/include" \
+		--freetype-includes="${FREETYPE_PREFIX}/lib" -freetype-libraries="${FREETYPE_PREFIX}/include" \
+        --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 --with-tiff=no --with-lcms=no \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
         --host="arm64-apple-darwin" \
         --prefix="${PREFIX_arm64}"
@@ -156,10 +168,12 @@ if [[ $OS = 'Darwin' ]]; then
     
     CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
     CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
-    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg" LDFLAGS="-L${OUTPUT_LIB}" \
+    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libopenjp2" LDFLAGS="-L${OUTPUT_LIB}" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
-        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes --with-tiff=no --with-lcms=no \
-        --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
+		--jpeg-includes="${JPEG_PREFIX}/lib" -jpeg-libraries="${JPEG_PREFIX}/include" \
+		--freetype-includes="${FREETYPE_PREFIX}/lib" -freetype-libraries="${FREETYPE_PREFIX}/include" \
+        --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 --with-tiff=no --with-lcms=no \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
         --host="x86_64-apple-darwin" \
         --prefix="${PREFIX_x86_64}"

@@ -42,10 +42,6 @@ jobs:
         working-directory: scripts
         run: ./1_getSource.sh
 
-      - name: Build curl
-        working-directory: scripts
-        run: ./2_build.sh --build curl
-
       - name: Build font
         working-directory: scripts
         run: ./2_build.sh --build font
@@ -53,6 +49,10 @@ jobs:
       - name: Build image
         working-directory: scripts
         run: ./2_build.sh --build image
+
+      - name: Build curl
+        working-directory: scripts
+        run: ./2_build.sh --build curl
 
       - name: Build xml
         working-directory: scripts

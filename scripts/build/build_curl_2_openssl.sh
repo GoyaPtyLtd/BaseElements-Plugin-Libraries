@@ -60,9 +60,9 @@ if [[ $OS = 'Darwin' ]]; then
     ./Configure --silent darwin64-x86_64-cc no-shared no-docs no-tests \
         --prefix="${PREFIX_x86_64}"
     
-    make --silent -j${JOBS}
-    make --silent install
-    make --silent distclean
+    make -s -j${JOBS}
+    make -s install
+    make -s distclean
     
     # Build arm64
     BUILD_DIR_arm64="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_arm64"
@@ -74,9 +74,9 @@ if [[ $OS = 'Darwin' ]]; then
     ./Configure --silent darwin64-arm64-cc no-shared no-docs no-tests \
         --prefix="${PREFIX_arm64}"
     
-    make --silent -j${JOBS}
-    make --silent install
-    make --silent distclean
+    make -s -j${JOBS}
+    make -s install
+    make -s distclean
     
     # Create universal libraries with lipo
     print_info "Creating universal libraries..."
@@ -92,8 +92,8 @@ elif [[ $OS = 'Linux' ]]; then
         --prefix="${PREFIX}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-    make --silent -j${JOBS}
-    make --silent install_sw
+    make -s -j${JOBS}
+    make -s install_sw
 fi
 
 # Copy headers and libraries

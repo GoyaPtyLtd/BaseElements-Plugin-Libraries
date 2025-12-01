@@ -26,6 +26,7 @@ if [[ $INTERACTIVE -eq 1 ]]; then
 fi
 
 SCRIPT_DIR="$(dirname "$0")"
+"${SCRIPT_DIR}/build_zlib.sh" ${INTERACTIVE_FLAG}
 "${SCRIPT_DIR}/build_image_1_libturbojpeg.sh" ${INTERACTIVE_FLAG}
 "${SCRIPT_DIR}/build_image_2_libde265.sh" ${INTERACTIVE_FLAG}
 "${SCRIPT_DIR}/build_image_3_libpng.sh" ${INTERACTIVE_FLAG}

@@ -57,7 +57,7 @@ if [[ $OS = 'Darwin' ]]; then
     
     print_info "Building x86_64 architecture..."
     CFLAGS="-mmacosx-version-min=10.15" \
-    ./Configure --silent darwin64-x86_64-cc no-shared no-docs no-tests \
+    ./Configure darwin64-x86_64-cc no-shared no-docs no-tests \
         --prefix="${PREFIX_x86_64}"
     
     make -j${JOBS}
@@ -71,7 +71,7 @@ if [[ $OS = 'Darwin' ]]; then
     
     print_info "Building arm64 architecture..."
     CFLAGS="-mmacosx-version-min=10.15" \
-    ./Configure --silent darwin64-arm64-cc no-shared no-docs no-tests \
+    ./Configure darwin64-arm64-cc no-shared no-docs no-tests \
         --prefix="${PREFIX_arm64}"
     
     make -j${JOBS}
@@ -88,7 +88,7 @@ elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
-    ./Configure --silent linux-generic64 no-shared no-docs no-tests \
+    ./Configure linux-generic64 no-shared no-docs no-tests \
         --prefix="${PREFIX}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."

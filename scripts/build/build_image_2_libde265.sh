@@ -65,8 +65,8 @@ elif [[ $OS = 'Linux' ]]; then
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-make -j${JOBS}
-make install
+make --silent -j${JOBS}
+make --silent install
 
 # Copy headers and libraries
 interactive_prompt \

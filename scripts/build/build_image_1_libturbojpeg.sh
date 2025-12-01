@@ -65,8 +65,8 @@ if [[ $OS = 'Darwin' ]]; then
         -DCMAKE_INSTALL_PREFIX="${PREFIX_arm64}" ./
     
     print_info "Building ${LIBRARY_NAME} for arm64 (${JOBS} parallel jobs)..."
-    make -j${JOBS}
-    make install
+    make --silent -j${JOBS}
+    make --silent install
     
     # Build x86_64
     BUILD_DIR_x86_64="${BUILD_DIR}_x86_64"
@@ -83,8 +83,8 @@ if [[ $OS = 'Darwin' ]]; then
         -DCMAKE_INSTALL_PREFIX="${PREFIX_x86_64}" ./
     
     print_info "Building ${LIBRARY_NAME} for x86_64 (${JOBS} parallel jobs)..."
-    make -j${JOBS}
-    make install
+    make --silent -j${JOBS}
+    make --silent install
     
     # Create universal binaries
     mkdir -p "${PREFIX}/lib"
@@ -101,8 +101,8 @@ elif [[ $OS = 'Linux' ]]; then
         -DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-    make -j${JOBS}
-    make install
+    make --silent -j${JOBS}
+    make --silent install
 fi
 
 # Copy headers and libraries

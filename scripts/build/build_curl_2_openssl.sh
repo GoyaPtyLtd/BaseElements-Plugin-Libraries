@@ -57,12 +57,12 @@ if [[ $OS = 'Darwin' ]]; then
     
     print_info "Building x86_64 architecture..."
     CFLAGS="-mmacosx-version-min=10.15" \
-    ./Configure darwin64-x86_64-cc no-shared no-docs no-tests \
+    ./Configure d--silent arwin64-x86_64-cc no-shared no-docs no-tests \
         --prefix="${PREFIX_x86_64}"
     
-    make -j${JOBS}
-    make install
-    make -s distclean
+    make --silent -j${JOBS}
+    make --silent install
+    make --silent distclean
     
     # Build arm64
     BUILD_DIR_arm64="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_arm64"
@@ -71,12 +71,12 @@ if [[ $OS = 'Darwin' ]]; then
     
     print_info "Building arm64 architecture..."
     CFLAGS="-mmacosx-version-min=10.15" \
-    ./Configure darwin64-arm64-cc no-shared no-docs no-tests \
+    ./Configure --silent darwin64-arm64-cc no-shared no-docs no-tests \
         --prefix="${PREFIX_arm64}"
     
-    make -j${JOBS}
-    make install
-    make -s distclean
+    make --silent -j${JOBS}
+    make --silent install
+    make --silent distclean
     
     # Create universal libraries with lipo
     print_info "Creating universal libraries..."
@@ -88,12 +88,12 @@ elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
-    ./Configure linux-generic64 no-shared no-docs no-tests \
+    ./Configure --silent linux-generic64 no-shared no-docs no-tests \
         --prefix="${PREFIX}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-    make -j${JOBS}
-    make install_sw
+    make --silent -j${JOBS}
+    make --silent install_sw
 fi
 
 # Copy headers and libraries

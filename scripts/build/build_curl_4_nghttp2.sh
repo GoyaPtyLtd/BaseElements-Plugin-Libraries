@@ -50,7 +50,7 @@ if [[ $OS = 'Darwin' ]]; then
     # macOS universal build
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" \
-    ./configure --enable-lib-only --enable-shared=no --enable-static \
+    ./configure --silent --enable-lib-only --enable-shared=no --enable-static \
         --prefix="${PREFIX}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
@@ -60,14 +60,14 @@ elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
-    ./configure --enable-lib-only --enable-shared=no --enable-static \
+    ./configure --silent --enable-lib-only --enable-shared=no --enable-static \
         --prefix="${PREFIX}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
     make -j${JOBS}
 fi
 
-make install
+make --silent install
 
 # Copy headers and libraries
 interactive_prompt \

@@ -82,7 +82,7 @@ if [[ $OS = 'Darwin' ]]; then
     # macOS universal build
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-    ./configure --disable-shared --with-threads --with-sax1 --without-python --without-zlib --without-lzma \
+    ./configure --silent --disable-shared --with-threads --with-sax1 --without-python --without-zlib --without-lzma \
         --with-iconv="${ICONV_PREFIX}" \
         --prefix="${PREFIX}"
     
@@ -91,13 +91,13 @@ elif [[ $OS = 'Linux' ]]; then
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
     CFLAGS="-fPIC" \
-    ./configure --disable-shared --with-threads --with-sax1 --without-python --without-zlib --without-lzma \
+    ./configure --silent --disable-shared --with-threads --with-sax1 --without-python --without-zlib --without-lzma \
         --prefix="${PREFIX}"
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-make -j${JOBS}
-make install
+make --silent -j${JOBS}
+make --silent install
 
 # Fix header includes on macOS (affects XCode compilation - makes it use our iconv instead of system iconv)
 if [[ $OS = 'Darwin' ]]; then

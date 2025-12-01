@@ -149,8 +149,8 @@ if [[ $OS = 'Darwin' ]]; then
     CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libopenjp2" LDFLAGS="-L${OUTPUT_LIB}" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
-		--jpeg-includes="${JPEG_PREFIX}/lib" -jpeg-libraries="${JPEG_PREFIX}/include" \
-		--freetype-includes="${FREETYPE_PREFIX}/lib" -freetype-libraries="${FREETYPE_PREFIX}/include" \
+		--jpeg-includes="${JPEG_PREFIX}/lib" --jpeg-libraries="${JPEG_PREFIX}/include" \
+		--freetype-includes="${FREETYPE_PREFIX}/lib" --freetype-libraries="${FREETYPE_PREFIX}/include" \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 --with-tiff=no --with-lcms=no \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
         --host="arm64-apple-darwin" \
@@ -171,8 +171,8 @@ if [[ $OS = 'Darwin' ]]; then
     CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libopenjp2" LDFLAGS="-L${OUTPUT_LIB}" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes \
-		--jpeg-includes="${JPEG_PREFIX}/lib" -jpeg-libraries="${JPEG_PREFIX}/include" \
-		--freetype-includes="${FREETYPE_PREFIX}/lib" -freetype-libraries="${FREETYPE_PREFIX}/include" \
+		--jpeg-includes="${JPEG_PREFIX}/lib" --jpeg-libraries="${JPEG_PREFIX}/include" \
+		--freetype-includes="${FREETYPE_PREFIX}/lib" --freetype-libraries="${FREETYPE_PREFIX}/include" \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 --with-tiff=no --with-lcms=no \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
         --host="x86_64-apple-darwin" \

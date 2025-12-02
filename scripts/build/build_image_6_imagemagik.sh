@@ -144,10 +144,10 @@ if [[ $OS = 'Darwin' ]]; then
     mkdir -p "${BUILD_DIR_arm64}"
     PREFIX_arm64="${BUILD_DIR_arm64}"
     
-    CFLAGS="-arch arm64 -mmacosx-version-min=10.15 -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2" \
-    CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15 -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2" \
-    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libopenjp2" \
-    LIBS+="-L${OUTPUT_LIB}/libturbojpeg -ljpeg -L${OUTPUT_LIB}/freetype2 -lfreetype" \
+    CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
+    CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
+    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng  -I${OUTPUT_INCLUDE}/fontconfig" \
+    LDFLAGS+="-L${OUTPUT_LIB}/libturbojpeg -L${OUTPUT_LIB}/freetype2 -L${OUTPUT_LIB}/libheif -L${OUTPUT_LIB}/libpng -L${OUTPUT_LIB}/fontconfig" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
 		--with-openjp2=yes \
@@ -167,10 +167,10 @@ if [[ $OS = 'Darwin' ]]; then
     mkdir -p "${BUILD_DIR_x86_64}"
     PREFIX_x86_64="${BUILD_DIR_x86_64}"
     
-    CFLAGS="-arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2" \
-    CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15 -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2" \
-    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libopenjp2" \
-    LIBS+="-L${OUTPUT_LIB}/libturbojpeg -ljpeg -L${OUTPUT_LIB}/freetype2 -lfreetype" \
+    CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
+    CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
+    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng  -I${OUTPUT_INCLUDE}/fontconfig" \
+    LDFLAGS+="-L${OUTPUT_LIB}/libturbojpeg -L${OUTPUT_LIB}/freetype2 -L${OUTPUT_LIB}/libheif -L${OUTPUT_LIB}/libpng -L${OUTPUT_LIB}/fontconfig" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
 		--with-openjp2=yes \

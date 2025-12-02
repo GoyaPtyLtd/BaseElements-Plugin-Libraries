@@ -77,6 +77,10 @@ cp "${BUILD_DIR}/bin/libopenjp2.a" "${PREFIX}/lib/libopenjp2.a"
 mkdir -p "${PREFIX}/include/openjpeg-2.5"
 cp "${OUTPUT_SRC}/${LIBRARY_NAME}/src/lib/openjp2"/*.h "${PREFIX}/include/openjpeg-2.5/"
 
+# When we compile imagemagick, we're missing a config header file, referenced from openjpeg.h.
+# File content is version number only, seems to be ok to create it empty.
+touch "${PREFIX}/include/openjpeg-2.5/opj_config.h"
+
 # Copy headers and libraries to final destination
 interactive_prompt \
     "Ready to copy headers and libraries" \

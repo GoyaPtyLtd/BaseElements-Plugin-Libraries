@@ -109,7 +109,7 @@ PKG_CONFIG_BASE="${OUTPUT_SRC}/zlib/_build/lib/pkgconfig"
 PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libpng/_build/lib/pkgconfig"
 PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libde265/_build/lib/pkgconfig"
 PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libheif/_build/lib/pkgconfig"
-PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/freetype/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/freetype2/_build/lib/pkgconfig"
 PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/fontconfig/_build/lib/pkgconfig"
 
 export PKG_CONFIG_PATH

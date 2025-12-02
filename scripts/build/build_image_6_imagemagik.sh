@@ -134,12 +134,9 @@ if [[ $OS = 'Darwin' ]]; then
     export PKG_CONFIG_PATH
  
     print_info "Configuring for macOS (arm64)..."
-    print_info "PKG_CONFIG_LIBS : ${pkg-config --libs libopenjp2 libjpeg libturbojpeg freetype2 fontconfig libde265 libheif libpng libpng16}"
  
     CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
     CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
-    # CFLAGS+="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng" \
-    # LIBS+="-L${OUTPUT_LIB} -L${OUTPUT_LIB}/libturbojpeg -ljpeg -L${OUTPUT_LIB}/freetype2 -lfreetype -L${OUTPUT_LIB}/libheif -lheif -L${OUTPUT_LIB}/libpng -lpng16" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
 		--with-openjp2=yes \
@@ -164,12 +161,9 @@ if [[ $OS = 'Darwin' ]]; then
     export PKG_CONFIG_PATH
 
     print_info "Configuring for macOS (x86_64)..."
-    print_info "PKG_CONFIG_LIBS : ${pkg-config --libs libopenjp2 libjpeg libturbojpeg freetype2 fontconfig libde265 libheif libpng libpng16}"
     
     CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
     CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
-    # CFLAGS+="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng" \
-    # LIBS+="-L${OUTPUT_LIB} -L${OUTPUT_LIB}/libturbojpeg -ljpeg -L${OUTPUT_LIB}/freetype2 -lfreetype -L${OUTPUT_LIB}/libheif -lheif -L${OUTPUT_LIB}/libpng -lpng16" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
 		--with-openjp2=yes \

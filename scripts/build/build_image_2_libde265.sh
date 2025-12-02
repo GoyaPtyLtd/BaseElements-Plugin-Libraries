@@ -50,6 +50,7 @@ if [[ $OS = 'Darwin' ]]; then
     # macOS universal build
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
 
+    CFLAGS+="-Wno-unused-but-set-variable -Wno-unused-variable" \
     CPPFLAGS+="-Wno-unused-but-set-variable -Wno-unused-variable" \
     CXXFLAGS+="-Wno-unused-but-set-variable -Wno-unused-variable" \
     cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \

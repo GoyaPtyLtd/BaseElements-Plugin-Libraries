@@ -105,19 +105,12 @@ mkdir -p "${BUILD_DIR}"
 PREFIX="${BUILD_DIR}"
 
 # Set up PKG_CONFIG_PATH for dependencies
-PKG_CONFIG_PATH="${OUTPUT_SRC}/zlib/_build/lib/pkgconfig"
-
-# libopenjp2 is only needed on macOS
-if [[ $OS = 'Darwin' ]]; then
-    PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libopenjp2/_build/lib/pkgconfig"
-fi
-
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libpng/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libde265/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libheif/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/freetype/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/fontconfig/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${OUTPUT_SRC}/zlib/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libpng/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libde265/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libheif/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/freetype/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/fontconfig/_build/lib/pkgconfig"
 
 export PKG_CONFIG_PATH
 
@@ -130,20 +123,22 @@ interactive_prompt \
 
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build (separate arm64 and x86_64 builds, then lipo)
-    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
-    print_info "PKG_CONFIG_LIBS : ${pkg-config --libs libjpeg freetype2 fontconfig libheif libpng}"
     
     # Build arm64
     BUILD_DIR_arm64="${BUILD_DIR}_arm64"
     mkdir -p "${BUILD_DIR_arm64}"
     PREFIX_arm64="${BUILD_DIR_arm64}"
-    
+ 
+    PKG_CONFIG_PATH="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libopenjp2/_build"
+	PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build_arm64/lib/pkgconfig"
+    export PKG_CONFIG_PATH
+ 
+    print_info "Configuring for macOS (arm64)..."
+    print_info "PKG_CONFIG_LIBS : ${pkg-config --libs libopenjp2 libjpeg libturbojpeg freetype2 fontconfig libde265 libheif libpng libpng16}"
+ 
     CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
     CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
-    FREETYPE_CFLAGS="${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="${OUTPUT_LIB}/freetype2" \
-    FONTCONFIG_CFLAGS="${OUTPUT_INCLUDE}/fontconfig" FONTCONFIG_LIBS="${OUTPUT_LIB}/fontconfig" \
     CFLAGS+="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng" \
-    LDFLAGS="$(pkg-config --libs libjpeg freetype2 fontconfig libheif libpng)" \
     LIBS+="-L${OUTPUT_LIB} -L${OUTPUT_LIB}/libturbojpeg -ljpeg -L${OUTPUT_LIB}/freetype2 -lfreetype -L${OUTPUT_LIB}/libheif -lheif -L${OUTPUT_LIB}/libpng -lpng16" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
@@ -163,13 +158,17 @@ if [[ $OS = 'Darwin' ]]; then
     BUILD_DIR_x86_64="${BUILD_DIR}_x86_64"
     mkdir -p "${BUILD_DIR_x86_64}"
     PREFIX_x86_64="${BUILD_DIR_x86_64}"
+
+    PKG_CONFIG_PATH="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libopenjp2/_build"
+	PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build_x86_64/lib/pkgconfig"
+    export PKG_CONFIG_PATH
+
+    print_info "Configuring for macOS (x86_64)..."
+    print_info "PKG_CONFIG_LIBS : ${pkg-config --libs libopenjp2 libjpeg libturbojpeg freetype2 fontconfig libde265 libheif libpng libpng16}"
     
     CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
     CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
-    FREETYPE_CFLAGS="${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="${OUTPUT_LIB}/freetype2" \
-    FONTCONFIG_CFLAGS="${OUTPUT_INCLUDE}/fontconfig" FONTCONFIG_LIBS="${OUTPUT_LIB}/fontconfig" \
     CFLAGS+="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng" \
-    LDFLAGS="$(pkg-config --libs libjpeg freetype2 fontconfig libheif libpng)" \
     LIBS+="-L${OUTPUT_LIB} -L${OUTPUT_LIB}/libturbojpeg -ljpeg -L${OUTPUT_LIB}/freetype2 -lfreetype -L${OUTPUT_LIB}/libheif -lheif -L${OUTPUT_LIB}/libpng -lpng16" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
@@ -195,6 +194,10 @@ if [[ $OS = 'Darwin' ]]; then
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
+
+	PKG_CONFIG_PATH="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig"
+    export PKG_CONFIG_PATH
+
     CC=clang CXX=clang++ \
     CFLAGS="-fPIC" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \

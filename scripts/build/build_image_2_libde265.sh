@@ -55,7 +55,7 @@ if [[ $OS = 'Darwin' ]]; then
     CXXFLAGS+="-Wno-unused-but-set-variable -Wno-unused-variable" \
     cmake -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
         -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET="10.15" \
-        -DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSE ./
+        -DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSE -DENABLE_ENCODER=FALSE ./
     
 elif [[ $OS = 'Linux' ]]; then
     # Linux build

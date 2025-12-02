@@ -113,20 +113,11 @@ PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/fontconfig/_build/lib/pkgconfi
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/freetype/_build/lib/pkgconfig"
 PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig"
 
-HEIC_PREFIX="${OUTPUT_SRC}/libheif/_build"
-FREETYPE_PREFIX="${OUTPUT_SRC}/freetype/_build"
-FONTCONFIG_PREFIX="${OUTPUT_SRC}/fontconfig/_build"
-PNG_PREFIX="${OUTPUT_SRC}/libpng/_build"
-JPEG_PREFIX="${OUTPUT_SRC}/libturbojpeg/_build"
-
 # libopenjp2 is only needed on macOS
 if [[ $OS = 'Darwin' ]]; then
-	OPENJP_PREFIX="${OUTPUT_SRC}/libopenjp2/_build"
     PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libopenjp2/_build/lib/pkgconfig"
 fi
 export PKG_CONFIG_PATH
-
-LIBHEIF_PREFIX="${OUTPUT_SRC}/libheif/_build"
 
 # Configure and build
 interactive_prompt \
@@ -138,8 +129,6 @@ interactive_prompt \
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build (separate arm64 and x86_64 builds, then lipo)
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
-    print_info "CPPFLAGS : -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng  -I${OUTPUT_INCLUDE}/fontconfig"
-    print_info "LDFLAGS : -L${OUTPUT_LIB}/libturbojpeg -L${OUTPUT_LIB}/freetype2 -L${OUTPUT_LIB}/libheif -L${OUTPUT_LIB}/libpng -L${OUTPUT_LIB}/fontconfig"
     print_info "PKG_CONFIG_PATH : ${PKG_CONFIG_PATH}"
     
     # Build arm64
@@ -149,6 +138,8 @@ if [[ $OS = 'Darwin' ]]; then
     
     CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
     CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
+    CPPFLAGS="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng  -I${OUTPUT_INCLUDE}/fontconfig" \
+    LDFLAGS+="-L${OUTPUT_LIB} -L${OUTPUT_LIB}/libturbojpeg -L${OUTPUT_LIB}/freetype2 -L${OUTPUT_LIB}/libheif -L${OUTPUT_LIB}/libpng -L${OUTPUT_LIB}/fontconfig" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
 		--with-openjp2=yes \
@@ -170,8 +161,9 @@ if [[ $OS = 'Darwin' ]]; then
     
     CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
     CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
-    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng  -I${OUTPUT_INCLUDE}/fontconfig" \
-    LDFLAGS+="-L${OUTPUT_LIB}/libturbojpeg -L${OUTPUT_LIB}/freetype2 -L${OUTPUT_LIB}/libheif -L${OUTPUT_LIB}/libpng -L${OUTPUT_LIB}/fontconfig" \
+    CPPFLAGS="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng  -I${OUTPUT_INCLUDE}/fontconfig" \
+    LDFLAGS+="-L${OUTPUT_LIB} -L${OUTPUT_LIB}/libturbojpeg -L${OUTPUT_LIB}/freetype2 -L${OUTPUT_LIB}/libheif -L${OUTPUT_LIB}/libpng -L${OUTPUT_LIB}/fontconfig" \
+    LIBS+="-L${OUTPUT_LIB} -L${OUTPUT_LIB}/libturbojpeg -L${OUTPUT_LIB}/freetype2 -L${OUTPUT_LIB}/libheif -L${OUTPUT_LIB}/libpng -L${OUTPUT_LIB}/fontconfig" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
 		--with-openjp2=yes \

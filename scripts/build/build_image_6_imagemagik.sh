@@ -106,17 +106,19 @@ PREFIX="${BUILD_DIR}"
 
 # Set up PKG_CONFIG_PATH for dependencies
 PKG_CONFIG_PATH="${OUTPUT_SRC}/zlib/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libpng/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libde265/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libheif/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/fontconfig/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/freetype/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig"
 
 # libopenjp2 is only needed on macOS
 if [[ $OS = 'Darwin' ]]; then
     PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libopenjp2/_build/lib/pkgconfig"
 fi
+
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig"
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libpng/_build/lib/pkgconfig"
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libde265/_build/lib/pkgconfig"
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libheif/_build/lib/pkgconfig"
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/freetype/_build/lib/pkgconfig"
+PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/fontconfig/_build/lib/pkgconfig"
+
 export PKG_CONFIG_PATH
 
 # Configure and build
@@ -129,7 +131,7 @@ interactive_prompt \
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build (separate arm64 and x86_64 builds, then lipo)
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
-    print_info "PKG_CONFIG_LIBS : ${pkg-config --libs libturbojpeg freetype fontconfig libheif libpng}"
+    print_info "PKG_CONFIG_LIBS : ${pkg-config --libs libjpeg freetype2 fontconfig libheif libpng}"
     
     # Build arm64
     BUILD_DIR_arm64="${BUILD_DIR}_arm64"
@@ -141,7 +143,7 @@ if [[ $OS = 'Darwin' ]]; then
     FREETYPE_CFLAGS="${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="${OUTPUT_LIB}/freetype2" \
     FONTCONFIG_CFLAGS="${OUTPUT_INCLUDE}/fontconfig" FONTCONFIG_LIBS="${OUTPUT_LIB}/fontconfig" \
     CFLAGS+="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng" \
-    LDFLAGS="$(pkg-config --libs libturbojpeg freetype fontconfig libheif libpng)" \
+    LDFLAGS="$(pkg-config --libs libjpeg freetype2 fontconfig libheif libpng)" \
     LIBS+="-L${OUTPUT_LIB} -L${OUTPUT_LIB}/libturbojpeg -ljpeg -L${OUTPUT_LIB}/freetype2 -lfreetype -L${OUTPUT_LIB}/libheif -lheif -L${OUTPUT_LIB}/libpng -lpng16" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
@@ -167,6 +169,7 @@ if [[ $OS = 'Darwin' ]]; then
     FREETYPE_CFLAGS="${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="${OUTPUT_LIB}/freetype2" \
     FONTCONFIG_CFLAGS="${OUTPUT_INCLUDE}/fontconfig" FONTCONFIG_LIBS="${OUTPUT_LIB}/fontconfig" \
     CFLAGS+="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng" \
+    LDFLAGS="$(pkg-config --libs libjpeg freetype2 fontconfig libheif libpng)" \
     LIBS+="-L${OUTPUT_LIB} -L${OUTPUT_LIB}/libturbojpeg -ljpeg -L${OUTPUT_LIB}/freetype2 -lfreetype -L${OUTPUT_LIB}/libheif -lheif -L${OUTPUT_LIB}/libpng -lpng16" \
 	./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \

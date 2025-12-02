@@ -107,7 +107,7 @@ if [[ $OS = 'Darwin' ]]; then
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     export MACOSX_DEPLOYMENT_TARGET=10.15
     
-    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -Wno-deprecated-declarations -Wno-pointer-sign -Wno-unused-const-variable -Wno-unused-function -Wno-unused-variable" \
     CPPFLAGS+="-Wno-deprecated-declarations -Wno-pointer-sign -Wno-unused-const-variable -Wno-unused-function -Wno-unused-variable" \
     cmake -G "Unix Makefiles" --preset=release-noplugins -DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_BUILD_TYPE=RELEASE \
 		-DCMAKE_IGNORE_PREFIX_PATH="/usr/local/;/opt/homebrew/" \

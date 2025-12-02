@@ -138,8 +138,10 @@ if [[ $OS = 'Darwin' ]]; then
     
     CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
     CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
+    FREETYPE_CFLAGS="${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="${OUTPUT_LIB}/freetype2" \
     FONTCONFIG_CFLAGS="${OUTPUT_INCLUDE}/fontconfig" FONTCONFIG_LIBS="${OUTPUT_LIB}/fontconfig" \
     CFLAGS+="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng" \
+    LDFLAGS=$(pkg-config --libs libturbojpeg freetype fontconfig libheif libpng) \
     LIBS+="-L${OUTPUT_LIB} -L${OUTPUT_LIB}/libturbojpeg -ljpeg -L${OUTPUT_LIB}/freetype2 -lfreetype -L${OUTPUT_LIB}/libheif -lheif -L${OUTPUT_LIB}/libpng -lpng16" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
@@ -162,6 +164,7 @@ if [[ $OS = 'Darwin' ]]; then
     
     CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
     CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
+    FREETYPE_CFLAGS="${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="${OUTPUT_LIB}/freetype2" \
     FONTCONFIG_CFLAGS="${OUTPUT_INCLUDE}/fontconfig" FONTCONFIG_LIBS="${OUTPUT_LIB}/fontconfig" \
     CFLAGS+="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/freetype2 -I${OUTPUT_INCLUDE}/libheif  -I${OUTPUT_INCLUDE}/libpng" \
     LIBS+="-L${OUTPUT_LIB} -L${OUTPUT_LIB}/libturbojpeg -ljpeg -L${OUTPUT_LIB}/freetype2 -lfreetype -L${OUTPUT_LIB}/libheif -lheif -L${OUTPUT_LIB}/libpng -lpng16" \

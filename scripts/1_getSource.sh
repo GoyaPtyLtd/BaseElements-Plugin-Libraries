@@ -138,7 +138,7 @@ download "libjpeg-turbo" "3.0.3" "12" "https://github.com/libjpeg-turbo/libjpeg-
 download "ImageMagick" "7.1.1-29" "13" "https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.1-29.tar.gz" "ImageMagick.tar.gz"
 download "jq" "1.7.1" "14" "https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-1.7.1.tar.gz" "jq.tar.gz"
 download "libssh2" "1.11.1" "15" "https://libssh2.org/download/libssh2-1.11.1.tar.gz" "libssh.tar.gz"
-download "libxml2" "2.15.0" "16" "https://download.gnome.org/sources/libxml2/2.15/libxml2-2.15.1.tar.xz" "libxml.tar.xz"
+download "libxml2" "2.13.9" "16" "https://download.gnome.org/sources/libxml2/2.13/libxml2-2.13.9.tar.xz" "libxml.tar.xz"
 download "libxslt" "1.1.43" "17" "https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.43.tar.xz" "libxslt.tar.xz"
 download "openssl" "3.2.1" "18" "https://www.openssl.org/source/openssl-3.2.1.tar.gz" "openssl.tar.gz"
 download "Poco" "1.14.2" "19" "https://github.com/pocoproject/poco/archive/refs/tags/poco-1.14.2-release.tar.gz" "poco.tar.gz"

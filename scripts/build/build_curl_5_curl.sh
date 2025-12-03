@@ -149,8 +149,12 @@ if [[ $OS = 'Darwin' ]]; then
     
     # Create universal library with lipo
     print_info "Creating universal library..."
+    mkdir -p "${PREFIX}/lib"
+    mkdir -p "${PREFIX}/include/curl"
+    cp -R "${PREFIX_x86_64}/include/curl"/* "${PREFIX}/include/curl/"
+
     lipo -create "${PREFIX_x86_64}/lib/libcurl.a" "${PREFIX_arm64}/lib/libcurl.a" -output "${PREFIX}/lib/libcurl.a"
-    
+  
 	# TODO this had  --without-libpsl --without-brotli --without-zstd added to it for compatibility with latest curl.  It would be good to at least add the libpsl but I don't know about the others
     # TODO also investigate libidn which is also in podofo
 	
@@ -175,7 +179,6 @@ interactive_prompt \
     "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/libcurl.a"
 
 cp -R "${PREFIX}/include/curl"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-
 cp "${PREFIX}/lib/libcurl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 print_success "Build complete for ${LIBRARY_NAME}"

@@ -41,8 +41,8 @@ download() {
     local count="$3"
     local url="$4"
     local filename="$5"
-    local max_retries=3
-    local retry_delay=2
+    local max_retries=5
+    local retry_delay=5
     local attempt=1
     
     print_info "Downloading ${name} ${version} (${count} of 25)..."

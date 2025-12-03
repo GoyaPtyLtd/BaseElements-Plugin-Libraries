@@ -87,8 +87,11 @@ if [[ $OS = 'Darwin' ]]; then
     make --silent install
     
     # Create universal binaries
-    mkdir -p "${PREFIX}/lib"
     print_info "Creating universal binaries..."
+    mkdir -p "${PREFIX}/lib"
+    mkdir -p "${PREFIX}/include"
+    cp -R "${PREFIX_x86_64}/include"/* "${PREFIX}/include/"
+
     lipo -create "${PREFIX_x86_64}/lib/libturbojpeg.a" "${PREFIX_arm64}/lib/libturbojpeg.a" -output "${PREFIX}/lib/libturbojpeg.a"
     lipo -create "${PREFIX_x86_64}/lib/libjpeg.a" "${PREFIX_arm64}/lib/libjpeg.a" -output "${PREFIX}/lib/libjpeg.a"
     
@@ -111,11 +114,7 @@ interactive_prompt \
     "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
     "Libraries: ${OUTPUT_LIB}/${LIBRARY_NAME}/libturbojpeg.a and libjpeg.a"
 
-if [[ $OS = 'Darwin' ]]; then
-    cp -R "${PREFIX_x86_64}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-else
-    cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-fi
+cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
 cp "${PREFIX}/lib/libturbojpeg.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libjpeg.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"

@@ -179,8 +179,11 @@ if [[ $OS = 'Darwin' ]]; then
     make -s distclean
     
     # Create universal binaries
-    mkdir -p "${PREFIX}/lib"
     print_info "Creating universal binaries..."
+    mkdir -p "${PREFIX}/lib"
+    mkdir -p "${PREFIX}/include/ImageMagick-7"
+    cp -R "${PREFIX_x86_64}/include/ImageMagick-7"/* "${PREFIX}/include/ImageMagick-7/"
+
     lipo -create "${PREFIX_x86_64}/lib/libMagick++-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagick++-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagick++-7.Q16HDRI.a"
     lipo -create "${PREFIX_x86_64}/lib/libMagickCore-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagickCore-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagickCore-7.Q16HDRI.a"
     lipo -create "${PREFIX_x86_64}/lib/libMagickWand-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagickWand-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagickWand-7.Q16HDRI.a"
@@ -212,11 +215,7 @@ interactive_prompt \
     "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
     "Libraries: ${OUTPUT_LIB}/${LIBRARY_NAME}/libMagick*.a"
 
-if [[ $OS = 'Darwin' ]]; then
-    cp -R "${PREFIX_x86_64}/include/ImageMagick-7"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-else
-    cp -R "${PREFIX}/include/ImageMagick-7"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-fi
+cp -R "${PREFIX}/include/ImageMagick-7"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
 cp "${PREFIX}/lib/libMagick++-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libMagickCore-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"

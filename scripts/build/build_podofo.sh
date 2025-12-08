@@ -186,6 +186,8 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/podofo"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
-cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libpodofo.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libpodofo_private.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libpodofo_3rdparty.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 print_success "Build complete for ${LIBRARY_NAME}"

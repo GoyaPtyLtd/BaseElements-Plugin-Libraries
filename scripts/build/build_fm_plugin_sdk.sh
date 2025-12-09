@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Source common build functionality (platform detection, paths, interactive mode, colors, helpers)
+# Source common build functionality (platform detection, paths, colors, helpers)
 # This allows the script to be run standalone. When called from 2_build.sh,
 # variables are already exported, but sourcing again is harmless.
 source "$(dirname "$0")/_build_common.sh" "$@"
@@ -23,11 +23,6 @@ fi
 mkdir -p "${OUTPUT_DIR}"
 
 # Extract source archive to output/platforms/${PLATFORM}/
-interactive_prompt \
-    "Ready to extract ${LIBRARY_NAME} archive" \
-    "Archive: ${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" \
-    "Destination: ${OUTPUT_DIR}"
-
 print_info "Extracting ${ARCHIVE_NAME} to ${OUTPUT_DIR}..."
 
 cd "${OUTPUT_DIR}"

@@ -1,30 +1,11 @@
 #!/bin/bash
 # Common build script functionality
-# Provides platform detection, paths, interactive mode, colors, and helper functions
+# Provides platform detection, paths, colors, and helper functions
 # Usage: source "$(dirname "$0")/_build_common.sh" "$@"
 
 # ============================================================================
-# PART 1: Interactive Mode and Color Setup
+# PART 1: Color Setup
 # ============================================================================
-
-# Parse arguments for interactive mode
-# Note: This consumes --interactive/-i from $@, leaving other args for the calling script
-INTERACTIVE=0
-ARGS=()
-while [[ $# -gt 0 ]]; do
-    case $1 in
-        --interactive|-i)
-            INTERACTIVE=1
-            shift
-            ;;
-        *)
-            ARGS+=("$1")
-            shift
-            ;;
-    esac
-done
-# Restore remaining arguments for the calling script
-set -- "${ARGS[@]}"
 
 # Initialize colors using tput (more portable than ANSI codes)
 # Falls back to ANSI codes if tput is not available
@@ -50,8 +31,7 @@ else
     COLOR_RESET=''
 fi
 
-# Export INTERACTIVE flag and colors for use in functions
-export INTERACTIVE
+# Export colors for use in functions
 export COLOR_YELLOW COLOR_CYAN COLOR_GREEN COLOR_RED COLOR_RESET
 
 # ============================================================================
@@ -209,27 +189,9 @@ print_error() {
     echo -e "${COLOR_RED}${message}${COLOR_RESET}" >&2
 }
 
-# Helper function: Interactive prompt with details
-# Usage: interactive_prompt "Ready to build" "Platform: ${PLATFORM}" "Jobs: ${JOBS}"
-interactive_prompt() {
-    local title="$1"
-    shift
-    local details=("$@")
-    
-    if [[ $INTERACTIVE -eq 1 ]]; then
-        echo ""
-        echo -e "${COLOR_YELLOW}${title}${COLOR_RESET}"
-        for detail in "${details[@]}"; do
-            echo -e "${COLOR_CYAN}  ${detail}${COLOR_RESET}"
-        done
-        read -p "$(echo -e "${COLOR_YELLOW}Press Enter to continue, or Ctrl+C to cancel...${COLOR_RESET}") " dummy
-    fi
-}
-
 # Export functions so they're available to calling scripts
 export -f print_header
 export -f print_info
-export -f interactive_prompt
 export -f print_success
 export -f print_error
 

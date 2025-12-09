@@ -49,9 +49,8 @@ interactive_prompt \
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build (arm64 + x86_64)
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
-    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-    CFLAGS+="-Wno-unused-but-set-variable -Wno-unused-variable" \
-    ./configure --silent --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
+    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -Wno-unused-but-set-variable -Wno-unused-variable" \
+    ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
         --enable-all-static --enable-pthread-tls --without-oniguruma \
         --prefix="${PREFIX}"
     
@@ -73,8 +72,8 @@ interactive_prompt \
     "Built library: ${PREFIX}/lib/lib${LIBRARY_NAME}.a"
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-make --silent -j${JOBS}
-make --silent install
+make -j${JOBS}
+make install
 
 # Copy headers and libraries
 interactive_prompt \

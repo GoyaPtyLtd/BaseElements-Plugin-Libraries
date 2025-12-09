@@ -129,7 +129,7 @@ download "duktape" "2.7.0" "3" "https://duktape.org/duktape-2.7.0.tar.xz" "dukta
 download "expat" "2.6.2" "4" "https://github.com/libexpat/libexpat/releases/download/R_2_6_2/expat-2.6.2.tar.xz" "expat.tar.xz"
 download "fontconfig" "2.15.0" "5" "https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.gz" "fontconfig.tar.gz"
 download "freetype" "2.13.2" "6" "https://sourceforge.net/projects/freetype/files/freetype2/2.13.2/freetype-2.13.2.tar.gz" "freetype.tar.gz"
-download "libiconv" "1.17" "7" "https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz" "libiconv.tar.gz"
+download "libiconv" "1.17" "7" "https://github.com/GitMirroring/libiconv/archive/refs/tags/v1.17.tar.gz" "libiconv.tar.gz"
 download "libde265" "1.0.16" "8" "https://github.com/strukturag/libde265/archive/refs/tags/v1.0.16.tar.gz" "libde265.tar.gz"
 download "openjpeg" "2.5.4" "9" "https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.5.4.tar.gz" "libopenjp2.tar.gz"
 download "libheif" "1.20.2" "10" "https://github.com/strukturag/libheif/releases/download/v1.20.2/libheif-1.20.2.tar.gz" "libheif.tar.gz"

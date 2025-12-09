@@ -143,7 +143,7 @@ download "libxslt" "1.1.43" "17" "https://download.gnome.org/sources/libxslt/1.1
 download "openssl" "3.2.1" "18" "https://www.openssl.org/source/openssl-3.2.1.tar.gz" "openssl.tar.gz"
 download "Poco" "1.14.2" "19" "https://github.com/pocoproject/poco/archive/refs/tags/poco-1.14.2-release.tar.gz" "poco.tar.gz"
 download "libunistring" "1.2" "20" "https://ftp.gnu.org/gnu/libunistring/libunistring-1.2.tar.gz" "libunistring.tar.gz"
-download "podofo" "1.0.2" "21" "https://github.com/podofo/podofo/archive/refs/tags/1.0.2.tar.gz" "podofo.tar.gz"
+download "podofo" "1.0.3" "21" "https://github.com/podofo/podofo/archive/refs/tags/1.0.3.tar.gz" "podofo.tar.gz"
 download "zlib" "1.3.1" "22" "https://www.zlib.net/zlib-1.3.1.tar.xz" "zlib.tar.xz"
 download "libpng" "1.6.43" "23" "https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.43.tar.gz" "libpng.tar.gz"
 download "nghttp2" "1.62.1" "24" "https://github.com/nghttp2/nghttp2/releases/download/v1.62.1/nghttp2-1.62.1.tar.xz" "nghttp2.tar.xz"

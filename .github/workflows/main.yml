@@ -31,7 +31,7 @@ jobs:
             platform: ubuntu24.04-aarch64
             package_platform: ubuntu24.04-aarch64
           # macOS build (universal)
-          - runner: macos-14
+          - runner: macos-15
             arch: arm64
             platform: macos-arm64
             package_platform: macos-arm64_x86_64

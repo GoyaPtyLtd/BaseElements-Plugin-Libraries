@@ -49,7 +49,7 @@ interactive_prompt \
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build (arm64 + x86_64)
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
-    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -Wno-unused-but-set-variable -Wno-unused-variable" \
     ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
         --enable-all-static --enable-pthread-tls --without-oniguruma \
         --prefix="${PREFIX}"
@@ -58,7 +58,7 @@ elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ CFLAGS="-fPIC" \
-    ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
+    ./configure --silent --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
         --enable-all-static --enable-pthread-tls --without-oniguruma \
         --prefix="${PREFIX}"
 fi

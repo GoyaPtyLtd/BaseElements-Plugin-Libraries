@@ -65,7 +65,7 @@ if [[ $OS = 'Darwin' ]]; then
     
     make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
     make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=x86_64 POCO_TARGET_OSARCH=x86_64
-    make -s distclean
+    make distclean
     
     # Build arm64
     BUILD_DIR_arm64="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_arm64"
@@ -81,7 +81,7 @@ if [[ $OS = 'Darwin' ]]; then
     
     make -j${JOBS} POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
     make install POCO_CONFIG=Darwin64-clang-libc++ MACOSX_DEPLOYMENT_TARGET=10.15 POCO_HOST_OSARCH=arm64 POCO_TARGET_OSARCH=arm64
-    make -s distclean
+    make distclean
     
     # Create universal libraries with lipo
     print_info "Creating universal libraries..."

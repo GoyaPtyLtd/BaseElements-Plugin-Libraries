@@ -117,15 +117,15 @@ if [[ $OS = 'Darwin' ]]; then
     CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
     CPPFLAGS="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/openssl" \
     LDFLAGS="-L${OUTPUT_LIB}/${LIBRARY_NAME}" LIBS="-ldl" \
-    ./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
+    ./configure --silent --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
         --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp --disable-unix-sockets \
         --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX_x86_64} --with-libssh2=${LIBSSH2_PREFIX} --with-nghttp2=${NGHTTP2_PREFIX} \
         --prefix="${PREFIX_x86_64}" \
         --host="x86_64-apple-darwin"
     
-    make -j${JOBS}
-    make install
-    make -s distclean
+    make --silent -j${JOBS}
+    make --silent install
+    make --silent distclean
     
     # Build arm64
     BUILD_DIR_arm64="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_arm64"
@@ -137,20 +137,24 @@ if [[ $OS = 'Darwin' ]]; then
     CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
     CPPFLAGS="-I${OUTPUT_INCLUDE} -I${OUTPUT_INCLUDE}/openssl" \
     LDFLAGS="-L${OUTPUT_LIB}/${LIBRARY_NAME}" LIBS="-ldl" \
-    ./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
+    ./configure --silent --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
         --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp --disable-unix-sockets \
         --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX_arm64} --with-libssh2=${LIBSSH2_PREFIX} --with-nghttp2=${NGHTTP2_PREFIX} \
         --prefix="${PREFIX_arm64}" \
         --host="arm64-apple-darwin"
     
-    make -j${JOBS}
-    make install
-    make -s distclean
+    make --silent -j${JOBS}
+    make --silent install
+    make --silent distclean
     
     # Create universal library with lipo
     print_info "Creating universal library..."
+    mkdir -p "${PREFIX}/lib"
+    mkdir -p "${PREFIX}/include/curl"
+    cp -R "${PREFIX_x86_64}/include/curl"/* "${PREFIX}/include/curl/"
+
     lipo -create "${PREFIX_x86_64}/lib/libcurl.a" "${PREFIX_arm64}/lib/libcurl.a" -output "${PREFIX}/lib/libcurl.a"
-    
+  
 	# TODO this had  --without-libpsl --without-brotli --without-zstd added to it for compatibility with latest curl.  It would be good to at least add the libpsl but I don't know about the others
     # TODO also investigate libidn which is also in podofo
 	
@@ -158,14 +162,14 @@ elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
-    ./configure --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
-        --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 \
+    ./configure --silent --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
+        --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp \
         --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX} --with-libssh2=${LIBSSH2_PREFIX} \
         --prefix="${PREFIX}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-    make -j${JOBS}
-    make install
+    make --silent -j${JOBS}
+    make --silent install
 fi
 
 # Copy headers and libraries
@@ -175,7 +179,6 @@ interactive_prompt \
     "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/libcurl.a"
 
 cp -R "${PREFIX}/include/curl"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-
 cp "${PREFIX}/lib/libcurl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 print_success "Build complete for ${LIBRARY_NAME}"

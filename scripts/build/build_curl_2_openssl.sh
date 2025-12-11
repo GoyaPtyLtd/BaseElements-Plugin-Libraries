@@ -62,7 +62,7 @@ if [[ $OS = 'Darwin' ]]; then
     
     make -j${JOBS}
     make install
-    make -s distclean
+    make distclean
     
     # Build arm64
     BUILD_DIR_arm64="${OUTPUT_SRC}/${LIBRARY_NAME}/_build_arm64"
@@ -76,7 +76,7 @@ if [[ $OS = 'Darwin' ]]; then
     
     make -j${JOBS}
     make install
-    make -s distclean
+    make distclean
     
     # Create universal libraries with lipo
     print_info "Creating universal libraries..."

@@ -92,9 +92,10 @@ if [[ $OS = 'Darwin' ]]; then
     # macOS universal build
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+    CPPFLAGS+="-Wno-deprecated-declarations -Wno-pointer-sign" \
     LDFLAGS="-L${OUTPUT_LIB}" \
     FREETYPE_CFLAGS="-I${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="-L${OUTPUT_LIB}/freetype2 -lfreetype" \
-    ./configure --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
+    ./configure --silent --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
         --with-expat=${LIBEXPAT_PREFIX} \
         --prefix="${PREFIX}"
     
@@ -105,14 +106,14 @@ elif [[ $OS = 'Linux' ]]; then
     CFLAGS="-fPIC" \
     LDFLAGS="-L${OUTPUT_LIB}" \
     FREETYPE_CFLAGS="-I${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="-L${OUTPUT_LIB}/freetype2 -lfreetype" \
-    ./configure --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
+    ./configure --silent --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
         --with-expat=${LIBEXPAT_PREFIX} \
         --prefix="${PREFIX}"
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-make -j${JOBS}
-make install
+make --silent -j${JOBS}
+make --silent install
 
 # Copy headers and libraries
 interactive_prompt \

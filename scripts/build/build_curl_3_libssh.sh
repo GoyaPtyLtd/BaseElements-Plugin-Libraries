@@ -106,7 +106,7 @@ if [[ $OS = 'Darwin' ]]; then
     CFLAGS="-arch x86_64 -arch arm64 -mmacosx-version-min=10.15" \
     CPPFLAGS="-I${OUTPUT_INCLUDE}/zlib -I${OUTPUT_INCLUDE}/openssl"  \
     LDFLAGS="-L${OUTPUT_LIB}/zlib -L${OPENSSL_UNIVERSAL_LIB}" LIBS="-ldl" \
-    ./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
+    ./configure --silent --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
         --with-libz --with-libz-prefix=${ZLIB_PREFIX} \
         --with-crypto=openssl --with-libssl-prefix=${OPENSSL_PREFIX} \
         --prefix="${PREFIX}"
@@ -118,15 +118,15 @@ elif [[ $OS = 'Linux' ]]; then
     CFLAGS="-fPIC" \
     CPPFLAGS="-I${OUTPUT_INCLUDE}/zlib"  \
     LDFLAGS="-L${OUTPUT_LIB}/zlib" LIBS="-ldl" \
-    ./configure --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
+    ./configure --silent --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
         --with-libz --with-libz-prefix=${ZLIB_PREFIX} \
         --with-crypto=openssl --with-libssl-prefix=${OPENSSL_PREFIX} \
         --prefix="${PREFIX}"
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-make -j${JOBS}
-make install
+make --silent -j${JOBS}
+make --silent install
 
 # Copy headers and libraries
 interactive_prompt \

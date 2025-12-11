@@ -105,17 +105,13 @@ mkdir -p "${BUILD_DIR}"
 PREFIX="${BUILD_DIR}"
 
 # Set up PKG_CONFIG_PATH for dependencies
-PKG_CONFIG_PATH="${OUTPUT_SRC}/zlib/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libpng/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libde265/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libheif/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/fontconfig/_build/lib/pkgconfig"
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/freetype/_build/lib/pkgconfig"
-# libopenjp2 is only needed on macOS
-if [[ $OS = 'Darwin' ]]; then
-    PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libopenjp2/_build/lib/pkgconfig"
-fi
-PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${OUTPUT_SRC}/zlib/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libpng/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libde265/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libheif/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/freetype2/_build/lib/pkgconfig"
+PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/fontconfig/_build/lib/pkgconfig"
+
 export PKG_CONFIG_PATH
 
 # Configure and build
@@ -127,20 +123,26 @@ interactive_prompt \
 
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build (separate arm64 and x86_64 builds, then lipo)
-    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     
     # Build arm64
     BUILD_DIR_arm64="${BUILD_DIR}_arm64"
     mkdir -p "${BUILD_DIR_arm64}"
     PREFIX_arm64="${BUILD_DIR_arm64}"
-    
+ 
+    PKG_CONFIG_PATH="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libopenjp2/_build"
+	PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build_arm64/lib/pkgconfig"
+    export PKG_CONFIG_PATH
+ 
+    print_info "Configuring for macOS (arm64)..."
+ 
     CFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
     CXXFLAGS="-arch arm64 -mmacosx-version-min=10.15" \
-    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg" LDFLAGS="-L${OUTPUT_LIB}" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
-        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes --with-tiff=no --with-lcms=no \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
+		--with-openjp2=yes \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
+        --without-lcms --without-lqr --without-djvu --without-openexr --without-jbig \
         --host="arm64-apple-darwin" \
         --prefix="${PREFIX_arm64}"
     
@@ -153,14 +155,21 @@ if [[ $OS = 'Darwin' ]]; then
     BUILD_DIR_x86_64="${BUILD_DIR}_x86_64"
     mkdir -p "${BUILD_DIR_x86_64}"
     PREFIX_x86_64="${BUILD_DIR_x86_64}"
+
+    PKG_CONFIG_PATH="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libopenjp2/_build"
+	PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build_x86_64/lib/pkgconfig"
+    export PKG_CONFIG_PATH
+
+    print_info "Configuring for macOS (x86_64)..."
     
     CFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
     CXXFLAGS="-arch x86_64 -mmacosx-version-min=10.15" \
-    CPPFLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg" LDFLAGS="-L${OUTPUT_LIB}" \
-    ./configure --disable-shared --disable-docs --disable-dependency-tracking \
-        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-openjp2=yes --with-tiff=no --with-lcms=no \
+	./configure --disable-shared --disable-docs --disable-dependency-tracking \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
+		--with-openjp2=yes \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
+        --without-lcms --without-lqr --without-djvu --without-openexr --without-jbig \
         --host="x86_64-apple-darwin" \
         --prefix="${PREFIX_x86_64}"
     
@@ -170,8 +179,11 @@ if [[ $OS = 'Darwin' ]]; then
     make -s distclean
     
     # Create universal binaries
-    mkdir -p "${PREFIX}/lib"
     print_info "Creating universal binaries..."
+    mkdir -p "${PREFIX}/lib"
+    mkdir -p "${PREFIX}/include/ImageMagick-7"
+    cp -R "${PREFIX_x86_64}/include/ImageMagick-7"/* "${PREFIX}/include/ImageMagick-7/"
+
     lipo -create "${PREFIX_x86_64}/lib/libMagick++-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagick++-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagick++-7.Q16HDRI.a"
     lipo -create "${PREFIX_x86_64}/lib/libMagickCore-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagickCore-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagickCore-7.Q16HDRI.a"
     lipo -create "${PREFIX_x86_64}/lib/libMagickWand-7.Q16HDRI.a" "${PREFIX_arm64}/lib/libMagickWand-7.Q16HDRI.a" -output "${PREFIX}/lib/libMagickWand-7.Q16HDRI.a"
@@ -179,13 +191,17 @@ if [[ $OS = 'Darwin' ]]; then
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
+
+	PKG_CONFIG_PATH="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig"
+    export PKG_CONFIG_PATH
+
     CC=clang CXX=clang++ \
     CFLAGS="-fPIC" \
     ./configure --disable-shared --disable-docs --disable-dependency-tracking \
         --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
         --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
-        --without-lcms --without-lqr --without-djvu --without-openexr --without-jbig --without-tiff  --without-openjp2 \
+        --without-lcms --without-lqr --without-djvu --without-openexr --without-jbig \
         --prefix="${PREFIX}"
     
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
@@ -199,11 +215,7 @@ interactive_prompt \
     "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
     "Libraries: ${OUTPUT_LIB}/${LIBRARY_NAME}/libMagick*.a"
 
-if [[ $OS = 'Darwin' ]]; then
-    cp -R "${PREFIX_x86_64}/include/ImageMagick-7"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-else
-    cp -R "${PREFIX}/include/ImageMagick-7"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-fi
+cp -R "${PREFIX}/include/ImageMagick-7"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
 cp "${PREFIX}/lib/libMagick++-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libMagickCore-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"

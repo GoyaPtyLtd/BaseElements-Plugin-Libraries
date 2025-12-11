@@ -121,58 +121,50 @@ interactive_prompt \
     "Build directory: ${BUILD_DIR}" \
     "Dependencies will be found from: ${OUTPUT_INCLUDE} and ${OUTPUT_LIB}"
 
+cd "${BUILD_DIR}"
+
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build (arm64 + x86_64)
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
- 
-    cd "${BUILD_DIR}"
-    
+     
     # Build include path flags to prioritize our libraries over system ones (especially Mono framework)
     # This ensures we use our built libjpeg/libpng instead of system versions
     INCLUDE_FLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libpng -I${OUTPUT_INCLUDE}/zlib -I${OUTPUT_INCLUDE}"
     
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
-         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
+         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15 \
 		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
-         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" \
-         -DFREETYPE_LIBRARY="${OUTPUT_LIB}/freetype2/libfreetype.a" \
-         -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2" \
-         -DFREETYPE_INCLUDE_DIR="${OUTPUT_INCLUDE}/freetype2" \
-         -DFREETYPE_INCLUDE_DIR_FT2BUILD="${OUTPUT_INCLUDE}/freetype2" \
-         -DFONTCONFIG_LIBRARY="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml" \
+         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2"  \
+         -DFontconfig_LIBRARY="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFontconfig_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_SSL_LIBRARY="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl"  -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}"  \
+         -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" \
+         -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml"  -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
          -DLIBXML2_XMLLINT_EXECUTABLE="${OUTPUT_SRC}/libxml/_build/bin/xmllint" \
          -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
          -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
-         -DCMAKE_DISABLE_FIND_PACKAGE_OpenSSL=TRUE \
-         -DCMAKE_DISABLE_FIND_PACKAGE_LIBCRYPTO=TRUE \
-         -DCMAKE_IGNORE_PATH="/Library/Frameworks/Mono.framework;/usr/local/lib;/opt/homebrew;/usr/local" \
+         -DCMAKE_IGNORE_PREFIX_PATH="/Library/Frameworks;/usr/local;/opt/homebrew" \
          -DCMAKE_CXX_STANDARD=11 \
-         -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++ ${INCLUDE_FLAGS}" \
-         -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++ ${INCLUDE_FLAGS}" ..
+         -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" \
+         -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ..
     
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
-         -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
-         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" \
-         -DFREETYPE_LIBRARY="${OUTPUT_LIB}/freetype2/libfreetype.a" \
-         -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2" \
-         -DFREETYPE_INCLUDE_DIR="${OUTPUT_INCLUDE}/freetype2" \
-         -DFREETYPE_INCLUDE_DIR_FT2BUILD="${OUTPUT_INCLUDE}/freetype2" \
-         -DWANT_FONTCONFIG:BOOL=TRUE \
-         -DFONTCONFIG_LIBRARIES="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFONTCONFIG_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
-         -DUNISTRING_LIBRARY="${OUTPUT_LIB}/libunistring/libunistring.a" -DUNISTRING_INCLUDE_DIR="${OUTPUT_INCLUDE}/libunistring" \
+		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
+         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2"  \
+         -DFontconfig_LIBRARY="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFontconfig_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_SSL_LIBRARY="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}/openssl"  -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}"  \
+         -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" \
+         -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}/libxml"  -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DLIBXML2_XMLLINT_EXECUTABLE="${OUTPUT_SRC}/libxml/_build/bin/xmllint" \
          -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
-         -DLIBJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DLIBJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
+         -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
-         -DCMAKE_DISABLE_FIND_PACKAGE_OpenSSL=TRUE \
-         -DCMAKE_DISABLE_FIND_PACKAGE_LIBCRYPTO=TRUE \
-         -DWANT_LIB64:BOOL=TRUE \
-         -DCMAKE_CXX_FLAGS="-fPIC" .
+         -DCMAKE_IGNORE_PREFIX_PATH="/usr/lib;/opt/homebrew;/lib/aarch64-linux-gnu;/lib/x86_64-linux-gnu" \
+         -DCMAKE_CXX_FLAGS="-fPIC" ..
 fi
 
 # Build
@@ -194,11 +186,8 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/podofo"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
-# Copy library (different paths for macOS vs Linux)
-if [[ $OS = 'Darwin' ]]; then
-    cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-else
-    cp "${PREFIX}/lib64/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-fi
+cp "${PREFIX}/lib/libpodofo.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libpodofo_private.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libpodofo_3rdparty.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 print_success "Build complete for ${LIBRARY_NAME}"

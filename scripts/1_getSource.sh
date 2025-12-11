@@ -41,8 +41,8 @@ download() {
     local count="$3"
     local url="$4"
     local filename="$5"
-    local max_retries=3
-    local retry_delay=2
+    local max_retries=5
+    local retry_delay=5
     local attempt=1
     
     print_info "Downloading ${name} ${version} (${count} of 25)..."
@@ -61,7 +61,7 @@ download() {
         # --connect-timeout=10: connection timeout
         # --read-timeout=30: timeout for reading data
         # --tries=1: don't retry (we handle retries in the script)
-        if wget -q --show-progress --timeout=60 --dns-timeout=10 --connect-timeout=10 --read-timeout=30 --tries=1 -O "$filename" "$url"; then
+        if wget -q --timeout=60 --dns-timeout=10 --connect-timeout=10 --read-timeout=30 --tries=1 -O "$filename" "$url"; then
             # Download succeeded, break out of retry loop
             break
         fi
@@ -129,10 +129,10 @@ download "duktape" "2.7.0" "3" "https://duktape.org/duktape-2.7.0.tar.xz" "dukta
 download "expat" "2.6.2" "4" "https://github.com/libexpat/libexpat/releases/download/R_2_6_2/expat-2.6.2.tar.xz" "expat.tar.xz"
 download "fontconfig" "2.15.0" "5" "https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.gz" "fontconfig.tar.gz"
 download "freetype" "2.13.2" "6" "https://sourceforge.net/projects/freetype/files/freetype2/2.13.2/freetype-2.13.2.tar.gz" "freetype.tar.gz"
-download "libiconv" "1.17" "7" "https://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.17.tar.gz" "libiconv.tar.gz"
+download "libiconv" "1.17" "7" "https://gnu.mirrorservice.org/libiconv/libiconv-1.17.tar.gz" "libiconv.tar.gz"
 download "libde265" "1.0.16" "8" "https://github.com/strukturag/libde265/archive/refs/tags/v1.0.16.tar.gz" "libde265.tar.gz"
-download "openjpeg" "2.5.2" "9" "https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.5.2.tar.gz" "libopenjp2.tar.gz"
-download "libheif" "1.17.6" "10" "https://github.com/strukturag/libheif/releases/download/v1.17.6/libheif-1.17.6.tar.gz" "libheif.tar.gz"
+download "openjpeg" "2.5.4" "9" "https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.5.4.tar.gz" "libopenjp2.tar.gz"
+download "libheif" "1.20.2" "10" "https://github.com/strukturag/libheif/releases/download/v1.20.2/libheif-1.20.2.tar.gz" "libheif.tar.gz"
 download "libjpeg" "v9f" "11" "http://ijg.org/files/jpegsrc.v9f.tar.gz" "libjpeg.tar.gz"
 download "libjpeg-turbo" "3.0.3" "12" "https://github.com/libjpeg-turbo/libjpeg-turbo/releases/download/3.0.3/libjpeg-turbo-3.0.3.tar.gz" "libturbojpeg.tar.gz"
 download "ImageMagick" "7.1.1-29" "13" "https://github.com/ImageMagick/ImageMagick/archive/refs/tags/7.1.1-29.tar.gz" "ImageMagick.tar.gz"
@@ -142,8 +142,8 @@ download "libxml2" "2.15.0" "16" "https://download.gnome.org/sources/libxml2/2.1
 download "libxslt" "1.1.43" "17" "https://download.gnome.org/sources/libxslt/1.1/libxslt-1.1.43.tar.xz" "libxslt.tar.xz"
 download "openssl" "3.2.1" "18" "https://www.openssl.org/source/openssl-3.2.1.tar.gz" "openssl.tar.gz"
 download "Poco" "1.14.2" "19" "https://github.com/pocoproject/poco/archive/refs/tags/poco-1.14.2-release.tar.gz" "poco.tar.gz"
-download "libunistring" "1.2" "20" "https://ftp.gnu.org/gnu/libunistring/libunistring-1.2.tar.gz" "libunistring.tar.gz"
-download "podofo" "0.9.8" "21a" "https://ixpeering.dl.sourceforge.net/project/podofo/podofo/0.9.8/podofo-0.9.8.tar.gz" "podofo.tar.gz"
+download "libunistring" "1.2" "20" "https://gnu.mirrorservice.org/libunistring/libunistring-1.2.tar.gz" "libunistring.tar.gz"
+download "podofo" "1.0.3" "21" "https://github.com/podofo/podofo/archive/refs/tags/1.0.3.tar.gz" "podofo.tar.gz"
 download "zlib" "1.3.1" "22" "https://www.zlib.net/zlib-1.3.1.tar.xz" "zlib.tar.xz"
 download "libpng" "1.6.43" "23" "https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.43.tar.gz" "libpng.tar.gz"
 download "nghttp2" "1.62.1" "24" "https://github.com/nghttp2/nghttp2/releases/download/v1.62.1/nghttp2-1.62.1.tar.xz" "nghttp2.tar.xz"

@@ -26,7 +26,7 @@ if [[ $INTERACTIVE -eq 1 ]]; then
 fi
 
 SCRIPT_DIR="$(dirname "$0")"
-"${SCRIPT_DIR}/build_curl_1_zlib.sh" ${INTERACTIVE_FLAG}
+"${SCRIPT_DIR}/build_zlib.sh" ${INTERACTIVE_FLAG}
 "${SCRIPT_DIR}/build_curl_2_openssl.sh" ${INTERACTIVE_FLAG}
 "${SCRIPT_DIR}/build_curl_3_libssh.sh" ${INTERACTIVE_FLAG}
 "${SCRIPT_DIR}/build_curl_4_nghttp2.sh" ${INTERACTIVE_FLAG}

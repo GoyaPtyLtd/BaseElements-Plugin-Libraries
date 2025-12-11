@@ -59,8 +59,8 @@ CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
 cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
     -DCMAKE_IGNORE_PATH=/usr/local/lib/ \
     -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-    -DCMAKE_LIBRARY_PATH:path="${OUTPUT_LIB}" -DCMAKE_INCLUDE_PATH:path="${OUTPUT_INCLUDE}" \
-    -DBUILD_CODEC:BOOL=OFF -DBUILD_JPIPSERVER:BOOL=OFF -DBUILD_JPIPCLIENT:BOOL=OFF \
+    -DCMAKE_INCLUDE_PATH:path="${OUTPUT_INCLUDE}" \
+    -DBUILD_CODEC:BOOL=OFF \
     -DCMAKE_INSTALL_PREFIX="${PREFIX}" ../
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
@@ -76,6 +76,10 @@ cp "${BUILD_DIR}/bin/libopenjp2.a" "${PREFIX}/lib/libopenjp2.a"
 # Copy headers manually (no generated headers for openjp2)
 mkdir -p "${PREFIX}/include/openjpeg-2.5"
 cp "${OUTPUT_SRC}/${LIBRARY_NAME}/src/lib/openjp2"/*.h "${PREFIX}/include/openjpeg-2.5/"
+
+# When we compile imagemagick, we're missing a config header file, referenced from openjpeg.h.
+# File content is version number only, seems to be ok to create it empty.
+touch "${PREFIX}/include/openjpeg-2.5/opj_config.h"
 
 # Copy headers and libraries to final destination
 interactive_prompt \

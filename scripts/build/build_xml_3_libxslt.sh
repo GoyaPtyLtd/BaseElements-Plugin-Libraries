@@ -86,7 +86,7 @@ if [[ $OS = 'Darwin' ]]; then
     # macOS universal build
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-    ./configure --disable-shared --without-python --without-crypto \
+    ./configure --silent --disable-shared --without-python --without-crypto \
         --with-libxml-prefix="${LIBXML_PREFIX}" \
         --prefix="${PREFIX}"
     
@@ -95,14 +95,14 @@ elif [[ $OS = 'Linux' ]]; then
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
     CFLAGS="-fPIC" \
-    ./configure --disable-shared --without-python --without-crypto \
+    ./configure --silent --disable-shared --without-python --without-crypto \
         --with-libxml-prefix="${LIBXML_PREFIX}" \
         --prefix="${PREFIX}"
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
-make -j${JOBS}
-make install
+make --silent -j${JOBS}
+make --silent install
 
 # Copy headers and libraries
 interactive_prompt \

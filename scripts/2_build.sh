@@ -37,10 +37,10 @@ get_build_script() {
     case "$1" in
         jq) echo "build_jq.sh" ;;
         duktape) echo "build_duktape.sh" ;;
-        curl) echo "build_curl.sh" ;;
-        font) echo "build_font.sh" ;;
-        image) echo "build_image.sh" ;;
-        xml) echo "build_xml.sh" ;;
+        curl) echo "_build_curl_all.sh" ;;
+        font) echo "_build_font_all.sh" ;;
+        image) echo "_build_image_all.sh" ;;
+        xml) echo "_build_xml_all.sh" ;;
         boost) echo "build_boost.sh" ;;
         podofo) echo "build_podofo.sh" ;;
         fm_plugin_sdk) echo "build_fm_plugin_sdk.sh" ;;

@@ -13,6 +13,36 @@ set -e
 # Accept multiple library names after --build/-b
 BUILD_TARGETS=()
 ARGS=()
+while [[ $# -gt 0 ]]; do
+    case $1 in
+        --build|-b)
+            shift  # Remove --build/-b flag
+            # Collect all library names until we hit another flag (starts with -)
+            while [[ $# -gt 0 ]]; do
+                case "$1" in
+                    -*)
+                        break
+                        ;;
+                    *)
+                        BUILD_TARGETS+=("$1")
+                        shift
+                        ;;
+                esac
+            done
+            if [[ ${#BUILD_TARGETS[@]} -eq 0 ]]; then
+                echo "ERROR: --build/-b requires at least one library name" >&2
+                echo "Available libraries: all, jq, duktape, curl, font, image, xml, boost, podofo, fm_plugin_sdk" >&2
+                exit 1
+            fi
+            ;;
+        *)
+            ARGS+=("$1")
+            shift
+            ;;
+    esac
+done
+# Restore remaining arguments for _build_common.sh
+set -- "${ARGS[@]}"
 
 # Source common build functionality (handles platform detection, colors, helpers)
 source "$(dirname "$0")/build/_build_common.sh" "$@"

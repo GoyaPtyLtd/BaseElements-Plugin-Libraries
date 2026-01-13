@@ -3,7 +3,7 @@ name: Build Ubuntu 22 x86 only
 on:
   push:
     tags:
-      - 'v*'
+      - 'linux*'
   workflow_dispatch:
 
 jobs:

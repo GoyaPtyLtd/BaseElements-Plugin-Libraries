@@ -143,7 +143,7 @@ if [[ $OS = 'Darwin' ]]; then
          -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
          -DCMAKE_IGNORE_PREFIX_PATH="/Library/Frameworks;/usr/local;/opt/homebrew" \
-         -DCMAKE_CXX_STANDARD=11 \
+         -DCMAKE_CXX_STANDARD=20 \
          -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=13.3 -stdlib=libc++" \
          -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=13.3 -stdlib=libc++" ..
     
@@ -163,6 +163,7 @@ elif [[ $OS = 'Linux' ]]; then
          -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
          -DCMAKE_IGNORE_PREFIX_PATH="/usr/lib;/opt/homebrew;/lib/aarch64-linux-gnu;/lib/x86_64-linux-gnu;/usr/lib/x86_64-linux-gnu/" \
+         -DCMAKE_CXX_STANDARD=20 \
          -DCMAKE_CXX_FLAGS="-fPIC" ..
 fi
 

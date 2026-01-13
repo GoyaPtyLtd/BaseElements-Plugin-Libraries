@@ -1,4 +1,4 @@
-name: Build and Release Libraries
+name: Build Ubuntu 22 x86 only
 
 on:
   push:

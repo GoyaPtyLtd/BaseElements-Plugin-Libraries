@@ -103,7 +103,7 @@ elif [[ $OS = 'Linux' ]]; then
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ CFLAGS="-fPIC" \
     cmake -G "Unix Makefiles" --preset=release-noplugins -DCMAKE_INSTALL_PREFIX="${PREFIX}" -DCMAKE_BUILD_TYPE=RELEASE \
-		-DCMAKE_IGNORE_PREFIX_PATH="/usr/local/;/opt/homebrew/" \
+		-DCMAKE_IGNORE_PREFIX_PATH="/usr/local/;/opt/homebrew/;/usr/lib/x86_64-linux-gnu/" \
         -DBUILD_SHARED_LIBS:BOOL=OFF -DWITH_REDUCED_VISIBILITY=OFF -DWITH_UNCOMPRESSED_CODEC=OFF -DWITH_EXAMPLES=OFF \
 		-DWITH_LIBDE265=ON -DWITH_JPEG_DECODER=ON -DWITH_JPEG_ENCODER=ON -DWITH_OpenJPEG_DECODER=ON -DWITH_OpenJPEG_ENCODER=ON \
         -DWITH_AOM_DECODER:BOOL=OFF -DWITH_AOM_ENCODER:BOOL=OFF \

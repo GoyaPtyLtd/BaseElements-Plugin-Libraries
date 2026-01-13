@@ -55,9 +55,11 @@ jobs:
             libclang-dev \
             libclang1 \
             python3-clang
-          sudo apt remove -y nginx*
-          sudo apt remove -y libopenjp2*
-          sudo apt remove -y libtiff*
+          sudo dpkg --remove --force-depends "libtiff-dev"
+          sudo dpkg --remove --force-depends "libtiff5"
+          sudo dpkg --remove --force-depends "libtiffxx5"
+          sudo dpkg --remove --force-depends "libopenjp2-7"
+          sudo dpkg --remove --force-depends "libopenjp2-7-dev"
 
       - name: Install LLVM 18 (Ubuntu)
         if: startsWith(matrix.runner, 'ubuntu')

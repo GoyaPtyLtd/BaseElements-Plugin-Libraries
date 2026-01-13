@@ -49,6 +49,11 @@ if [[ ! -f "${OUTPUT_LIB}/fontconfig/libfontconfig.a" ]] || [[ ! -d "${OUTPUT_IN
 	print_info "Start build : fontconfig..."
 	"${SCRIPT_DIR}/build_fontconfig.sh"
 fi
+if [[ ! -f "${OUTPUT_LIB}/openssl/libssl.a" ]] || [[ ! -f "${OUTPUT_LIB}/openssl/libcrypto.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/openssl" ]]; then
+	print_info "Missing dependency : openssl..."
+	print_info "Start build : openssl..."
+	"${SCRIPT_DIR}/build_openssl.sh"
+fi
 if [[ ! -f "${OUTPUT_LIB}/libxml/libxml2.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libxml" ]]; then
 	print_info "Missing dependency : libxml..."
 	print_info "Start build : libxml..."

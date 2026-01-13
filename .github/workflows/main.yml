@@ -201,7 +201,7 @@ jobs:
         working-directory: scripts
         run: ./1_getSource.sh
 
-      - name: Build Everything
+      - name: Build font
         working-directory: scripts
         run: ./2_build.sh --build font
 

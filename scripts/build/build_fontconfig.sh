@@ -26,12 +26,20 @@ if [[ ! -f "${OUTPUT_LIB}/freetype2/libfreetype.a" ]] || [[ ! -d "${OUTPUT_INCLU
 	print_info "Start build : freetype2..."
 	"${SCRIPT_DIR}/build_freetype.sh"
 fi
+if [[ ! -f "${OUTPUT_LIB}/zlib/libz.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/zlib" ]]; then
+	print_info "Missing dependency : zlib..."
+	print_info "Start build : zlib..."
+	"${SCRIPT_DIR}/build_zlib.sh"
+fi
 
 if [[ ! -f "${OUTPUT_LIB}/libexpat/libexpat.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libexpat" ]]; then
     MISSING_DEPS+=("libexpat")
 fi
 if [[ ! -f "${OUTPUT_LIB}/freetype2/libfreetype.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/freetype2" ]]; then
     MISSING_DEPS+=("freetype")
+fi
+if [[ ! -f "${OUTPUT_LIB}/zlib/libz.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/zlib" ]]; then
+    MISSING_DEPS+=("zlib")
 fi
 
 # Report missing dependencies

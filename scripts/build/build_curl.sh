@@ -31,7 +31,7 @@ if [[ ! -f "${OUTPUT_LIB}/libssh2/libssh2.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/li
 	print_info "Start build : libssh..."
 	"${SCRIPT_DIR}/build_libssh.sh"
 fi
-if [[ ! -f "${OUTPUT_LIB}/nghttp2/nghttp2.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/nghttp2" ]]; then
+if [[ ! -f "${OUTPUT_LIB}/nghttp2/libnghttp2.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/nghttp2" ]]; then
 	print_info "Missing dependency : nghttp2..."
 	print_info "Start build : nghttp2..."
 	"${SCRIPT_DIR}/build_nghttp2.sh"
@@ -46,7 +46,7 @@ fi
 if [[ ! -f "${OUTPUT_LIB}/libssh2/libssh2.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libssh2" ]]; then
     MISSING_DEPS+=("libssh2")
 fi
-if [[ ! -f "${OUTPUT_LIB}/nghttp2/nghttp2.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/nghttp2" ]]; then
+if [[ ! -f "${OUTPUT_LIB}/nghttp2/libnghttp2.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/nghttp2" ]]; then
     MISSING_DEPS+=("nghttp2")
 fi
 

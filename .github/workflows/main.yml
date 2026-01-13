@@ -73,6 +73,8 @@ jobs:
             libclang-dev \
             libclang1 \
             python3-clang
+          sudo apt remove -y libtiff-dev
+          sudo apt remove -y libopenjp2-7-dev
 
       - name: Install LLVM 18 (Ubuntu)
         if: startsWith(matrix.runner, 'ubuntu')

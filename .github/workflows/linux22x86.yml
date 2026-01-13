@@ -55,12 +55,8 @@ jobs:
             libclang-dev \
             libclang1 \
             python3-clang
-          sudo dpkg --remove --force-depends "libgdk-pixbuf-2.0-dev"
-          sudo dpkg --remove --force-depends "libmagickcore-6.q16-6"
-          sudo dpkg --remove --force-depends "libmagickcore-6.q16-dev"
-          sudo dpkg --remove --force-depends "libtiff-dev"
-          sudo dpkg --remove --force-depends "libopenjp2-7"
-          sudo dpkg --remove --force-depends "libopenjp2-7-dev"
+          sudo apt remove -y libtiff-dev
+          sudo apt remove -y libopenjp2-7-dev
 
       - name: Install LLVM 18 (Ubuntu)
         if: startsWith(matrix.runner, 'ubuntu')

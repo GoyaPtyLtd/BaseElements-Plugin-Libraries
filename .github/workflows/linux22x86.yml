@@ -1,9 +1,9 @@
-name: Build and Release Libraries
+name: Build Ubuntu 22 x86 only
 
 on:
   push:
     tags:
-      - 'v*'
+      - 'linux*'
   workflow_dispatch:
 
 jobs:
@@ -13,28 +13,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Ubuntu builds
           - runner: ubuntu-22.04
             arch: x86_64
             platform: ubuntu22.04-x86_64
             package_platform: ubuntu22.04-x86_64
-          - runner: ubuntu-22.04-arm
-            arch: aarch64
-            platform: ubuntu22.04-aarch64
-            package_platform: ubuntu22.04-aarch64
-          - runner: ubuntu-24.04
-            arch: x86_64
-            platform: ubuntu24.04-x86_64
-            package_platform: ubuntu24.04-x86_64
-          - runner: ubuntu-24.04-arm
-            arch: aarch64
-            platform: ubuntu24.04-aarch64
-            package_platform: ubuntu24.04-aarch64
-          # macOS build (universal)
-          - runner: macos-15
-            arch: arm64
-            platform: macos-arm64
-            package_platform: macos-arm64_x86_64
 
     steps:
       - name: Checkout repository
@@ -135,13 +117,6 @@ jobs:
             echo "Falling back to system defaults."
           fi
 
-      - name: Install build dependencies (macOS)
-        if: startsWith(matrix.runner, 'macos')
-        run: |
-          brew install autoconf automake bash git libtool m4 protobuf
-          brew uninstall --ignore-dependencies jpeg-turbo
-          brew uninstall --ignore-dependencies freetype
-
       - name: Debug - Show LLVM and Clang versions (Ubuntu)
         if: startsWith(matrix.runner, 'ubuntu')
         run: |
@@ -167,25 +142,6 @@ jobs:
           readlink -f $(which clang 2>/dev/null) || echo "clang not found"
           readlink -f $(which clang++ 2>/dev/null) || echo "clang++ not found"
           readlink -f $(which llvm-config 2>/dev/null) || echo "llvm-config not found"
-          echo ""
-          echo "=========================================="
-
-      - name: Debug - Show LLVM and Clang versions (macOS)
-        if: startsWith(matrix.runner, 'macos')
-        run: |
-          echo "=========================================="
-          echo "LLVM and Clang Version Information"
-          echo "=========================================="
-          echo ""
-          echo "=== Clang Version ==="
-          clang --version || echo "clang not found"
-          echo ""
-          echo "=== Clang++ Version ==="
-          clang++ --version || echo "clang++ not found"
-          echo ""
-          echo "=== Which binaries are being used ==="
-          which clang || echo "clang not in PATH"
-          which clang++ || echo "clang++ not in PATH"
           echo ""
           echo "=========================================="
 

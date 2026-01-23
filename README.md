@@ -57,7 +57,6 @@ Run:
 Flags:
 
 - `--build` / `-b` – Select libraries or `all`  
-- `--interactive` / `-i` – Prompt before each step
 
 Libraries: `jq`, `duktape`, `curl`, `font`, `image`, `xml`, `boost`, `podofo`, `fm_plugin_sdk`, `all`.
 

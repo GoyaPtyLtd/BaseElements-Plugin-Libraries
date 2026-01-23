@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Source common build functionality (platform detection, paths, interactive mode, colors, helpers)
+# Source common build functionality (platform detection, paths, colors, helpers)
 # This allows the script to be run standalone. When called from 2_build.sh,
 # variables are already exported, but sourcing again is harmless.
 source "$(dirname "$0")/_build_common.sh" "$@"
@@ -9,28 +9,37 @@ source "$(dirname "$0")/_build_common.sh" "$@"
 LIBRARY_NAME="fontconfig"
 ARCHIVE_NAME="fontconfig.tar.gz"
 
-print_header "Starting ${LIBRARY_NAME} Build"
+print_header "Starting BE Library Build : ${LIBRARY_NAME}"
 
 # Check dependencies before building
 print_info "Checking dependencies for ${LIBRARY_NAME}..."
+SCRIPT_DIR="$(dirname "$0")"
 MISSING_DEPS=()
 
-# Check required libraries
-if [[ ! -f "${OUTPUT_LIB}/libexpat/libexpat.a" ]]; then
-    MISSING_DEPS+=("Library: libexpat (${OUTPUT_LIB}/libexpat/libexpat.a)")
+if [[ ! -f "${OUTPUT_LIB}/libexpat/libexpat.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libexpat" ]]; then
+	print_info "Missing dependency : libexpat..."
+	print_info "Start build : libexpat..."
+	"${SCRIPT_DIR}/build_libexpat.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/freetype2/libfreetype.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/freetype2" ]]; then
+	print_info "Missing dependency : freetype..."
+	print_info "Start build : freetype2..."
+	"${SCRIPT_DIR}/build_freetype.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/zlib/libz.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/zlib" ]]; then
+	print_info "Missing dependency : zlib..."
+	print_info "Start build : zlib..."
+	"${SCRIPT_DIR}/build_zlib.sh"
 fi
 
-if [[ ! -f "${OUTPUT_LIB}/freetype2/libfreetype.a" ]]; then
-    MISSING_DEPS+=("Library: libfreetype (${OUTPUT_LIB}/freetype2/libfreetype.a)")
+if [[ ! -f "${OUTPUT_LIB}/libexpat/libexpat.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libexpat" ]]; then
+    MISSING_DEPS+=("libexpat")
 fi
-
-# Check required headers
-if [[ ! -d "${OUTPUT_INCLUDE}/libexpat" ]]; then
-    MISSING_DEPS+=("Headers: libexpat (${OUTPUT_INCLUDE}/libexpat)")
+if [[ ! -f "${OUTPUT_LIB}/freetype2/libfreetype.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/freetype2" ]]; then
+    MISSING_DEPS+=("freetype")
 fi
-
-if [[ ! -d "${OUTPUT_INCLUDE}/freetype2" ]]; then
-    MISSING_DEPS+=("Headers: freetype2 (${OUTPUT_INCLUDE}/freetype2)")
+if [[ ! -f "${OUTPUT_LIB}/zlib/libz.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/zlib" ]]; then
+    MISSING_DEPS+=("zlib")
 fi
 
 # Report missing dependencies
@@ -39,23 +48,12 @@ if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
     for dep in "${MISSING_DEPS[@]}"; do
         echo "  - ${dep}"
     done
-    echo ""
-    echo "Please build dependencies first:"
-    echo "  font_1_libunistring (libunistring)"
-    echo "  font_2_libexpat (libexpat)"
-    echo "  font_3_freetype (freetype2)"
     exit 1
 fi
 
 print_success "All dependencies found for ${LIBRARY_NAME}"
 
 # Clean and create output directories (ensures they exist and are empty)
-interactive_prompt \
-    "Ready to clean and create output directories for ${LIBRARY_NAME}" \
-    "Will remove and recreate: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}" \
-    "Will remove and recreate: ${OUTPUT_LIB}/${LIBRARY_NAME}" \
-    "Will remove and recreate: ${OUTPUT_SRC}/${LIBRARY_NAME}"
-
 rm -rf "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
 rm -rf "${OUTPUT_LIB}/${LIBRARY_NAME}"
 rm -rf "${OUTPUT_SRC}/${LIBRARY_NAME}"
@@ -65,11 +63,6 @@ mkdir -p "${OUTPUT_LIB}/${LIBRARY_NAME}"
 mkdir -p "${OUTPUT_SRC}/${LIBRARY_NAME}"
 
 # Extract source to output/platforms/${PLATFORM}/src/
-interactive_prompt \
-    "Ready to extract source archive" \
-    "Archive: ${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" \
-    "Destination: ${OUTPUT_SRC}/${LIBRARY_NAME}"
-
 cd "${OUTPUT_SRC}/${LIBRARY_NAME}"
 tar -xf "${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" --strip-components=1
 
@@ -82,12 +75,6 @@ PREFIX="${BUILD_DIR}"
 LIBEXPAT_PREFIX="${OUTPUT_SRC}/libexpat/_build"
 
 # Configure and build
-interactive_prompt \
-    "Ready to configure and build ${LIBRARY_NAME}" \
-    "Platform: ${PLATFORM}" \
-    "Build directory: ${BUILD_DIR}" \
-    "Dependencies will be found from: ${OUTPUT_INCLUDE} and ${OUTPUT_LIB}"
-
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
@@ -116,11 +103,6 @@ make --silent -j${JOBS}
 make --silent install
 
 # Copy headers and libraries
-interactive_prompt \
-    "Ready to copy headers and libraries" \
-    "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
-    "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/lib${LIBRARY_NAME}.a"
-
 cp -R "${PREFIX}/include/fontconfig"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 

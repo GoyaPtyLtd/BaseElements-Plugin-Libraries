@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Source common build functionality (platform detection, paths, interactive mode, colors, helpers)
+# Source common build functionality (platform detection, paths, colors, helpers)
 # This allows the script to be run standalone. When called from 2_build.sh,
 # variables are already exported, but sourcing again is harmless.
 source "$(dirname "$0")/_build_common.sh" "$@"
@@ -9,15 +9,9 @@ source "$(dirname "$0")/_build_common.sh" "$@"
 LIBRARY_NAME="podofo"
 ARCHIVE_NAME="podofo.tar.gz"
 
-print_header "Starting ${LIBRARY_NAME} Build"
+print_header "Starting BE Library Build : ${LIBRARY_NAME}"
 
 # Clean and create output directories (ensures they exist and are empty)
-interactive_prompt \
-    "Ready to clean and create output directories for ${LIBRARY_NAME}" \
-    "Will remove and recreate: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}" \
-    "Will remove and recreate: ${OUTPUT_LIB}/${LIBRARY_NAME}" \
-    "Will remove and recreate: ${OUTPUT_SRC}/${LIBRARY_NAME}"
-
 rm -rf "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
 rm -rf "${OUTPUT_LIB}/${LIBRARY_NAME}"
 rm -rf "${OUTPUT_SRC}/${LIBRARY_NAME}"
@@ -27,11 +21,6 @@ mkdir -p "${OUTPUT_LIB}/${LIBRARY_NAME}"
 mkdir -p "${OUTPUT_SRC}/${LIBRARY_NAME}"
 
 # Extract source to output/platforms/${PLATFORM}/src/
-interactive_prompt \
-    "Ready to extract source archive" \
-    "Archive: ${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" \
-    "Destination: ${OUTPUT_SRC}/${LIBRARY_NAME}"
-
 cd "${OUTPUT_SRC}/${LIBRARY_NAME}"
 tar -xf "${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" --strip-components=1
 
@@ -42,51 +31,83 @@ PREFIX="${BUILD_DIR}"
 
 # Check dependencies before configuring
 print_info "Checking dependencies for ${LIBRARY_NAME}..."
+SCRIPT_DIR="$(dirname "$0")"
 MISSING_DEPS=()
 
-# Check required libraries (bash 3 compatible - using arrays instead of associative arrays)
-REQUIRED_LIB_NAMES=("freetype" "fontconfig" "libxml2" "libunistring" "libz" "libturbojpeg" "libpng16")
-REQUIRED_LIB_PATHS=(
-    "${OUTPUT_LIB}/freetype2/libfreetype.a"
-    "${OUTPUT_LIB}/fontconfig/libfontconfig.a"
-    "${OUTPUT_LIB}/libxml/libxml2.a"
-    "${OUTPUT_LIB}/libunistring/libunistring.a"  # Linux only
-    "${OUTPUT_LIB}/zlib/libz.a"
-    "${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a"
-    "${OUTPUT_LIB}/libpng/libpng16.a"
-)
+if [[ ! -f "${OUTPUT_LIB}/zlib/libz.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/zlib" ]]; then
+	print_info "Missing dependency : zlib..."
+	print_info "Start build : zlib..."
+	"${SCRIPT_DIR}/build_zlib.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/freetype2/libfreetype.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/freetype2" ]]; then
+	print_info "Missing dependency : freetype2..."
+	print_info "Start build : freetype2..."
+	"${SCRIPT_DIR}/build_freetype.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/fontconfig/libfontconfig.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/fontconfig" ]]; then
+	print_info "Missing dependency : fontconfig..."
+	print_info "Start build : fontconfig..."
+	"${SCRIPT_DIR}/build_fontconfig.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/openssl/libssl.a" ]] || [[ ! -f "${OUTPUT_LIB}/openssl/libcrypto.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/openssl" ]]; then
+	print_info "Missing dependency : openssl..."
+	print_info "Start build : openssl..."
+	"${SCRIPT_DIR}/build_openssl.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/libxml/libxml2.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libxml" ]]; then
+	print_info "Missing dependency : libxml..."
+	print_info "Start build : libxml..."
+	"${SCRIPT_DIR}/build_libxml.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/libunistring/libunistring.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libunistring" ]]; then
+	print_info "Missing dependency : libunistring..."
+	print_info "Start build : libunistring..."
+	"${SCRIPT_DIR}/build_libunistring.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libturbojpeg" ]]; then
+	print_info "Missing dependency : libturbojpeg..."
+	print_info "Start build : libturbojpeg..."
+	"${SCRIPT_DIR}/build_libturbojpeg.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/libpng/libpng16.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libpng" ]]; then
+	print_info "Missing dependency : libpng..."
+	print_info "Start build : libpng..."
+	"${SCRIPT_DIR}/build_libpng.sh"
+fi
 
-# Check required headers
-REQUIRED_HEADER_NAMES=("freetype2" "fontconfig" "libxml" "libunistring" "zlib" "libturbojpeg" "libpng")
-REQUIRED_HEADER_PATHS=(
-    "${OUTPUT_INCLUDE}/freetype2"
-    "${OUTPUT_INCLUDE}/fontconfig"
-    "${OUTPUT_INCLUDE}/libxml"
-    "${OUTPUT_INCLUDE}/libunistring"  # Linux only
-    "${OUTPUT_INCLUDE}/zlib"
-    "${OUTPUT_INCLUDE}/libturbojpeg"
-    "${OUTPUT_INCLUDE}/libpng"
-)
+if [[ ! -f "${OUTPUT_LIB}/zlib/libz.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/zlib" ]]; then
+    MISSING_DEPS+=("zlib")
+fi
+if [[ ! -f "${OUTPUT_LIB}/freetype2/libfreetype.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/freetype2" ]]; then
+    MISSING_DEPS+=("freetype2")
+fi
+if [[ ! -f "${OUTPUT_LIB}/fontconfig/libfontconfig.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/fontconfig" ]]; then
+    MISSING_DEPS+=("fontconfig")
+fi
+if [[ ! -f "${OUTPUT_LIB}/openssl/libssl.a" ]] || [[ ! -f "${OUTPUT_LIB}/openssl/libcrypto.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/openssl" ]]; then
+    MISSING_DEPS+=("openssl")
+fi
+if [[ ! -f "${OUTPUT_LIB}/libxml/libxml2.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libxml" ]]; then
+    MISSING_DEPS+=("libxml")
+fi
+if [[ ! -f "${OUTPUT_LIB}/libunistring/libunistring.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libunistring" ]]; then
+    MISSING_DEPS+=("libunistring")
+fi
+if [[ ! -f "${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libturbojpeg" ]]; then
+    MISSING_DEPS+=("libturbojpeg")
+fi
+if [[ ! -f "${OUTPUT_LIB}/libpng/libpng16.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libpng" ]]; then
+    MISSING_DEPS+=("libpng")
+fi
 
-# Verify libraries exist
-i=0
-for lib_name in "${REQUIRED_LIB_NAMES[@]}"; do
-    lib_path="${REQUIRED_LIB_PATHS[$i]}"
-    if [[ ! -f "$lib_path" ]]; then
-        MISSING_DEPS+=("Library: $lib_name ($lib_path)")
-    fi
-    i=$((i + 1))
-done
-
-# Verify headers exist
-i=0
-for header_name in "${REQUIRED_HEADER_NAMES[@]}"; do
-    header_path="${REQUIRED_HEADER_PATHS[$i]}"
-    if [[ ! -d "$header_path" ]]; then
-        MISSING_DEPS+=("Headers: $header_name ($header_path)")
-    fi
-    i=$((i + 1))
-done
+# Report missing dependencies
+if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
+    print_error "ERROR: Missing dependencies for ${LIBRARY_NAME}:"
+    for dep in "${MISSING_DEPS[@]}"; do
+        echo "  - ${dep}"
+    done
+    exit 1
+fi
 
 # Check xmllint executable (required for macOS)
 if [[ $OS = 'Darwin' ]]; then
@@ -96,43 +117,21 @@ if [[ $OS = 'Darwin' ]]; then
     fi
 fi
 
-# Report missing dependencies
-if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
-    print_error "ERROR: Missing dependencies for ${LIBRARY_NAME}:"
-    for dep in "${MISSING_DEPS[@]}"; do
-        echo "  - ${dep}"
-    done
-    echo ""
-    echo "Please build dependencies first:"
-    echo "  curl (zlib, openssl)"
-    echo "  font (libunistring)"
-    echo "  xml (libxml2)"
-    echo "  image (libturbojpeg, libpng)"
-    echo "  freetype, fontconfig"
-    exit 1
-fi
-
 print_success "All dependencies found for ${LIBRARY_NAME}"
 
 # Configure with cmake
-interactive_prompt \
-    "Ready to configure ${LIBRARY_NAME} with cmake" \
-    "Platform: ${PLATFORM}" \
-    "Build directory: ${BUILD_DIR}" \
-    "Dependencies will be found from: ${OUTPUT_INCLUDE} and ${OUTPUT_LIB}"
-
 cd "${BUILD_DIR}"
 
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build (arm64 + x86_64)
-    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
+    print_info "Configuring ${LIBRARY_NAME} for macOS (universal: arm64 + x86_64)..."
      
     # Build include path flags to prioritize our libraries over system ones (especially Mono framework)
     # This ensures we use our built libjpeg/libpng instead of system versions
     INCLUDE_FLAGS="-I${OUTPUT_INCLUDE}/libturbojpeg -I${OUTPUT_INCLUDE}/libpng -I${OUTPUT_INCLUDE}/zlib -I${OUTPUT_INCLUDE}"
     
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
-         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 -DCMAKE_OSX_DEPLOYMENT_TARGET=10.15 \
+         -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
 		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
          -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2"  \
          -DFontconfig_LIBRARY="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFontconfig_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
@@ -144,13 +143,13 @@ if [[ $OS = 'Darwin' ]]; then
          -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
          -DCMAKE_IGNORE_PREFIX_PATH="/Library/Frameworks;/usr/local;/opt/homebrew" \
-         -DCMAKE_CXX_STANDARD=11 \
-         -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" \
-         -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15 -stdlib=libc++" ..
+         -DCMAKE_CXX_STANDARD=20 \
+         -DCMAKE_C_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=13.3 -stdlib=libc++" \
+         -DCMAKE_CXX_FLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=13.3 -stdlib=libc++" ..
     
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
-    print_info "Configuring for Linux..."
+    print_info "Configuring ${LIBRARY_NAME} for Linux..."
     CC=clang CXX=clang++ \
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
 		 -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
@@ -163,27 +162,17 @@ elif [[ $OS = 'Linux' ]]; then
          -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
          -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
-         -DCMAKE_IGNORE_PREFIX_PATH="/usr/lib;/opt/homebrew;/lib/aarch64-linux-gnu;/lib/x86_64-linux-gnu" \
+         -DCMAKE_IGNORE_PREFIX_PATH="/usr/lib;/opt/homebrew;/lib/aarch64-linux-gnu;/lib/x86_64-linux-gnu;/usr/lib/x86_64-linux-gnu" \
+         -DCMAKE_CXX_STANDARD=20 \
          -DCMAKE_CXX_FLAGS="-fPIC" ..
 fi
 
 # Build
-interactive_prompt \
-    "Ready to build ${LIBRARY_NAME}" \
-    "Platform: ${PLATFORM}" \
-    "Jobs: ${JOBS}" \
-    "Build prefix: ${PREFIX}"
-
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
 make -j${JOBS}
 make install
 
 # Copy headers and libraries
-interactive_prompt \
-    "Ready to copy headers and libraries" \
-    "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
-    "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/lib${LIBRARY_NAME}.a"
-
 cp -R "${PREFIX}/include/podofo"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
 cp "${PREFIX}/lib/libpodofo.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"

@@ -100,9 +100,6 @@ echo ""
 print_header "Remove platform-specific directory"
 print_info "Platform: ${PLATFORM}"
 print_info "Path to remove: ${PLUGIN_PLATFORM_DIR}"
-if [[ $INTERACTIVE -eq 1 ]]; then
-    interactive_prompt "Ready to remove platform-specific directory"
-fi
 rm -rf "${PLUGIN_PLATFORM_DIR}"
 print_success "Platform-specific directory removed"
 
@@ -112,9 +109,6 @@ echo ""
 print_header "Copying headers"
 print_info "Source: ${OUTPUT_INCLUDE}/"
 print_info "Destination: ${PLUGIN_HEADERS_DIR}/"
-if [[ $INTERACTIVE -eq 1 ]]; then
-    interactive_prompt "Ready to copy headers"
-fi
 mkdir -p "${PLUGIN_HEADERS_DIR}"
 cp -r "${OUTPUT_INCLUDE}"/* "${PLUGIN_HEADERS_DIR}/" 2>/dev/null || {
     print_error "ERROR: No headers found in ${OUTPUT_INCLUDE}"
@@ -128,9 +122,6 @@ echo ""
 print_header "Copying libraries"
 print_info "Source: ${OUTPUT_LIB}/"
 print_info "Destination: ${PLUGIN_LIB_DIR}/"
-if [[ $INTERACTIVE -eq 1 ]]; then
-    interactive_prompt "Ready to copy libraries"
-fi
 mkdir -p "${PLUGIN_LIB_DIR}"
 # Copy all library files from all subdirectories
 find "${OUTPUT_LIB}" -name "*.a" -type f -exec cp {} "${PLUGIN_LIB_DIR}/" \; || {
@@ -146,9 +137,6 @@ if [[ -f "${OUTPUT_SRC}/duktape/src/duktape.c" ]] && [[ -f "${OUTPUT_SRC}/duktap
     print_header "Copying duktape source files"
     print_info "Source: ${OUTPUT_SRC}/duktape/src/"
     print_info "Destination: ${PLUGIN_SOURCE_DIR}/duktape/"
-    if [[ $INTERACTIVE -eq 1 ]]; then
-        interactive_prompt "Ready to copy duktape source files"
-    fi
     mkdir -p "${PLUGIN_SOURCE_DIR}/duktape"
     cp "${OUTPUT_SRC}/duktape/src/duktape.c" "${PLUGIN_SOURCE_DIR}/duktape/"
     cp "${OUTPUT_SRC}/duktape/src/duktape.h" "${PLUGIN_SOURCE_DIR}/duktape/"
@@ -165,9 +153,6 @@ if [[ -d "${OUTPUT_DIR}/PlugInSDK" ]]; then
     print_header "Copying FM Plugin SDK"
     print_info "Source: ${OUTPUT_DIR}/PlugInSDK/"
     print_info "Destination: ${PLUGIN_PLATFORM_DIR}/PlugInSDK/"
-    if [[ $INTERACTIVE -eq 1 ]]; then
-        interactive_prompt "Ready to copy FM Plugin SDK"
-    fi
     cp -R -P "${OUTPUT_DIR}/PlugInSDK" "${PLUGIN_PLATFORM_DIR}/"
     print_success "FM Plugin SDK copied"
 else
@@ -181,9 +166,6 @@ if [[ $OS = 'Darwin' ]] && [[ -d "${OUTPUT_DIR}/PlugInSDK/Headers/FMWrapper" ]];
     print_header "Copying FMWrapper headers to include/"
     print_info "Source: ${OUTPUT_DIR}/PlugInSDK/Headers/FMWrapper/"
     print_info "Destination: ${PLUGIN_HEADERS_DIR}/FMWrapper/"
-    if [[ $INTERACTIVE -eq 1 ]]; then
-        interactive_prompt "Ready to copy FMWrapper headers"
-    fi
     mkdir -p "${PLUGIN_HEADERS_DIR}/FMWrapper"
     cp -r "${OUTPUT_DIR}/PlugInSDK/Headers/FMWrapper"/* "${PLUGIN_HEADERS_DIR}/FMWrapper/"
     print_success "FMWrapper headers copied"

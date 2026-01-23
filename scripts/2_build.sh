@@ -44,7 +44,7 @@ done
 # Restore remaining arguments for _build_common.sh
 set -- "${ARGS[@]}"
 
-# Source common build functionality (handles --interactive flag, platform detection, colors, helpers)
+# Source common build functionality (handles platform detection, colors, helpers)
 source "$(dirname "$0")/build/_build_common.sh" "$@"
 
 print_header "Build Configuration"
@@ -59,14 +59,6 @@ print_info "  OUTPUT_INCLUDE: ${OUTPUT_INCLUDE}"
 print_info "  OUTPUT_LIB: ${OUTPUT_LIB}"
 print_info "  OUTPUT_SRC: ${OUTPUT_SRC}"
 
-if [[ $INTERACTIVE -eq 1 ]]; then
-    echo ""
-    print_header "Interactive mode enabled - you will be prompted before each build"
-    export INTERACTIVE_FLAG="--interactive"
-else
-    export INTERACTIVE_FLAG=""
-fi
-
 echo ""
 cd "$(dirname "$0")/build"
 
@@ -75,10 +67,10 @@ get_build_script() {
     case "$1" in
         jq) echo "build_jq.sh" ;;
         duktape) echo "build_duktape.sh" ;;
-        curl) echo "build_curl.sh" ;;
-        font) echo "build_font.sh" ;;
-        image) echo "build_image.sh" ;;
-        xml) echo "build_xml.sh" ;;
+        curl) echo "_build_curl_all.sh" ;;
+        font) echo "_build_font_all.sh" ;;
+        image) echo "_build_image_all.sh" ;;
+        xml) echo "_build_xml_all.sh" ;;
         boost) echo "build_boost.sh" ;;
         podofo) echo "build_podofo.sh" ;;
         fm_plugin_sdk) echo "build_fm_plugin_sdk.sh" ;;
@@ -92,7 +84,7 @@ AVAILABLE_LIBS="jq duktape curl font image xml boost podofo fm_plugin_sdk"
 # Show usage if no --build flag provided
 if [[ ${#BUILD_TARGETS[@]} -eq 0 ]]; then
     echo ""
-    print_header "Usage: $0 --build <library> [library2 ...] [--interactive]"
+    print_header "Usage: $0 --build <library> [library2 ...]"
     echo ""
     echo "  or: $0 -b <library> [library2 ...] [-i]"
     echo ""
@@ -104,9 +96,6 @@ if [[ ${#BUILD_TARGETS[@]} -eq 0 ]]; then
     echo "  --build jq                 Build only jq"
     echo "  --build boost jq           Build boost and jq"
     echo "  --build jq duktape curl    Build jq, duktape, and curl"
-    echo ""
-    echo "Options:"
-    echo "  --interactive, -i  Enable interactive mode (prompt before each step)"
     echo ""
     exit 1
 fi
@@ -123,15 +112,19 @@ done
 if [[ "$BUILD_ALL" == true ]]; then
     # Build all libraries
     print_header "Building all libraries for platform: ${PLATFORM}"
-    ./build_jq.sh ${INTERACTIVE_FLAG}
-    ./build_duktape.sh ${INTERACTIVE_FLAG}
-    ./build_curl.sh ${INTERACTIVE_FLAG}
-    ./build_font.sh ${INTERACTIVE_FLAG}
-    ./build_image.sh ${INTERACTIVE_FLAG}
-    ./build_xml.sh ${INTERACTIVE_FLAG}
-    ./build_boost.sh ${INTERACTIVE_FLAG}
-    ./build_podofo.sh ${INTERACTIVE_FLAG}
-    ./build_fm_plugin_sdk.sh ${INTERACTIVE_FLAG}
+    # zlib and png are dependencies in a bunch of things, so just build them first.
+    ./build_zlib.sh
+    ./build_libpng.sh
+    # Build the rest in rough order.
+    ./build_jq.sh
+    ./build_duktape.sh
+    ./_build_curl_all.sh
+    ./_build_font_all.sh
+    ./_build_image_all.sh
+    ./_build_xml_all.sh
+    ./build_boost.sh
+    ./build_podofo.sh
+    ./build_fm_plugin_sdk.sh
 else
     # Build each specified library
     for BUILD_TARGET in "${BUILD_TARGETS[@]}"; do
@@ -153,7 +146,7 @@ else
         fi
         
         print_header "Building ${BUILD_TARGET} for platform: ${PLATFORM}"
-        ./"${BUILD_SCRIPT}" ${INTERACTIVE_FLAG}
+        ./"${BUILD_SCRIPT}"
         echo ""
     done
 fi

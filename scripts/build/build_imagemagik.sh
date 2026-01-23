@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Source common build functionality (platform detection, paths, interactive mode, colors, helpers)
+# Source common build functionality (platform detection, paths, colors, helpers)
 # This allows the script to be run standalone. When called from 2_build.sh,
 # variables are already exported, but sourcing again is harmless.
 source "$(dirname "$0")/_build_common.sh" "$@"
@@ -9,48 +9,85 @@ source "$(dirname "$0")/_build_common.sh" "$@"
 LIBRARY_NAME="ImageMagick-7"
 ARCHIVE_NAME="ImageMagick.tar.gz"
 
-print_header "Starting ${LIBRARY_NAME} Build"
+print_header "Starting BE Library Build : ${LIBRARY_NAME}"
 
 # Check dependencies before building
 print_info "Checking dependencies for ${LIBRARY_NAME}..."
+SCRIPT_DIR="$(dirname "$0")"
 MISSING_DEPS=()
 
-# Check required libraries
-REQUIRED_LIBS=(
-    "zlib:libz.a"
-    "libpng:libpng16.a"
-    "libde265:libde265.a"
-    "libheif:libheif.a"
-    "libturbojpeg:libjpeg.a"
-    "freetype2:libfreetype.a"
-    "fontconfig:libfontconfig.a"
-)
+if [[ ! -f "${OUTPUT_LIB}/zlib/libz.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/zlib" ]]; then
+	print_info "Missing dependency : zlib..."
+	print_info "Start build : zlib..."
+	"${SCRIPT_DIR}/build_zlib.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/libde265/libde265.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libde265" ]]; then
+	print_info "Missing dependencies : libde265..."
+	print_info "Start build : libde265..."
+	"${SCRIPT_DIR}/build_libde265.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/libturbojpeg/libjpeg.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libturbojpeg" ]]; then
+	print_info "Missing dependencies : libturbojpeg..."
+	print_info "Start build : libturbojpeg..."
+	"${SCRIPT_DIR}/build_libturbojpeg.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/libpng/libpng16.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libpng" ]]; then
+	print_info "Missing dependencies : libpng..."
+	print_info "Start build : libpng..."
+	"${SCRIPT_DIR}/build_libpng.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/libheif/libheif.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libheif" ]]; then
+	print_info "Missing dependencies : libheif..."
+	print_info "Start build : libheif..."
+	"${SCRIPT_DIR}/build_libheif.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/freetype2/libfreetype.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/freetype2" ]]; then
+	print_info "Missing dependencies : freetype2..."
+	print_info "Start build : freetype2..."
+	"${SCRIPT_DIR}/build_freetype.sh"
+fi
+if [[ ! -f "${OUTPUT_LIB}/fontconfig/libfontconfig.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/fontconfig" ]]; then
+	print_info "Missing dependencies : fontconfig..."
+	print_info "Start build : fontconfig..."
+	"${SCRIPT_DIR}/build_fontconfig.sh"
+fi
 
 # libopenjp2 is required only on macOS
 if [[ $OS = 'Darwin' ]]; then
-    REQUIRED_LIBS+=("libopenjp2:libopenjp2.a")
+	if [[ ! -f "${OUTPUT_LIB}/libopenjp2/libopenjp2.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libopenjp2" ]]; then
+		print_info "Missing dependencies : libopenjp2..."
+		print_info "Start build : libopenjp2..."
+		"${SCRIPT_DIR}/build_libopenjp2.sh"
+	fi
 fi
 
-for lib_entry in "${REQUIRED_LIBS[@]}"; do
-    IFS=':' read -r lib_name lib_file <<< "$lib_entry"
-    if [[ ! -f "${OUTPUT_LIB}/${lib_name}/${lib_file}" ]]; then
-        MISSING_DEPS+=("Library: ${lib_name} (${OUTPUT_LIB}/${lib_name}/${lib_file})")
-    fi
-done
-
-# Check required headers
-REQUIRED_HEADERS=("zlib" "libpng" "libde265" "libheif" "libturbojpeg" "freetype2" "fontconfig")
-
+if [[ ! -f "${OUTPUT_LIB}/zlib/libz.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/zlib" ]]; then
+    MISSING_DEPS+=("zlib")
+fi
+if [[ ! -f "${OUTPUT_LIB}/libde265/libde265.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libde265" ]]; then
+    MISSING_DEPS+=("libde265")
+fi
+if [[ ! -f "${OUTPUT_LIB}/libturbojpeg/libjpeg.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libturbojpeg" ]]; then
+    MISSING_DEPS+=("libturbojpeg")
+fi
+if [[ ! -f "${OUTPUT_LIB}/libpng/libpng16.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libpng" ]]; then
+    MISSING_DEPS+=("libpng")
+fi
+if [[ ! -f "${OUTPUT_LIB}/libheif/libheif.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libheif" ]]; then
+    MISSING_DEPS+=("libheif")
+fi
+if [[ ! -f "${OUTPUT_LIB}/freetype2/libfreetype.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/freetype2" ]]; then
+    MISSING_DEPS+=("freetype2")
+fi
+if [[ ! -f "${OUTPUT_LIB}/fontconfig/libfontconfig.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/fontconfig" ]]; then
+    MISSING_DEPS+=("fontconfig")
+fi
 # libopenjp2 headers are required only on macOS
 if [[ $OS = 'Darwin' ]]; then
-    REQUIRED_HEADERS+=("libopenjp2")
+	if [[ ! -f "${OUTPUT_LIB}/libopenjp2/libopenjp2.a" ]] || [[ ! -d "${OUTPUT_INCLUDE}/libopenjp2" ]]; then
+  	  MISSING_DEPS+=("libopenjp2")
+	fi
 fi
-
-for header_dir in "${REQUIRED_HEADERS[@]}"; do
-    if [[ ! -d "${OUTPUT_INCLUDE}/${header_dir}" ]]; then
-        MISSING_DEPS+=("Headers: ${header_dir} (${OUTPUT_INCLUDE}/${header_dir})")
-    fi
-done
 
 # Report missing dependencies
 if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
@@ -58,30 +95,12 @@ if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
     for dep in "${MISSING_DEPS[@]}"; do
         echo "  - ${dep}"
     done
-    echo ""
-    echo "Please build dependencies first:"
-    echo "  curl_1_zlib (zlib)"
-    echo "  image_1_libturbojpeg (libturbojpeg)"
-    echo "  image_2_libde265 (libde265)"
-    echo "  image_3_libpng (libpng)"
-    echo "  image_4_libheif (libheif)"
-    if [[ $OS = 'Darwin' ]]; then
-        echo "  image_5_libopenjp2 (libopenjp2) - macOS only"
-    fi
-    echo "  font_3_freetype (freetype2)"
-    echo "  font_4_fontconfig (fontconfig)"
     exit 1
 fi
 
 print_success "All dependencies found for ${LIBRARY_NAME}"
 
 # Clean and create output directories (ensures they exist and are empty)
-interactive_prompt \
-    "Ready to clean and create output directories for ${LIBRARY_NAME}" \
-    "Will remove and recreate: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}" \
-    "Will remove and recreate: ${OUTPUT_LIB}/${LIBRARY_NAME}" \
-    "Will remove and recreate: ${OUTPUT_SRC}/${LIBRARY_NAME}"
-
 rm -rf "${OUTPUT_INCLUDE}/${LIBRARY_NAME}"
 rm -rf "${OUTPUT_LIB}/${LIBRARY_NAME}"
 rm -rf "${OUTPUT_SRC}/${LIBRARY_NAME}"
@@ -91,11 +110,6 @@ mkdir -p "${OUTPUT_LIB}/${LIBRARY_NAME}"
 mkdir -p "${OUTPUT_SRC}/${LIBRARY_NAME}"
 
 # Extract source to output/platforms/${PLATFORM}/src/
-interactive_prompt \
-    "Ready to extract source archive" \
-    "Archive: ${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" \
-    "Destination: ${OUTPUT_SRC}/${LIBRARY_NAME}"
-
 cd "${OUTPUT_SRC}/${LIBRARY_NAME}"
 tar -xf "${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" --strip-components=1
 
@@ -115,12 +129,6 @@ PKG_CONFIG_BASE="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/fontconfig/_build/lib/pkgconfi
 export PKG_CONFIG_PATH
 
 # Configure and build
-interactive_prompt \
-    "Ready to configure and build ${LIBRARY_NAME}" \
-    "Platform: ${PLATFORM}" \
-    "Build directory: ${BUILD_DIR}" \
-    "Dependencies will be found from: ${OUTPUT_INCLUDE} and ${OUTPUT_LIB}"
-
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build (separate arm64 and x86_64 builds, then lipo)
     
@@ -210,11 +218,6 @@ elif [[ $OS = 'Linux' ]]; then
 fi
 
 # Copy headers and libraries
-interactive_prompt \
-    "Ready to copy headers and libraries" \
-    "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
-    "Libraries: ${OUTPUT_LIB}/${LIBRARY_NAME}/libMagick*.a"
-
 cp -R "${PREFIX}/include/ImageMagick-7"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
 cp "${PREFIX}/lib/libMagick++-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"

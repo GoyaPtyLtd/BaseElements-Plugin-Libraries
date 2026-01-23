@@ -6,8 +6,8 @@ set -e
 # variables are already exported, but sourcing again is harmless.
 source "$(dirname "$0")/_build_common.sh" "$@"
 
-LIBRARY_NAME="zlib"
-ARCHIVE_NAME="zlib.tar.xz"
+LIBRARY_NAME="libunistring"
+ARCHIVE_NAME="libunistring.tar.gz"
 
 print_header "Starting BE Library Build : ${LIBRARY_NAME}"
 
@@ -32,16 +32,17 @@ PREFIX="${BUILD_DIR}"
 # Configure and build
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build
-    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
+    print_info "Configuring ${LIBRARY_NAME} for macOS (universal: arm64 + x86_64)..."
     CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-    ./configure --static --prefix="${PREFIX}"
+    CPPFLAGS+="-Wno-deprecated-declarations" \
+	./configure --silent --enable-static --enable-shared=NO --prefix="${PREFIX}"
     
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
-    print_info "Configuring for Linux..."
+    print_info "Configuring ${LIBRARY_NAME} for Linux..."
     CC=clang CXX=clang++ \
     CFLAGS="-fPIC" \
-    ./configure --static --prefix="${PREFIX}"
+    ./configure --silent --enable-static --enable-shared=NO --prefix="${PREFIX}"
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
@@ -50,6 +51,6 @@ make --silent install
 
 # Copy headers and libraries
 cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-cp "${PREFIX}/lib/libz.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 print_success "Build complete for ${LIBRARY_NAME}"

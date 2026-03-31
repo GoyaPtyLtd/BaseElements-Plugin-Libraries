@@ -144,7 +144,7 @@ download "openssl" "3.2.1" "18" "https://www.openssl.org/source/openssl-3.2.1.ta
 download "Poco" "1.14.2" "19" "https://github.com/pocoproject/poco/archive/refs/tags/poco-1.14.2-release.tar.gz" "poco.tar.gz"
 download "libunistring" "1.2" "20" "https://gnu.mirrorservice.org/libunistring/libunistring-1.2.tar.gz" "libunistring.tar.gz"
 download "podofo" "1.0.3" "21" "https://github.com/podofo/podofo/archive/refs/tags/1.0.3.tar.gz" "podofo.tar.gz"
-download "zlib" "1.3.1" "22" "https://www.zlib.net/zlib-1.3.1.tar.xz" "zlib.tar.xz"
+download "zlib" "1.3.1" "22" "https://zlib.net/fossils/zlib-1.3.1.tar.gz" "zlib.tar.gz"
 download "libpng" "1.6.43" "23" "https://github.com/pnggroup/libpng/archive/refs/tags/v1.6.43.tar.gz" "libpng.tar.gz"
 download "nghttp2" "1.62.1" "24" "https://github.com/nghttp2/nghttp2/releases/download/v1.62.1/nghttp2-1.62.1.tar.xz" "nghttp2.tar.xz"
 download "FM Plugin SDK" "22.0.1.68" "25" "https://downloads.claris.com/DEVREL/sdk/fm_plugin_sdk_22.0.1.68.zip" "fm_plugin_sdk.zip"

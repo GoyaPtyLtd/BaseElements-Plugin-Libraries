@@ -7,7 +7,7 @@ set -e
 source "$(dirname "$0")/_build_common.sh" "$@"
 
 LIBRARY_NAME="zlib"
-ARCHIVE_NAME="zlib.tar.xz"
+ARCHIVE_NAME="zlib.tar.gz"
 
 print_header "Starting ${LIBRARY_NAME} Build"
 

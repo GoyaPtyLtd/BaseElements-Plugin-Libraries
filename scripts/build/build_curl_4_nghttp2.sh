@@ -62,7 +62,18 @@ elif [[ $OS = 'Linux' ]]; then
     CC=clang CXX=clang++ \
     ./configure --silent --enable-lib-only --enable-shared=no --enable-static \
         --prefix="${PREFIX}"
-    
+
+    print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+    make -j${JOBS}
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    CC=clang CXX=clang++ \
+    ./configure --silent --enable-lib-only --enable-shared=no --enable-static \
+        --host=x86_64-w64-mingw32 \
+        --prefix="${PREFIX}"
+
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
     make -j${JOBS}
 fi
@@ -77,5 +88,9 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/nghttp2"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/nghttp2.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

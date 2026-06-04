@@ -12,6 +12,7 @@ if ! command -v wget &> /dev/null; then
     print_error "ERROR: wget is not installed. Please install it first:"
     echo "  Ubuntu: sudo apt install wget"
     echo "  macOS: brew install wget"
+    echo "  MSYS2:  pacman -S mingw-w64-clang-x86_64-wget"
     exit 1
 fi
 

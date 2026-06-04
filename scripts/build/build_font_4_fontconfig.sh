@@ -98,7 +98,7 @@ if [[ $OS = 'Darwin' ]]; then
     ./configure --silent --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
         --with-expat=${LIBEXPAT_PREFIX} \
         --prefix="${PREFIX}"
-    
+
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
@@ -108,6 +108,18 @@ elif [[ $OS = 'Linux' ]]; then
     FREETYPE_CFLAGS="-I${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="-L${OUTPUT_LIB}/freetype2 -lfreetype" \
     ./configure --silent --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
         --with-expat=${LIBEXPAT_PREFIX} \
+        --prefix="${PREFIX}"
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    CC=clang CXX=clang++ \
+    LDFLAGS="-L${OUTPUT_LIB}" \
+    FREETYPE_CFLAGS="-I${OUTPUT_INCLUDE}/freetype2" FREETYPE_LIBS="-L${OUTPUT_LIB}/freetype2 -lfreetype" \
+    ./configure --silent --disable-shared --disable-docs --disable-cache-build --disable-dependency-tracking --disable-silent-rules \
+        --with-expat=${LIBEXPAT_PREFIX} \
+        --sysconfdir=/etc --localstatedir=/var \
+        --host=x86_64-w64-mingw32 \
         --prefix="${PREFIX}"
 fi
 
@@ -123,5 +135,9 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/fontconfig"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/fontconfig.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

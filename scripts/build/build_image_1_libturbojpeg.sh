@@ -102,7 +102,18 @@ elif [[ $OS = 'Linux' ]]; then
     cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=NO -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
         -DCMAKE_IGNORE_PATH=/usr/lib/x86_64-linux-gnu/ \
         -DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
-    
+
+    print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+    make --silent -j${JOBS}
+    make --silent install
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS=NO \
+        -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+        -DCMAKE_INSTALL_PREFIX="${PREFIX}" ./
+
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
     make --silent -j${JOBS}
     make --silent install
@@ -118,5 +129,10 @@ cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || 
 
 cp "${PREFIX}/lib/libturbojpeg.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libjpeg.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/libturbojpeg.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/turbojpeg.lib"
+    convert_to_lib "${PREFIX}/lib/libjpeg.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/jpeg.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

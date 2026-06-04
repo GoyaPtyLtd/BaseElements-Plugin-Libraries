@@ -66,6 +66,12 @@ elif [[ $OS = 'Linux' ]]; then
 
 	#./configure --prefix="${PREFIX}" --disable-shared --enable-static --disable-dec265 --disable-sherlock265 --disable-sse --disable-dependency-tracking
 
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
+        -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+        -DBUILD_SHARED_LIBS=OFF -DENABLE_SDL=FALSE -DENABLE_ENCODER=FALSE ./
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
@@ -80,5 +86,9 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/${LIBRARY_NAME}"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/de265.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

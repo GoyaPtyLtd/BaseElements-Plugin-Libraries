@@ -122,6 +122,18 @@ elif [[ $OS = 'Linux' ]]; then
         --with-libz --with-libz-prefix=${ZLIB_PREFIX} \
         --with-crypto=openssl --with-libssl-prefix=${OPENSSL_PREFIX} \
         --prefix="${PREFIX}"
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    CC=clang CXX=clang++ \
+    CPPFLAGS="-I${OUTPUT_INCLUDE}/zlib" \
+    LDFLAGS="-L${OUTPUT_LIB}/zlib" \
+    ./configure --silent --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \
+        --with-libz --with-libz-prefix=${ZLIB_PREFIX} \
+        --with-crypto=openssl --with-libssl-prefix=${OPENSSL_PREFIX} \
+        --host=x86_64-w64-mingw32 \
+        --prefix="${PREFIX}"
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
@@ -136,5 +148,9 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/ssh2.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

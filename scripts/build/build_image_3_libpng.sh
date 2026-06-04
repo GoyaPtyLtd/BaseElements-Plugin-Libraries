@@ -81,7 +81,7 @@ if [[ $OS = 'Darwin' ]]; then
     CPPFLAGS="-I${OUTPUT_INCLUDE}/zlib" LDFLAGS="-L${OUTPUT_LIB}/zlib" \
     ./configure --silent --disable-shared --disable-dependency-tracking --disable-silent-rules --disable-arm-neon \
         --prefix="${PREFIX}"
-    
+
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
@@ -89,6 +89,15 @@ elif [[ $OS = 'Linux' ]]; then
     CFLAGS="-fPIC" \
     CPPFLAGS="-I${OUTPUT_INCLUDE}/zlib" LDFLAGS="-L${OUTPUT_LIB}/zlib" \
     ./configure --silent --disable-shared --disable-dependency-tracking --disable-silent-rules \
+        --prefix="${PREFIX}"
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    CC=clang CXX=clang++ \
+    CPPFLAGS="-I${OUTPUT_INCLUDE}/zlib" LDFLAGS="-L${OUTPUT_LIB}/zlib" \
+    ./configure --silent --disable-shared --disable-dependency-tracking --disable-silent-rules \
+        --host=x86_64-w64-mingw32 \
         --prefix="${PREFIX}"
 fi
 
@@ -104,5 +113,9 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/libpng16"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 cp "${PREFIX}/lib/libpng16.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/libpng16.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/png16.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

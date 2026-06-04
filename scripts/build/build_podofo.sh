@@ -165,6 +165,23 @@ elif [[ $OS = 'Linux' ]]; then
          -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
          -DCMAKE_IGNORE_PREFIX_PATH="/usr/lib;/opt/homebrew;/lib/aarch64-linux-gnu;/lib/x86_64-linux-gnu" \
          -DCMAKE_CXX_FLAGS="-fPIC" ..
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
+         -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+         -DPODOFO_BUILD_LIB_ONLY:BOOL=TRUE -DPODOFO_BUILD_STATIC:BOOL=TRUE \
+         -DFREETYPE_LIBRARY_RELEASE="${OUTPUT_LIB}/freetype2/libfreetype.a" -DFREETYPE_INCLUDE_DIRS="${OUTPUT_INCLUDE}/freetype2" \
+         -DFontconfig_LIBRARY="${OUTPUT_LIB}/fontconfig/libfontconfig.a" -DFontconfig_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DOPENSSL_LIBRARIES="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_SSL_LIBRARY="${OUTPUT_LIB}/openssl/libssl.a" -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" \
+         -DLIBXML2_LIBRARY="${OUTPUT_LIB}/libxml/libxml2.a" -DLIBXML2_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+         -DLIBXML2_XMLLINT_EXECUTABLE="${OUTPUT_SRC}/libxml/_build/bin/xmllint.exe" \
+         -DZLIB_LIBRARY_RELEASE="${OUTPUT_LIB}/zlib/libz.a" -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
+         -DJPEG_LIBRARY_RELEASE="${OUTPUT_LIB}/libturbojpeg/libturbojpeg.a" -DJPEG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libturbojpeg" \
+         -DPNG_LIBRARY="${OUTPUT_LIB}/libpng/libpng16.a" -DPNG_PNG_INCLUDE_DIR="${OUTPUT_INCLUDE}/libpng" \
+         -DCMAKE_CXX_STANDARD=11 ..
 fi
 
 # Build
@@ -189,5 +206,11 @@ cp -R "${PREFIX}/include/podofo"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/n
 cp "${PREFIX}/lib/libpodofo.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libpodofo_private.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libpodofo_3rdparty.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/libpodofo.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/podofo.lib"
+    convert_to_lib "${PREFIX}/lib/libpodofo_private.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/podofo_private.lib"
+    convert_to_lib "${PREFIX}/lib/libpodofo_3rdparty.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/podofo_3rdparty.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

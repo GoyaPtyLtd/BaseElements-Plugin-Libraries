@@ -53,13 +53,23 @@ if [[ $OS = 'Darwin' ]]; then
     ./configure --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
         --enable-all-static --enable-pthread-tls --without-oniguruma \
         --prefix="${PREFIX}"
-    
+
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ CFLAGS="-fPIC" \
     ./configure --silent --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
         --enable-all-static --enable-pthread-tls --without-oniguruma \
+        --prefix="${PREFIX}"
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    CC=clang CXX=clang++ \
+    CFLAGS="-Wno-unused-but-set-variable -Wno-unused-variable" \
+    ./configure --silent --disable-maintainer-mode --disable-dependency-tracking --disable-docs --disable-shared \
+        --enable-all-static --disable-pthread-tls --without-oniguruma \
+        --host=x86_64-w64-mingw32 \
         --prefix="${PREFIX}"
 fi
 
@@ -85,5 +95,9 @@ interactive_prompt \
 cp src/version.h "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/"
 cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/${LIBRARY_NAME}.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

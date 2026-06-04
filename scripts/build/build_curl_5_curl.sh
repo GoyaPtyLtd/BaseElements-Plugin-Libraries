@@ -166,7 +166,22 @@ elif [[ $OS = 'Linux' ]]; then
         --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp \
         --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX} --with-libssh2=${LIBSSH2_PREFIX} \
         --prefix="${PREFIX}"
-    
+
+    print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+    make --silent -j${JOBS}
+    make --silent install
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    CC=clang CXX=clang++ \
+    ./configure --silent --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
+        --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp \
+        --disable-unix-sockets \
+        --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX} --with-libssh2=${LIBSSH2_PREFIX} --with-nghttp2=${NGHTTP2_PREFIX} \
+        --host=x86_64-w64-mingw32 \
+        --prefix="${PREFIX}"
+
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
     make --silent -j${JOBS}
     make --silent install
@@ -180,5 +195,9 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/curl"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 cp "${PREFIX}/lib/libcurl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/libcurl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/curl.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

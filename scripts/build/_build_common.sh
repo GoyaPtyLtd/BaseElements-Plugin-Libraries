@@ -73,10 +73,18 @@ SOURCE_BASE="${PROJECT_ROOT}/source"
 OUTPUT_BASE="${PROJECT_ROOT}/output"
 
 # Detect platform (OS and architecture)
-# Uses new packages system naming: ubuntu20.04-x86_64, macos-arm64-x86_64, etc.
-OS=$(uname -s)		# Linux|Darwin
+# Uses new packages system naming: ubuntu20.04-x86_64, macos-arm64-x86_64, windows-x86_64, etc.
+OS=$(uname -s)		# Linux|Darwin|MINGW*|MSYS*
 # Detect architecture using uname -m
 ARCH=$(uname -m)
+
+# Normalize OS for Windows/MSYS2 environments
+case "${OS}" in
+    MINGW*|MSYS*|CYGWIN*)
+        OS='Windows'
+        ;;
+esac
+
 # Normalize architecture names
 case "${ARCH}" in
     "arm64")
@@ -108,15 +116,15 @@ elif [[ $OS = 'Linux' ]]; then
         echo "ERROR: Cannot read /etc/os-release" >&2
         return 1 2>/dev/null || exit 1
     fi
-    
+
     os_id="$(. /etc/os-release && echo "$ID")"
     version_id="$(. /etc/os-release && echo "$VERSION_ID")"
-    
+
     if [[ "$os_id" != "ubuntu" ]]; then
         echo "ERROR: This script requires Ubuntu. Detected: $os_id" >&2
         return 1 2>/dev/null || exit 1
     fi
-    
+
     # Map Ubuntu version to platform name
     case "${version_id}" in
         "20.04")
@@ -134,13 +142,22 @@ elif [[ $OS = 'Linux' ]]; then
             return 1 2>/dev/null || exit 1
             ;;
     esac
-    
+
     # Map architecture to platform name
     if [[ $ARCH != 'aarch64' ]] && [[ $ARCH != 'x86_64' ]]; then
         echo "ERROR: Unsupported architecture: $ARCH" >&2
         return 1 2>/dev/null || exit 1
     fi
     PLATFORM="${ubuntu_version}-${ARCH}"
+elif [[ $OS = 'Windows' ]]; then
+    # Windows via MSYS2 CLANG64 environment
+    if [[ "${MSYSTEM}" != "CLANG64" ]]; then
+        echo "ERROR: Windows builds require MSYS2 CLANG64 environment (MSYSTEM=CLANG64)" >&2
+        echo "       Current MSYSTEM: ${MSYSTEM:-<not set>}" >&2
+        return 1 2>/dev/null || exit 1
+    fi
+    PLATFORM='windows-x86_64'
+    JOBS=$(($(nproc) + 1))
 fi
 
 if [[ "${PLATFORM}" = 'unknown' ]]; then
@@ -226,10 +243,57 @@ interactive_prompt() {
     fi
 }
 
+# Helper function: Convert a GNU ar .a archive to a COFF .lib file (Windows/MSYS2 only)
+# Extracts COFF object files from the .a archive and repackages them with llvm-lib.
+# Usage: convert_to_lib "/path/to/libfoo.a" "/output/path/foo.lib"
+convert_to_lib() {
+    local src_a="$1"
+    local dst_lib="$2"
+
+    if [[ ! -f "$src_a" ]]; then
+        print_error "ERROR: convert_to_lib: source archive not found: ${src_a}"
+        return 1
+    fi
+
+    local tmp_dir
+    tmp_dir=$(mktemp -d)
+
+    # Extract COFF object files from the GNU ar archive
+    (cd "$tmp_dir" && ar x "$src_a")
+
+    # Collect all extracted object files
+    local obj_files=()
+    for f in "$tmp_dir"/*.o "$tmp_dir"/*.obj; do
+        [[ -f "$f" ]] && obj_files+=("$f")
+    done
+
+    if [[ ${#obj_files[@]} -gt 0 ]]; then
+        # llvm-lib is a native Windows exe:
+        # 1. Use cygpath -w so MSYS2 path conversion doesn't corrupt /OUT:.
+        # 2. Write object paths to a response file (@file) to avoid
+        #    "argument list too long" with large libraries like libunistring.
+        local dst_lib_win
+        dst_lib_win=$(cygpath -w "$dst_lib")
+        local rsp_file="${tmp_dir}/objects.rsp"
+        for f in "${obj_files[@]}"; do
+            cygpath -w "$f"
+        done > "$rsp_file"
+        local rsp_file_win
+        rsp_file_win=$(cygpath -w "$rsp_file")
+        llvm-lib "/OUT:${dst_lib_win}" "@${rsp_file_win}"
+        print_info "  Converted $(basename "$src_a") -> $(basename "$dst_lib")"
+    else
+        print_error "WARNING: No object files extracted from ${src_a}"
+    fi
+
+    rm -rf "$tmp_dir"
+}
+
 # Export functions so they're available to calling scripts
 export -f print_header
 export -f print_info
 export -f interactive_prompt
 export -f print_success
 export -f print_error
+export -f convert_to_lib
 

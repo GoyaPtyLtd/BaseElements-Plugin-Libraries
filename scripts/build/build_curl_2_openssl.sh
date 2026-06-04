@@ -90,7 +90,20 @@ elif [[ $OS = 'Linux' ]]; then
     CC=clang CXX=clang++ \
     ./Configure linux-generic64 no-shared no-docs no-tests \
         --prefix="${PREFIX}"
-    
+
+    print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+    make -j${JOBS}
+    make install_sw
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    # Must use MSYS2's /usr/bin/perl (Unix path style), not the MinGW native perl
+    # which is first on PATH in CLANG64 but produces backslash paths that break Configure.
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    CC=clang CXX=clang++ \
+    /usr/bin/perl Configure mingw64 no-shared no-docs no-tests \
+        --prefix="${PREFIX}"
+
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
     make -j${JOBS}
     make install_sw
@@ -110,5 +123,10 @@ fi
 
 cp "${PREFIX}/lib/libcrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libssl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/libcrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/crypto.lib"
+    convert_to_lib "${PREFIX}/lib/libssl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/ssl.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

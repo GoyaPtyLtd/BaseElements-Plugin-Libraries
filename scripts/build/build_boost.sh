@@ -64,6 +64,7 @@ print_info "Bootstrapping ${LIBRARY_NAME}..."
 CFLAGS=()
 CXXFLAGS=()
 LINKFLAGS=()
+B2_LAYOUT=""
 
 if [[ $OS = 'Darwin' ]]; then
     # macOS universal build
@@ -95,6 +96,12 @@ elif [[ $OS = 'Linux' ]]; then
     CXXFLAGS+=(
         -fPIC
     )
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    # b2 defaults to 'versioned' layout on Windows (libboost_atomic-clang-mt-x64-1_89.a);
+    # force 'system' layout so libraries use the plain names the copy step expects.
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    B2_LAYOUT="--layout=system"
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
@@ -103,6 +110,7 @@ print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
     cxxflags="${CXXFLAGS[*]}" \
     linkflags="${LINKFLAGS[*]}" \
     address-model=64 link=static runtime-link=static \
+    ${B2_LAYOUT} \
     --with-atomic --with-chrono --with-date_time --with-exception \
     --with-filesystem --with-program_options --with-regex --with-system --with-thread \
     --prefix="${PREFIX}" -j${JOBS} \
@@ -116,9 +124,25 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/boost"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
-for LIB in "${LIBS[@]}"; do
-    cp "${PREFIX}/lib/${LIB}" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-done
+if [[ $OS = 'Windows' ]]; then
+    # Boost on Windows (MSYS2 clang64 + --layout=system) produces .lib files directly
+    # (COFF format, MinGW naming with lib prefix) — no llvm-lib conversion needed.
+    WIN_LIBS=(
+        libboost_atomic.lib
+        libboost_date_time.lib
+        libboost_filesystem.lib
+        libboost_program_options.lib
+        libboost_regex.lib
+        libboost_thread.lib
+    )
+    for LIB in "${WIN_LIBS[@]}"; do
+        cp "${PREFIX}/lib/${LIB}" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+    done
+else
+    for LIB in "${LIBS[@]}"; do
+        cp "${PREFIX}/lib/${LIB}" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+    done
+fi
 
 # iOS build (preserved for future use)
 : <<END_COMMENT

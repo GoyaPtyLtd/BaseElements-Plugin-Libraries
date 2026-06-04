@@ -53,25 +53,42 @@ interactive_prompt \
     "Platform: ${PLATFORM}" \
     "Build directory: ${BUILD_DIR}"
 
-# macOS universal build
-print_info "Configuring for macOS (universal: arm64 + x86_64)..."
-CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
-cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
-    -DCMAKE_IGNORE_PATH=/usr/local/lib/ \
-    -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-    -DCMAKE_INCLUDE_PATH:path="${OUTPUT_INCLUDE}" \
-    -DBUILD_CODEC:BOOL=OFF \
-    -DCMAKE_INSTALL_PREFIX="${PREFIX}" ../
+if [[ $OS = 'Darwin' ]]; then
+    # macOS universal build
+    print_info "Configuring for macOS (universal: arm64 + x86_64)..."
+    CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
+    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
+        -DCMAKE_IGNORE_PATH=/usr/local/lib/ \
+        -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+        -DCMAKE_INCLUDE_PATH:path="${OUTPUT_INCLUDE}" \
+        -DBUILD_CODEC:BOOL=OFF \
+        -DCMAKE_INSTALL_PREFIX="${PREFIX}" ../
 
-print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+    print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
 
-# Build only the library target to avoid linking executables against Homebrew libraries
-cmake --build . --target openjp2 -- -j${JOBS}
+    # Build only the library target to avoid linking executables against Homebrew libraries
+    cmake --build . --target openjp2 -- -j${JOBS}
 
-# Install only the library (skip make install which rebuilds all targets including executables)
-# Copy the library from build location to PREFIX
-mkdir -p "${PREFIX}/lib"
-cp "${BUILD_DIR}/bin/libopenjp2.a" "${PREFIX}/lib/libopenjp2.a"
+    # Install only the library (skip make install which rebuilds all targets including executables)
+    # Copy the library from build location to PREFIX
+    mkdir -p "${PREFIX}/lib"
+    cp "${BUILD_DIR}/bin/libopenjp2.a" "${PREFIX}/lib/libopenjp2.a"
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=RELEASE -DBUILD_SHARED_LIBS:BOOL=OFF \
+        -DCMAKE_C_COMPILER=clang -DCMAKE_CXX_COMPILER=clang++ \
+        -DCMAKE_INCLUDE_PATH:path="${OUTPUT_INCLUDE}" \
+        -DBUILD_CODEC:BOOL=OFF \
+        -DCMAKE_INSTALL_PREFIX="${PREFIX}" ../
+
+    print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+    cmake --build . --target openjp2 -- -j${JOBS}
+
+    mkdir -p "${PREFIX}/lib"
+    cp "${BUILD_DIR}/bin/libopenjp2.a" "${PREFIX}/lib/libopenjp2.a"
+fi
 
 # Copy headers manually (no generated headers for openjp2)
 mkdir -p "${PREFIX}/include/openjpeg-2.5"
@@ -89,5 +106,9 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/openjpeg-2.5"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/openjp2.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

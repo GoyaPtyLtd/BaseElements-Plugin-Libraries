@@ -51,13 +51,21 @@ if [[ $OS = 'Darwin' ]]; then
     print_info "Configuring for macOS (universal: arm64 + x86_64)..."
     CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
     ./configure --silent --disable-shared --prefix="${PREFIX}"
-    
+
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
     CFLAGS="-fPIC" \
     ./configure --silent --disable-shared --prefix="${PREFIX}"
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    CC=clang CXX=clang++ \
+    ./configure --silent --disable-shared \
+        --host=x86_64-w64-mingw32 \
+        --prefix="${PREFIX}"
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
@@ -73,5 +81,10 @@ interactive_prompt \
 cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 cp "${PREFIX}/lib/libiconv.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libcharset.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/libiconv.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/iconv.lib"
+    convert_to_lib "${PREFIX}/lib/libcharset.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/charset.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

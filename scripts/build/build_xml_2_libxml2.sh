@@ -85,13 +85,22 @@ if [[ $OS = 'Darwin' ]]; then
     ./configure --silent --disable-shared --with-threads --with-sax1 --without-python --without-zlib --without-lzma \
         --with-iconv="${ICONV_PREFIX}" \
         --prefix="${PREFIX}"
-    
+
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
     CFLAGS="-fPIC" \
     ./configure --silent --disable-shared --with-threads --with-sax1 --without-python --without-zlib --without-lzma \
+        --prefix="${PREFIX}"
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    CC=clang CXX=clang++ \
+    ./configure --silent --disable-shared --with-threads --with-sax1 --without-python --without-zlib --without-lzma \
+        --with-iconv="${ICONV_PREFIX}" \
+        --host=x86_64-w64-mingw32 \
         --prefix="${PREFIX}"
 fi
 
@@ -113,5 +122,9 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/libxml2/libxml"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 cp "${PREFIX}/lib/libxml2.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/libxml2.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/xml2.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

@@ -22,7 +22,7 @@ fi
 
 # Select tar command based on OS
 # macOS: use gtar (GNU tar from Homebrew) for --transform support
-# Ubuntu: use tar (GNU tar by default)
+# Ubuntu/Windows: use tar (GNU tar by default)
 if [[ $OS = 'Darwin' ]]; then
     if command -v gtar >/dev/null 2>&1; then
         TAR_CMD="gtar"
@@ -32,7 +32,7 @@ if [[ $OS = 'Darwin' ]]; then
         exit 1
     fi
 else
-    # Linux/Ubuntu: use system tar (GNU tar)
+    # Linux/Ubuntu/Windows (MSYS2): use system tar (GNU tar)
     if command -v tar >/dev/null 2>&1; then
         TAR_CMD="tar"
         USE_TRANSFORM=true
@@ -57,11 +57,12 @@ print_header "Packaging platform directory"
 # Use the current platform from _build_common.sh
 # Support both Ubuntu and macOS platforms
 case "$PLATFORM" in
-    ubuntu*|macos*)
+    ubuntu*|macos*|windows*)
         # Valid platform
         ;;
     *)
-        print_error "ERROR: This script only packages Ubuntu and macOS platforms. Current platform: ${PLATFORM}"
+        print_error "ERROR: Unsupported platform: ${PLATFORM}"
+        print_error "       Supported: ubuntu*, macos*, windows*"
         exit 1
         ;;
 esac
@@ -112,10 +113,18 @@ if [[ -d "${PLATFORM_DIR}/lib" ]]; then
     print_info "  Including libraries from lib/"
     mkdir -p "${TEMP_PACKAGE_DIR}/lib"
     # Copy all library files from all subdirectories (flatten structure)
-    find "${PLATFORM_DIR}/lib" -name "*.a" -type f -exec cp {} "${TEMP_PACKAGE_DIR}/lib/" \; || {
-        print_error "ERROR: No libraries found in ${PLATFORM_DIR}/lib"
-        exit 1
-    }
+    # On Windows, include both .a (for build-time use) and .lib (COFF format for MSVC compatibility)
+    if [[ $OS = 'Windows' ]]; then
+        find "${PLATFORM_DIR}/lib" \( -name "*.a" -o -name "*.lib" \) -type f -exec cp {} "${TEMP_PACKAGE_DIR}/lib/" \; || {
+            print_error "ERROR: No libraries found in ${PLATFORM_DIR}/lib"
+            exit 1
+        }
+    else
+        find "${PLATFORM_DIR}/lib" -name "*.a" -type f -exec cp {} "${TEMP_PACKAGE_DIR}/lib/" \; || {
+            print_error "ERROR: No libraries found in ${PLATFORM_DIR}/lib"
+            exit 1
+        }
+    fi
 fi
 
 # Copy duktape source files (if they exist)

@@ -26,8 +26,8 @@ REQUIRED_LIBS=(
     "fontconfig:libfontconfig.a"
 )
 
-# libopenjp2 is required only on macOS
-if [[ $OS = 'Darwin' ]]; then
+# libopenjp2 is required on macOS and Windows
+if [[ $OS = 'Darwin' ]] || [[ $OS = 'Windows' ]]; then
     REQUIRED_LIBS+=("libopenjp2:libopenjp2.a")
 fi
 
@@ -41,8 +41,8 @@ done
 # Check required headers
 REQUIRED_HEADERS=("zlib" "libpng" "libde265" "libheif" "libturbojpeg" "freetype2" "fontconfig")
 
-# libopenjp2 headers are required only on macOS
-if [[ $OS = 'Darwin' ]]; then
+# libopenjp2 headers are required on macOS and Windows
+if [[ $OS = 'Darwin' ]] || [[ $OS = 'Windows' ]]; then
     REQUIRED_HEADERS+=("libopenjp2")
 fi
 
@@ -65,8 +65,8 @@ if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
     echo "  image_2_libde265 (libde265)"
     echo "  image_3_libpng (libpng)"
     echo "  image_4_libheif (libheif)"
-    if [[ $OS = 'Darwin' ]]; then
-        echo "  image_5_libopenjp2 (libopenjp2) - macOS only"
+    if [[ $OS = 'Darwin' ]] || [[ $OS = 'Windows' ]]; then
+        echo "  image_5_libopenjp2 (libopenjp2) - macOS and Windows"
     fi
     echo "  font_3_freetype (freetype2)"
     echo "  font_4_fontconfig (fontconfig)"
@@ -203,7 +203,30 @@ elif [[ $OS = 'Linux' ]]; then
         --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
         --without-lcms --without-lqr --without-djvu --without-openexr --without-jbig \
         --prefix="${PREFIX}"
-    
+
+    print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
+    make -j${JOBS}
+    make install
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+
+    PKG_CONFIG_PATH="${PKG_CONFIG_BASE}:${OUTPUT_SRC}/libopenjp2/_build"
+    PKG_CONFIG_PATH="${PKG_CONFIG_PATH}:${OUTPUT_SRC}/libturbojpeg/_build/lib/pkgconfig"
+    export PKG_CONFIG_PATH
+
+    CC=clang CXX=clang++ \
+    ./configure --disable-shared --disable-docs --disable-dependency-tracking \
+        --with-heic=yes --with-freetype=yes --with-fontconfig=yes --with-png=yes --with-jpeg=yes --with-tiff=no --with-lcms=no \
+        --with-openjp2=yes \
+        --without-utilities --without-xml --without-lzma --without-x --with-quantum-depth=16 \
+        --enable-zero-configuration --enable-hdri --without-bzlib --disable-openmp --disable-assert \
+        --without-lcms --without-lqr --without-djvu --without-openexr --without-jbig \
+        --without-unix-sockets \
+        --host=x86_64-w64-mingw32 \
+        --prefix="${PREFIX}"
+
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
     make -j${JOBS}
     make install
@@ -220,5 +243,11 @@ cp -R "${PREFIX}/include/ImageMagick-7"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2
 cp "${PREFIX}/lib/libMagick++-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libMagickCore-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libMagickWand-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/libMagick++-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/Magick++-7.Q16HDRI.lib"
+    convert_to_lib "${PREFIX}/lib/libMagickCore-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/MagickCore-7.Q16HDRI.lib"
+    convert_to_lib "${PREFIX}/lib/libMagickWand-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/MagickWand-7.Q16HDRI.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

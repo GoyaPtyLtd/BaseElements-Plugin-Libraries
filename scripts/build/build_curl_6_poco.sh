@@ -163,7 +163,7 @@ elif [[ $OS = 'Linux' ]]; then
     unset CXXFLAGS
     unset LDFLAGS
     unset ARCHFLAGS
-    
+
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
     ARCHFLAGS="" \
@@ -175,7 +175,7 @@ elif [[ $OS = 'Linux' ]]; then
         --no-sharedlibs --static --poquito --no-tests --no-samples \
         --omit="CppParser,Data,Encodings,MongoDB,PageCompiler,Redis" \
         --include-path="${OUTPUT_INCLUDE}" --library-path="${OUTPUT_LIB}/${LIBRARY_NAME}"
-    
+
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
     # CRITICAL: ARCHFLAGS must be set to empty string to override Poco's config file which sets it to -arch
     # The config file has: ARCHFLAGS ?= -arch $(POCO_HOST_OSARCH)
@@ -184,6 +184,43 @@ elif [[ $OS = 'Linux' ]]; then
     ARCHFLAGS="" \
     CFLAGS="-fPIC" \
     CXXFLAGS="-fPIC" \
+    make -j${JOBS}
+    make install
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64) - use cmake instead of Poco's own build system
+    print_info "Configuring for Windows (MSYS2 clang64, cmake)..."
+    cd "${BUILD_DIR}"
+    cmake -G "Unix Makefiles" \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX="${PREFIX}" \
+        -DCMAKE_C_COMPILER=clang \
+        -DCMAKE_CXX_COMPILER=clang++ \
+        -DBUILD_SHARED_LIBS=OFF \
+        -DENABLE_TESTS=OFF \
+        -DENABLE_SAMPLES=OFF \
+        -DENABLE_CPP_PARSER=OFF \
+        -DENABLE_DATA=OFF \
+        -DENABLE_DATA_SQLITE=OFF \
+        -DENABLE_DATA_MYSQL=OFF \
+        -DENABLE_DATA_ODBC=OFF \
+        -DENABLE_MONGODB=OFF \
+        -DENABLE_REDIS=OFF \
+        -DENABLE_PAGECOMPILER=OFF \
+        -DENABLE_PAGECOMPILER_FILE2PAGE=OFF \
+        -DENABLE_ENCODINGS=OFF \
+        -DENABLE_ENCODINGS_COMPILER=OFF \
+        -DENABLE_JWT=OFF \
+        -DENABLE_NETSSL_WIN=OFF \
+        -DENABLE_APACHECONNECTOR=OFF \
+        -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
+        -DOPENSSL_SSL_LIBRARY="${OUTPUT_LIB}/openssl/libssl.a" \
+        -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" \
+        -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
+        -DZLIB_LIBRARY="${OUTPUT_LIB}/zlib/libz.a" \
+        "${OUTPUT_SRC}/${LIBRARY_NAME}"
+
+    print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
     make -j${JOBS}
     make install
 fi
@@ -204,5 +241,15 @@ cp "${PREFIX}/lib/libPocoNet.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libPocoXML.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libPocoUtil.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libPocoZip.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/libPocoCrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/PocoCrypto.lib"
+    convert_to_lib "${PREFIX}/lib/libPocoFoundation.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/PocoFoundation.lib"
+    convert_to_lib "${PREFIX}/lib/libPocoJSON.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/PocoJSON.lib"
+    convert_to_lib "${PREFIX}/lib/libPocoNet.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/PocoNet.lib"
+    convert_to_lib "${PREFIX}/lib/libPocoXML.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/PocoXML.lib"
+    convert_to_lib "${PREFIX}/lib/libPocoUtil.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/PocoUtil.lib"
+    convert_to_lib "${PREFIX}/lib/libPocoZip.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/PocoZip.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

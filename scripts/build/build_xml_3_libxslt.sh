@@ -89,7 +89,7 @@ if [[ $OS = 'Darwin' ]]; then
     ./configure --silent --disable-shared --without-python --without-crypto \
         --with-libxml-prefix="${LIBXML_PREFIX}" \
         --prefix="${PREFIX}"
-    
+
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
@@ -97,6 +97,15 @@ elif [[ $OS = 'Linux' ]]; then
     CFLAGS="-fPIC" \
     ./configure --silent --disable-shared --without-python --without-crypto \
         --with-libxml-prefix="${LIBXML_PREFIX}" \
+        --prefix="${PREFIX}"
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    CC=clang CXX=clang++ \
+    ./configure --silent --disable-shared --without-python --without-crypto \
+        --with-libxml-prefix="${LIBXML_PREFIX}" \
+        --host=x86_64-w64-mingw32 \
         --prefix="${PREFIX}"
 fi
 
@@ -114,5 +123,10 @@ cp -R "${PREFIX}/include/libxslt"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/
 cp -R "${PREFIX}/include/libexslt"/* "${OUTPUT_INCLUDE}/libexslt/" 2>/dev/null || true
 cp "${PREFIX}/lib/libxslt.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/libexslt.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/libxslt.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/xslt.lib"
+    convert_to_lib "${PREFIX}/lib/libexslt.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/exslt.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

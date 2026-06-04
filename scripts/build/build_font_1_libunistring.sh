@@ -52,13 +52,23 @@ if [[ $OS = 'Darwin' ]]; then
     CFLAGS="-arch arm64 -arch x86_64 -mmacosx-version-min=10.15" \
     CPPFLAGS+="-Wno-deprecated-declarations" \
 	./configure --silent --enable-static --enable-shared=NO --prefix="${PREFIX}"
-    
+
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
     CFLAGS="-fPIC" \
     ./configure --silent --enable-static --enable-shared=NO --prefix="${PREFIX}"
+
+elif [[ $OS = 'Windows' ]]; then
+    # Windows build (MSYS2 clang64)
+    print_info "Configuring for Windows (MSYS2 clang64)..."
+    CC=clang CXX=clang++ \
+    ./configure --silent --enable-static --enable-shared=NO \
+        --host=x86_64-w64-mingw32 \
+        --prefix="${PREFIX}"
+    # gnulib's nanosleep conflicts with MSYS2's pthread_time.h; skip tests
+    sed -i '/^SUBDIRS/s/ tests//' Makefile
 fi
 
 print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
@@ -73,5 +83,9 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
+if [[ $OS = 'Windows' ]]; then
+    convert_to_lib "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/unistring.lib"
+fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

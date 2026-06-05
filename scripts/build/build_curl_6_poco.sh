@@ -199,10 +199,10 @@ elif [[ $OS = 'Windows' ]]; then
         -DBUILD_SHARED_LIBS=OFF \
         -DENABLE_TESTS=OFF \
         -DENABLE_SAMPLES=OFF \
-        -DENABLE_CPP_PARSER=OFF \
         -DENABLE_DATA=OFF \
         -DENABLE_DATA_SQLITE=OFF \
         -DENABLE_DATA_MYSQL=OFF \
+        -DENABLE_DATA_POSTGRESQL=OFF \
         -DENABLE_DATA_ODBC=OFF \
         -DENABLE_MONGODB=OFF \
         -DENABLE_REDIS=OFF \
@@ -216,8 +216,6 @@ elif [[ $OS = 'Windows' ]]; then
         -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
         -DOPENSSL_SSL_LIBRARY="${OUTPUT_LIB}/openssl/libssl.a" \
         -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" \
-        -DZLIB_INCLUDE_DIR="${OUTPUT_INCLUDE}/zlib" \
-        -DZLIB_LIBRARY="${OUTPUT_LIB}/zlib/libz.a" \
         "${OUTPUT_SRC}/${LIBRARY_NAME}"
 
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."

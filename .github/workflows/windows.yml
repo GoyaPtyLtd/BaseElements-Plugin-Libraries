@@ -1,0 +1,127 @@
+name: Build Windows Libraries
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up MSYS2 (CLANG64)
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: CLANG64
+          update: true
+          install: >-
+            base-devel
+            autotools
+            perl
+            gperf
+            git
+            unzip
+            mingw-w64-clang-x86_64-clang
+            mingw-w64-clang-x86_64-lld
+            mingw-w64-clang-x86_64-llvm
+            mingw-w64-clang-x86_64-cmake
+            mingw-w64-clang-x86_64-ninja
+            mingw-w64-clang-x86_64-python
+            mingw-w64-clang-x86_64-wget
+
+      - name: Debug - Show compiler versions
+        shell: msys2 {0}
+        run: |
+          echo "=========================================="
+          echo "Compiler and Tool Version Information"
+          echo "=========================================="
+          echo ""
+          echo "=== Clang Version ==="
+          clang --version || echo "clang not found"
+          echo ""
+          echo "=== Clang++ Version ==="
+          clang++ --version || echo "clang++ not found"
+          echo ""
+          echo "=== llvm-lib ==="
+          llvm-lib --version 2>/dev/null || llvm-lib /? 2>&1 | head -3 || echo "llvm-lib not found"
+          echo ""
+          echo "=== CMake Version ==="
+          cmake --version || echo "cmake not found"
+          echo ""
+          echo "=== Make Version ==="
+          make --version | head -1 || echo "make not found"
+          echo ""
+          echo "=== MSYSTEM ==="
+          echo "MSYSTEM=${MSYSTEM}"
+          echo ""
+          echo "=========================================="
+
+      - name: Make scripts executable
+        shell: msys2 {0}
+        run: |
+          chmod +x scripts/*.sh
+          chmod +x scripts/build/*.sh
+
+      - name: Clean output folder
+        shell: msys2 {0}
+        working-directory: scripts
+        run: ./0_cleanOutputFolder.sh
+
+      - name: Download sources
+        shell: msys2 {0}
+        working-directory: scripts
+        run: ./1_getSource.sh
+
+      - name: Build jq
+        shell: msys2 {0}
+        working-directory: scripts
+        run: ./2_build.sh --build jq
+
+      - name: Build duktape
+        shell: msys2 {0}
+        working-directory: scripts
+        run: ./2_build.sh --build duktape
+
+      - name: Build curl stack (zlib, openssl, libssh2, nghttp2, curl, poco)
+        shell: msys2 {0}
+        working-directory: scripts
+        run: ./2_build.sh --build curl
+
+      - name: Build font stack (libunistring, libexpat, freetype, fontconfig)
+        shell: msys2 {0}
+        working-directory: scripts
+        run: ./2_build.sh --build font
+
+      - name: Build image stack (libturbojpeg, libde265, libpng, libheif, libopenjp2, ImageMagick)
+        shell: msys2 {0}
+        working-directory: scripts
+        run: ./2_build.sh --build image
+
+      - name: Build xml stack (iconv, libxml2, libxslt)
+        shell: msys2 {0}
+        working-directory: scripts
+        run: ./2_build.sh --build xml
+
+      - name: Build boost
+        shell: msys2 {0}
+        working-directory: scripts
+        run: ./2_build.sh --build boost
+
+      - name: Build podofo
+        shell: msys2 {0}
+        working-directory: scripts
+        run: ./2_build.sh --build podofo
+
+      - name: Package libraries
+        shell: msys2 {0}
+        working-directory: scripts
+        run: ./4_package.sh
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: external-windows-x86_64
+          path: output/platforms/external-windows-x86_64.tar.gz
+          retention-days: 30

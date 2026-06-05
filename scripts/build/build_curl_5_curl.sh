@@ -176,7 +176,7 @@ elif [[ $OS = 'Windows' ]]; then
     print_info "Configuring for Windows (MSYS2 clang64)..."
     CC=clang CXX=clang++ CFLAGS=-pthread \
     ./configure --silent --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
-        --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp \
+        --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 \
         --disable-unix-sockets \
         --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX} --with-libssh2=${LIBSSH2_PREFIX} --with-nghttp2=${NGHTTP2_PREFIX} \
         --host=x86_64-w64-mingw32 \

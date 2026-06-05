@@ -125,7 +125,7 @@ print_header "Starting download of 25 source archives..."
 echo ""
 
 download "Boost" "1.89.0" "1" "https://github.com/boostorg/boost/releases/download/boost-1.89.0/boost-1.89.0-b2-nodocs.tar.gz" "boost.tar.gz"
-download "Curl" "8.7.1" "2" "https://github.com/curl/curl/releases/download/curl-8_7_1/curl-8.7.1.tar.gz" "curl.tar.gz"
+download "Curl" "8.20.0" "2" "https://github.com/curl/curl/releases/download/curl-8_20_0/curl-8.20.0.tar.gz" "curl.tar.gz"
 download "duktape" "2.7.0" "3" "https://duktape.org/duktape-2.7.0.tar.xz" "duktape.tar.xz"
 download "expat" "2.6.2" "4" "https://github.com/libexpat/libexpat/releases/download/R_2_6_2/expat-2.6.2.tar.xz" "expat.tar.xz"
 download "fontconfig" "2.15.0" "5" "https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.gz" "fontconfig.tar.gz"

@@ -146,11 +146,14 @@ interactive_prompt \
     "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
     "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/${LIBRARY_NAME}.a"
 
-cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-
 if [[ $OS = 'Windows' ]]; then
-    convert_to_lib "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/ssh2.lib"
+	cp -R "${PREFIX}/include/openssl"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
+	cp "${PREFIX}/lib64/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+    convert_to_lib "${PREFIX}/lib64/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/ssh2.lib"
+
+else
+	cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
+	cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

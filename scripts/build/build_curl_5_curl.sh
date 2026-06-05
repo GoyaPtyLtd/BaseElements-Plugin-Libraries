@@ -161,7 +161,7 @@ if [[ $OS = 'Darwin' ]]; then
 elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
-    CC=clang CXX=clang++ \
+    CC=clang CXX=clang++  \
     ./configure --silent --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
         --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp \
         --with-zlib=${ZLIB_PREFIX} --with-openssl=${OPENSSL_PREFIX} --with-libssh2=${LIBSSH2_PREFIX} \
@@ -174,7 +174,7 @@ elif [[ $OS = 'Linux' ]]; then
 elif [[ $OS = 'Windows' ]]; then
     # Windows build (MSYS2 clang64)
     print_info "Configuring for Windows (MSYS2 clang64)..."
-    CC=clang CXX=clang++ \
+    CC=clang CXX=clang++ CFLAGS=-pthread \
     ./configure --silent --disable-dependency-tracking --enable-static --disable-shared --disable-manual \
         --without-libpsl --without-brotli --without-zstd --enable-ldap=no --without-libidn2 --without-nghttp3 --without-librtmp \
         --disable-unix-sockets \

@@ -126,7 +126,7 @@ elif [[ $OS = 'Linux' ]]; then
 elif [[ $OS = 'Windows' ]]; then
     # Windows build (MSYS2 clang64)
     print_info "Configuring for Windows (MSYS2 clang64)..."
-    CC=clang CXX=clang++ \
+    CC=clang CXX=clang++ CFLAGS=-pthread \
     CPPFLAGS="-I${OUTPUT_INCLUDE}/zlib" \
     LDFLAGS="-L${OUTPUT_LIB}/zlib" \
     ./configure --silent --disable-shared --enable-static --disable-examples-build --disable-dependency-tracking \

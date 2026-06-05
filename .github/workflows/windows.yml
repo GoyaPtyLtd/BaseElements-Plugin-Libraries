@@ -23,6 +23,7 @@ jobs:
             gperf
             git
             unzip
+            mingw-w64-gsasl
             mingw-w64-clang-x86_64-clang
             mingw-w64-clang-x86_64-lld
             mingw-w64-clang-x86_64-llvm

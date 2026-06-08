@@ -35,6 +35,13 @@ interactive_prompt \
 cd "${OUTPUT_SRC}/${LIBRARY_NAME}"
 tar -xf "${SOURCE_ARCHIVES}/${ARCHIVE_NAME}" --strip-components=1
 
+if [[ $OS = 'Windows' ]]; then
+    # MSYS2 CLANG64 defines __MINGW32__ for MinGW compatibility and reports __GNUC__ < 12,
+    # which triggers podofo's to_chars/from_chars fallbacks even though libc++ already
+    # provides them, causing ambiguous call errors. Exclude clang from the MinGW branch.
+    sed -i 's/(defined(__MINGW32__) &&  __GNUC__ < 12)/(defined(__MINGW32__) \&\& !defined(__clang__) \&\&  __GNUC__ < 12)/g' src/podofo/private/charconv_compat.h
+fi
+
 # Create build directory
 BUILD_DIR="${OUTPUT_SRC}/${LIBRARY_NAME}/_build"
 mkdir -p "${BUILD_DIR}"

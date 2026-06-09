@@ -130,7 +130,7 @@ download "expat" "2.6.2" "4" "https://github.com/libexpat/libexpat/releases/down
 download "fontconfig" "2.15.0" "5" "https://www.freedesktop.org/software/fontconfig/release/fontconfig-2.15.0.tar.gz" "fontconfig.tar.gz"
 download "freetype" "2.13.2" "6" "https://sourceforge.net/projects/freetype/files/freetype2/2.13.2/freetype-2.13.2.tar.gz" "freetype.tar.gz"
 download "libiconv" "1.17" "7" "https://gnu.mirrorservice.org/libiconv/libiconv-1.17.tar.gz" "libiconv.tar.gz"
-download "libde265" "1.0.16" "8" "https://github.com/strukturag/libde265/archive/refs/tags/v1.0.16.tar.gz" "libde265.tar.gz"
+download "libde265" "1.1.1" "8" "https://github.com/strukturag/libde265/archive/refs/tags/v1.1.1.tar.gz" "libde265.tar.gz"
 download "openjpeg" "2.5.4" "9" "https://github.com/uclouvain/openjpeg/archive/refs/tags/v2.5.4.tar.gz" "libopenjp2.tar.gz"
 download "libheif" "1.20.2" "10" "https://github.com/strukturag/libheif/releases/download/v1.20.2/libheif-1.20.2.tar.gz" "libheif.tar.gz"
 download "libjpeg" "v9f" "11" "http://ijg.org/files/jpegsrc.v9f.tar.gz" "libjpeg.tar.gz"

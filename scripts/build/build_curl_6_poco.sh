@@ -216,6 +216,7 @@ elif [[ $OS = 'Windows' ]]; then
         -DOPENSSL_INCLUDE_DIR="${OUTPUT_INCLUDE}" \
         -DOPENSSL_SSL_LIBRARY="${OUTPUT_LIB}/openssl/libssl.a" \
         -DOPENSSL_CRYPTO_LIBRARY="${OUTPUT_LIB}/openssl/libcrypto.a" \
+        -DCMAKE_CXX_FLAGS="-DPOCO_COMPILER_MINGW" \
         "${OUTPUT_SRC}/${LIBRARY_NAME}"
 
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."

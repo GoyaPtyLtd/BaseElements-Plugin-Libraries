@@ -57,7 +57,7 @@ if [[ $OS = 'Darwin' ]]; then
     
     print_info "Building x86_64 architecture..."
     CFLAGS="-mmacosx-version-min=10.15" \
-    ./Configure darwin64-x86_64-cc no-shared no-docs no-tests \
+    ./Configure darwin64-x86_64-cc no-shared no-docs no-apps \
         --prefix="${PREFIX_x86_64}"
     
     make -j${JOBS}
@@ -71,7 +71,7 @@ if [[ $OS = 'Darwin' ]]; then
     
     print_info "Building arm64 architecture..."
     CFLAGS="-mmacosx-version-min=10.15" \
-    ./Configure darwin64-arm64-cc no-shared no-docs no-tests \
+    ./Configure darwin64-arm64-cc no-shared no-docs no-apps \
         --prefix="${PREFIX_arm64}"
     
     make -j${JOBS}
@@ -88,7 +88,7 @@ elif [[ $OS = 'Linux' ]]; then
     # Linux build
     print_info "Configuring for Linux..."
     CC=clang CXX=clang++ \
-    ./Configure linux-generic64 no-shared no-docs no-tests \
+    ./Configure linux-generic64 no-shared no-docs no-apps \
         --prefix="${PREFIX}"
 
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
@@ -101,7 +101,7 @@ elif [[ $OS = 'Windows' ]]; then
     # which is first on PATH in CLANG64 but produces backslash paths that break Configure.
     print_info "Configuring for Windows (MSYS2 clang64)..."
     CC=clang CXX=clang++ \
-    /usr/bin/perl Configure mingw64 no-shared no-docs no-tests \
+    /usr/bin/perl Configure mingw64 no-shared no-docs no-apps \
         --prefix="${PREFIX}"
 
     print_info "Building ${LIBRARY_NAME} (${JOBS} parallel jobs)..."
@@ -122,10 +122,8 @@ else
 fi
 
 if [[ $OS = 'Windows' ]]; then
-	cp "${PREFIX}/lib64/libcrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-	cp "${PREFIX}/lib64/libssl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-    convert_to_lib "${PREFIX}/lib64/libcrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/crypto.lib"
-    convert_to_lib "${PREFIX}/lib64/libssl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/ssl.lib"
+    convert_to_lib "${PREFIX}/lib64/libcrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libcrypto_static.lib"
+    convert_to_lib "${PREFIX}/lib64/libssl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libssl_static.lib"
 else
 	cp "${PREFIX}/lib/libcrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 	cp "${PREFIX}/lib/libssl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"

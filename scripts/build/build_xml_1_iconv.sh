@@ -79,12 +79,13 @@ interactive_prompt \
     "Libraries: ${OUTPUT_LIB}/${LIBRARY_NAME}/libiconv.a and libcharset.a"
 
 cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-cp "${PREFIX}/lib/libiconv.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-cp "${PREFIX}/lib/libcharset.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 if [[ $OS = 'Windows' ]]; then
-    convert_to_lib "${PREFIX}/lib/libiconv.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/iconv.lib"
-    convert_to_lib "${PREFIX}/lib/libcharset.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/charset.lib"
+    convert_to_lib "${PREFIX}/lib/libiconv.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libiconv.lib"
+    convert_to_lib "${PREFIX}/lib/libcharset.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libcharset.lib"
+else
+	cp "${PREFIX}/lib/libiconv.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+	cp "${PREFIX}/lib/libcharset.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

@@ -85,10 +85,11 @@ interactive_prompt \
     "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/${LIBRARY_NAME}.a"
 
 cp -R "${PREFIX}/include/${LIBRARY_NAME}"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 if [[ $OS = 'Windows' ]]; then
-    convert_to_lib "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/de265.lib"
+    convert_to_lib "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/${LIBRARY_NAME}.lib"
+else
+	cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

@@ -94,10 +94,11 @@ interactive_prompt \
 # jq requires version.h file, but doesn't put it into the prefix
 cp src/version.h "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/"
 cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/"
-cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 if [[ $OS = 'Windows' ]]; then
     convert_to_lib "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/${LIBRARY_NAME}.lib"
+else
+	cp "${PREFIX}/lib/lib${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

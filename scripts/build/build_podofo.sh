@@ -210,14 +210,14 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/podofo"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
-cp "${PREFIX}/lib/libpodofo.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-cp "${PREFIX}/lib/libpodofo_private.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-cp "${PREFIX}/lib/libpodofo_3rdparty.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-
 if [[ $OS = 'Windows' ]]; then
-    convert_to_lib "${PREFIX}/lib/libpodofo.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/podofo.lib"
-    convert_to_lib "${PREFIX}/lib/libpodofo_private.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/podofo_private.lib"
-    convert_to_lib "${PREFIX}/lib/libpodofo_3rdparty.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/podofo_3rdparty.lib"
+    convert_to_lib "${PREFIX}/lib/libpodofo.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libpodofo.lib"
+    convert_to_lib "${PREFIX}/lib/libpodofo_private.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libpodofo_private.lib"
+    convert_to_lib "${PREFIX}/lib/libpodofo_3rdparty.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libpodofo_3rdparty.lib"
+else
+	cp "${PREFIX}/lib/libpodofo.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+	cp "${PREFIX}/lib/libpodofo_private.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+	cp "${PREFIX}/lib/libpodofo_3rdparty.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

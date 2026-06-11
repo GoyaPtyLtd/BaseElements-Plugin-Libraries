@@ -115,7 +115,7 @@ if [[ -d "${PLATFORM_DIR}/lib" ]]; then
     # Copy all library files from all subdirectories (flatten structure)
     # On Windows, include both .a (for build-time use) and .lib (COFF format for MSVC compatibility)
     if [[ $OS = 'Windows' ]]; then
-        find "${PLATFORM_DIR}/lib" \( -name "*.a" -o -name "*.lib" \) -type f -exec cp {} "${TEMP_PACKAGE_DIR}/lib/" \; || {
+        find "${PLATFORM_DIR}/lib" -name "*.lib" -type f -exec cp {} "${TEMP_PACKAGE_DIR}/lib/" \; || {
             print_error "ERROR: No libraries found in ${PLATFORM_DIR}/lib"
             exit 1
         }

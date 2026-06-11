@@ -194,12 +194,10 @@ interactive_prompt \
     "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/libcurl.a"
 
 cp -R "${PREFIX}/include/curl"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-
+cp "${PREFIX}/lib/libcurl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 if [[ $OS = 'Windows' ]]; then
     convert_to_lib "${PREFIX}/lib/libcurl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libcurl.lib"
-else
-	cp "${PREFIX}/lib/libcurl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

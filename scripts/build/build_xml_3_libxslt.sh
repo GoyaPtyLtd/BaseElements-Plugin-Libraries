@@ -122,12 +122,12 @@ interactive_prompt \
 cp -R "${PREFIX}/include/libxslt"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 cp -R "${PREFIX}/include/libexslt"/* "${OUTPUT_INCLUDE}/libexslt/" 2>/dev/null || true
 
+cp "${PREFIX}/lib/libxslt.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libexslt.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
 if [[ $OS = 'Windows' ]]; then
     convert_to_lib "${PREFIX}/lib/libxslt.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libxslt.lib"
     convert_to_lib "${PREFIX}/lib/libexslt.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libexslt.lib"
-else
-	cp "${PREFIX}/lib/libxslt.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-	cp "${PREFIX}/lib/libexslt.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

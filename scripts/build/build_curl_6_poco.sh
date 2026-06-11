@@ -232,6 +232,14 @@ interactive_prompt \
 
 cp -R "${PREFIX}/include/Poco"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
+cp "${PREFIX}/lib/libPocoCrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libPocoFoundation.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libPocoJSON.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libPocoNet.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libPocoXML.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libPocoUtil.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libPocoZip.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+
 # Copy all Poco libraries
 if [[ $OS = 'Windows' ]]; then
     convert_to_lib "${PREFIX}/lib/libPocoCrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/PocoCrypto.lib"
@@ -241,14 +249,6 @@ if [[ $OS = 'Windows' ]]; then
     convert_to_lib "${PREFIX}/lib/libPocoXML.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/PocoXML.lib"
     convert_to_lib "${PREFIX}/lib/libPocoUtil.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/PocoUtil.lib"
     convert_to_lib "${PREFIX}/lib/libPocoZip.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/PocoZip.lib"
-else
-	cp "${PREFIX}/lib/libPocoCrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-	cp "${PREFIX}/lib/libPocoFoundation.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-	cp "${PREFIX}/lib/libPocoJSON.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-	cp "${PREFIX}/lib/libPocoNet.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-	cp "${PREFIX}/lib/libPocoXML.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-	cp "${PREFIX}/lib/libPocoUtil.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-	cp "${PREFIX}/lib/libPocoZip.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

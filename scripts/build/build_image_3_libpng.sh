@@ -112,11 +112,10 @@ interactive_prompt \
     "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/libpng16.a"
 
 cp -R "${PREFIX}/include/libpng16"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
+cp "${PREFIX}/lib/libpng16.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 if [[ $OS = 'Windows' ]]; then
     convert_to_lib "${PREFIX}/lib/libpng16.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libpng16.lib"
-else
-	cp "${PREFIX}/lib/libpng16.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

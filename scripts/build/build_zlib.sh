@@ -77,11 +77,10 @@ interactive_prompt \
     "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/libz.a"
 
 cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
+cp "${PREFIX}/lib/libz.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 if [[ $OS = 'Windows' ]]; then
     convert_to_lib "${PREFIX}/lib/libz.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libz.lib"
-else
-	cp "${PREFIX}/lib/libz.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

@@ -128,12 +128,11 @@ interactive_prompt \
 cp -R "${PREFIX}/include"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 
 cp "${PREFIX}/lib/libturbojpeg.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib/libjpeg.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 if [[ $OS = 'Windows' ]]; then
     convert_to_lib "${PREFIX}/lib/libturbojpeg.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libturbojpeg.lib"
     convert_to_lib "${PREFIX}/lib/libjpeg.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libjpeg.lib"
-else
-	cp "${PREFIX}/lib/libjpeg.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

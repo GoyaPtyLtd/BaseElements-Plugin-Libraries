@@ -81,11 +81,10 @@ interactive_prompt \
     "Library: ${OUTPUT_LIB}/${LIBRARY_NAME}/libfreetype.a"
 
 cp -R "${PREFIX}/include/freetype2"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
+cp "${PREFIX}/lib/libfreetype.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 if [[ $OS = 'Windows' ]]; then
     convert_to_lib "${PREFIX}/lib/libfreetype.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libfreetype.lib"
-else
-	cp "${PREFIX}/lib/libfreetype.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

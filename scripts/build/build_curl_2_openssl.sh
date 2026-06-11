@@ -121,8 +121,8 @@ else
     cp -R "${PREFIX}/include/openssl"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
 fi
 
-cp "${PREFIX}/lib/libcrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
-cp "${PREFIX}/lib/libssl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib64/libcrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
+cp "${PREFIX}/lib64/libssl.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 if [[ $OS = 'Windows' ]]; then
     convert_to_lib "${PREFIX}/lib64/libcrypto.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/libcrypto.lib"

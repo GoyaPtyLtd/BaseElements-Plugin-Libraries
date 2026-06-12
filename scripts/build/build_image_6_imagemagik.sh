@@ -246,7 +246,7 @@ if [[ $OS = 'Windows' ]]; then
 #    convert_to_lib "${PREFIX}/lib/libMagick++-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/Magick++-7.Q16HDRI.lib"
 #    convert_to_lib "${PREFIX}/lib/libMagickCore-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/MagickCore-7.Q16HDRI.lib"
 #    convert_to_lib "${PREFIX}/lib/libMagickWand-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/MagickWand-7.Q16HDRI.lib"
-    for $file in "${PREFIX}/lib/"*.a; do
+    for file in "${PREFIX}/lib/"*.a; do
 		filename=$(basename "$file")
 		convert_to_lib "$file" "${OUTPUT_LIB}/${LIBRARY_NAME}/${filename/%.a/.lib}"
     done

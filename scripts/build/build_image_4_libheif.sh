@@ -164,7 +164,7 @@ cp -R "${PREFIX}/include/${LIBRARY_NAME}"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/"
 cp "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/"
 
 if [[ $OS = 'Windows' ]]; then
-    convert_to_lib "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/he${LIBRARY_NAME}if.lib"
+    convert_to_lib "${PREFIX}/lib/${LIBRARY_NAME}.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/${LIBRARY_NAME}.lib"
 fi
 
 print_success "Build complete for ${LIBRARY_NAME}"

@@ -238,14 +238,15 @@ interactive_prompt \
     "Headers: ${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" \
     "Libraries: ${OUTPUT_LIB}/${LIBRARY_NAME}/libMagick*.a"
 
-cp -R "${PREFIX}/include/ImageMagick-7"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
-
-#Nothing else needs the .a so we don't need to copy them.
+# The headers on Windows have a bunch of different flags set, so we need to keep a separate copy.
 if [[ $OS = 'Windows' ]]; then
-# Windows builds a heap of lib files, so we copy them all as is.
-#    convert_to_lib "${PREFIX}/lib/libMagick++-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/Magick++-7.Q16HDRI.lib"
-#    convert_to_lib "${PREFIX}/lib/libMagickCore-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/MagickCore-7.Q16HDRI.lib"
-#    convert_to_lib "${PREFIX}/lib/libMagickWand-7.Q16HDRI.a" "${OUTPUT_LIB}/${LIBRARY_NAME}/MagickWand-7.Q16HDRI.lib"
+    cp -R "${PREFIX}/include/${LIBRARY_NAME}"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}-win64/" 2>/dev/null || true
+else
+    cp -R "${PREFIX}/include/${LIBRARY_NAME}"/* "${OUTPUT_INCLUDE}/${LIBRARY_NAME}/" 2>/dev/null || true
+fi
+
+if [[ $OS = 'Windows' ]]; then
+    # Our old Windows build had about 30 IM .lib files, so this is just to check we include everything.
     for file in "${PREFIX}/lib/"*.a; do
 		filename=$(basename "$file")
 		convert_to_lib "$file" "${OUTPUT_LIB}/${LIBRARY_NAME}/${filename/%.a/.lib}"
